@@ -379,3 +379,8 @@ MANGO:
     vanilla-eating: false
     restore-food: 8
     restore-saturation: 10
+GEMSTONE_REMOVER:
+  base:
+    material: GRINDSTONE
+    random-unsocket: 1.0
+    inedible: true
