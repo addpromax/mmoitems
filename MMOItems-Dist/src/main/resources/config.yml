@@ -4,7 +4,7 @@ config-version: 8
 
 # Notifies players with the 'mmoitems.update-notify' perm node when
 # they join the server if a new update is available for download.
-# Requires /reload when changed.
+# Requires /reload when changed..
 update-notify: true
 
 # Enable/disable the plugin iterating over the whole player inventory
