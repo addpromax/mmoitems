@@ -1,7 +1,7 @@
 DRAGON_HELMET:
   base:
     material: DIAMOND_HELMET
-    max-durability: 5500.0
+    max-durability: 5600.0
     tier: EPIC
     max-health: 4.0
     armor-toughness: 3.0
