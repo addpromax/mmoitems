@@ -2,6 +2,7 @@ package net.Indyuce.mmoitems.api.interaction;
 
 import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmoitems.ItemStats;
+import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.util.MMOUtils;
 import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.event.item.ApplyGemStoneEvent;
@@ -127,11 +128,14 @@ public class GemStone extends UseItem {
 
                 // Get that gem
                 GemSocketsData registeredGemData = (GemSocketsData) gemStory.getModifiersBonus(uid);
+
                 if (registeredGemData != null) {
 
-                    if (registeredGemData.getEmptySocket(gemType) != null) {
-                        //UPGRD//MMOItems.log("\u00a77Applied Gemstone @\u00a76Gemstone\u00a77: \u00a73" + foundSocketColor);
-
+                    if (registeredGemData.getEmptySocket(gemType) != null ) {
+                        //MMOItems.log("\u00a77Applied Gemstone @\u00a76Gemstone\u00a77: \u00a73" + foundSocketColor);
+                        if (success){
+                            continue;
+                        }
                         // Charmer
                         success = true;
                         registeredGemData.apply(gemType, gemData);
