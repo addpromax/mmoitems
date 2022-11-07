@@ -133,12 +133,11 @@ public class GemStone extends UseItem {
 
                     if (registeredGemData.getEmptySocket(gemType) != null ) {
                         //MMOItems.log("\u00a77Applied Gemstone @\u00a76Gemstone\u00a77: \u00a73" + foundSocketColor);
-                        if (success){
-                            continue;
-                        }
+
                         // Charmer
                         success = true;
                         registeredGemData.apply(gemType, gemData);
+                        break;
                     }
                 }
             }
