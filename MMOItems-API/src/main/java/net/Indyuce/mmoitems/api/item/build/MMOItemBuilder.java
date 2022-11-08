@@ -31,7 +31,6 @@ public class MMOItemBuilder {
      * because they must be applied after the modifier selection process
      */
     private final HashMap<UUID, NameModifier> nameModifiers = new HashMap<>();
-    private boolean hideModifiersNames = true;
 
     /**
      * Instance which is created everytime an mmoitem is being randomly
