@@ -32,6 +32,9 @@ public class MMOItemBuilder {
      */
     private final HashMap<UUID, NameModifier> nameModifiers = new HashMap<>();
 
+    public MMOItemBuilder(MMOItemTemplate template, int level, @Nullable ItemTier tier){
+        this(template,level,tier,false);
+    }
     /**
      * Instance which is created everytime an mmoitem is being randomly
      * generated
@@ -41,8 +44,9 @@ public class MMOItemBuilder {
      * @param tier     Specified item tier which determines how many capacity it will
      *                 have. If no tier is given, item uses the default capacity
      *                 formula given in the main config file
+     * @param noModifiers hides modifiers from previewed items!
      */
-    public MMOItemBuilder(MMOItemTemplate template, int level, @Nullable ItemTier tier) {
+    public MMOItemBuilder(MMOItemTemplate template, int level, @Nullable ItemTier tier, boolean noModifiers) {
         this.level = level;
         this.tier = tier;
 
@@ -62,6 +66,9 @@ public class MMOItemBuilder {
         if (level > 0)
             mmoitem.setData(ItemStats.ITEM_LEVEL, new DoubleData(level));
 
+        if (noModifiers){
+            return;
+        }
         // Roll item generation modifiers
         for (TemplateModifier modifier : rollModifiers(template)) {
             // Roll modifier chance; only apply if the rolled item has enough capacity
@@ -96,11 +103,9 @@ public class MMOItemBuilder {
      *
      * @return Built MMOItem instance
      */
-    public MMOItem build(boolean hideModifierNames) {
+    public MMOItem build() {
 
-        if (hideModifierNames){
-            return mmoitem;
-        }
+
         if (!nameModifiers.isEmpty()) {
 
             // Get name data
@@ -132,9 +137,6 @@ public class MMOItemBuilder {
         }
 
         return mmoitem;
-    }
-    public MMOItem build(){
-        return build(false);
     }
 
     /**

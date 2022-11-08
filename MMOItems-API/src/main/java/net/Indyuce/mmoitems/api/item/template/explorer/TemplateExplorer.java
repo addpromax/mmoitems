@@ -55,8 +55,11 @@ public class TemplateExplorer {
 	 * @return Random item with random tier and item level which matches the
 	 *         player's level
 	 */
-	public Optional<MMOItem> rollItem(RPGPlayer player) {
-		return rollLoot().map(template -> template.newBuilder(player).build());
+	public Optional<MMOItem> rollItem(RPGPlayer player, boolean noModifiers) {
+		return rollLoot().map(template -> template.newBuilder(player,noModifiers).build());
+	}
+	public Optional<MMOItem> rollItem(RPGPlayer player){
+		return this.rollItem(player,false);
 	}
 
 	private <T> Predicate<T> not(Predicate<T> predicate) {

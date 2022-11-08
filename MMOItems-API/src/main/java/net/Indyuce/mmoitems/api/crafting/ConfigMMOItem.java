@@ -25,6 +25,7 @@ public class ConfigMMOItem {
 		Validate.isTrue(config.contains("type") && config.contains("id"), "Config must contain type and ID");
 		Type type = MMOItems.plugin.getTypes().getOrThrow(config.getString("type").toUpperCase().replace("-", "_").replace(" ", "_"));
 		template = MMOItems.plugin.getTemplates().getTemplateOrThrow(type, config.getString("id"));
+		preview = template.newBuilder(0,null,true).build().newBuilder().build();
 
 		this.amount = Math.max(1, config.getInt("amount"));
 	}
@@ -44,7 +45,7 @@ public class ConfigMMOItem {
 	 * @return A freshly-crafted item to be used by the player.
 	 */
 	@NotNull public ItemStack generate(@NotNull RPGPlayer player) {
-		ItemStack item = template.newBuilder(player).build().newBuilder().build();
+		ItemStack item = template.newBuilder(player,false).build().newBuilder().build();
 		item.setAmount(amount);
 		return item;
 	}
@@ -57,8 +58,8 @@ public class ConfigMMOItem {
 	 * reduce startup calculations so that item is calculated the first time it
 	 * needs to be displayed
 	 */
-	public ItemStack getPreview(boolean hideModifiers) {
-		return preview == null ? (preview = template.newBuilder(0, null).build(hideModifiers).newBuilder().build(true)).clone() : preview.clone();
+	public ItemStack getPreview(boolean noModifiers) {
+		return preview == null ? (preview = template.newBuilder(0, null,noModifiers).build().newBuilder().build(true)).clone() : preview.clone();
 	}
 
 	public ItemStack getPreview(){

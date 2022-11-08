@@ -15,6 +15,7 @@ import net.Indyuce.mmoitems.stat.data.random.RandomStatData;
 import net.Indyuce.mmoitems.stat.type.ItemStat;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -144,17 +145,23 @@ public class MMOItemTemplate extends PostLoadObject implements ItemReference {
 		return options.contains(option);
 	}
 
-	public MMOItemBuilder newBuilder(@Nullable Player player) {
-		if (player != null) { return newBuilder(PlayerData.get(player).getRPG()); }
-		return newBuilder((RPGPlayer) null);
+	public MMOItemBuilder newBuilder(@Nullable Player player, boolean noModifiers) {
+		if (player != null) { return newBuilder(PlayerData.get(player).getRPG(),noModifiers); }
+		return newBuilder((RPGPlayer) null,noModifiers);
+	}
+	public MMOItemBuilder newBuilder(@Nullable Player player) { return this.newBuilder(player,false); }
+
+	public MMOItemBuilder newBuilder(boolean noModifiers) { return newBuilder((RPGPlayer) null,noModifiers); }
+	public MMOItemBuilder newBuilder() { return this.newBuilder(false); }
+
+	public MMOItemBuilder newBuilder(@Nullable PlayerData player, boolean noModifiers) {
+		if (player != null) { return newBuilder(player.getRPG(),noModifiers); }
+		return newBuilder((RPGPlayer) null,noModifiers);
+	}
+	public MMOItemBuilder newBuilder(@Nullable PlayerData player){
+		return this.newBuilder(player,false);
 	}
 
-	public MMOItemBuilder newBuilder() { return newBuilder((RPGPlayer) null); }
-
-	public MMOItemBuilder newBuilder(@Nullable PlayerData player) {
-		if (player != null) { return newBuilder(player.getRPG()); }
-		return newBuilder((RPGPlayer) null);
-	}
 
 	/**
 	 * By default, item templates have item level 0 and no random tier. If the
@@ -166,24 +173,38 @@ public class MMOItemTemplate extends PostLoadObject implements ItemReference {
 	 *
 	 * @return        Item builder with random level and tier?
 	 */
-	public MMOItemBuilder newBuilder(@Nullable RPGPlayer player) {
+	public MMOItemBuilder newBuilder(@Nullable RPGPlayer player, boolean noModifiers) {
 
 		// No player ~ default settings
-		if (player == null) { return newBuilder(0, null); }
+		if (player == null) { return newBuilder(0, null,noModifiers); }
 
 		// Read from player
 		int itemLevel = hasOption(TemplateOption.LEVEL_ITEM) ? MMOItems.plugin.getTemplates().rollLevel(player.getLevel()) : 0;
 		ItemTier itemTier = hasOption(TemplateOption.TIERED) ? MMOItems.plugin.getTemplates().rollTier() : null;
-		return new MMOItemBuilder(this, itemLevel, itemTier);
+		return new MMOItemBuilder(this, itemLevel, itemTier,noModifiers);
+	}
+	public MMOItemBuilder newBuilder(@Nullable RPGPlayer player){
+		return this.newBuilder(player,false);
 	}
 
+
+
+	/**
+	 * @param  itemLevel The desired item level
+	 * @param  itemTier  The desired item tier, can be null
+	 * @param noModifiers Whether to add modifiers to the item
+	 * @return           Item builder with specific item level and tier
+	 */
+	public MMOItemBuilder newBuilder(int itemLevel, @Nullable ItemTier itemTier,boolean noModifiers) {
+		return new MMOItemBuilder(this, itemLevel, itemTier);
+	}
 	/**
 	 * @param  itemLevel The desired item level
 	 * @param  itemTier  The desired item tier, can be null
 	 * @return           Item builder with specific item level and tier
 	 */
-	public MMOItemBuilder newBuilder(int itemLevel, @Nullable ItemTier itemTier) {
-		return new MMOItemBuilder(this, itemLevel, itemTier);
+	public MMOItemBuilder newBuilder(int itemLevel,@Nullable ItemTier itemTier){
+		return this.newBuilder(itemLevel,itemTier,false);
 	}
 
 	public enum TemplateOption {
