@@ -57,9 +57,12 @@ public class ConfigMMOItem {
 	 * reduce startup calculations so that item is calculated the first time it
 	 * needs to be displayed
 	 */
-	public ItemStack getPreview() {
-		return preview == null ? (preview = template.newBuilder(0, null).build().newBuilder().build(true)).clone() : preview.clone();
+	public ItemStack getPreview(boolean hideModifiers) {
+		return preview == null ? (preview = template.newBuilder(0, null).build(hideModifiers).newBuilder().build(true)).clone() : preview.clone();
 	}
 
+	public ItemStack getPreview(){
+		return getPreview(false);
+	}
 	public int getAmount() { return amount; }
 }

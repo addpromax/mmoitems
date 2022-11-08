@@ -164,7 +164,7 @@ public class CraftingRecipe extends Recipe {
 			 * backwards compatibility, since this is how it used to
 			 * be done. Don't want to break that without good reason.
 			 */
-			return identifiedMMO.getPreview();
+			return identifiedMMO.getPreview(hasOption(RecipeOption.HIDE_MODIFIERS));
 		}
 
 		// Generate from ProvidedUIFilter, guaranteed to not be null don't listen to the inspection.

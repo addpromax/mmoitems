@@ -189,6 +189,7 @@ public abstract class Recipe {
 	}
 
 	public static enum RecipeOption {
+		HIDE_MODIFIERS(true),
 
 		/**
 		 * Hide the crafting recipe when one of the condition is not met

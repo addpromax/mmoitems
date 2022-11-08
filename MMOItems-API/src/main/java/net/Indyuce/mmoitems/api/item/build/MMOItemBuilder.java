@@ -31,6 +31,7 @@ public class MMOItemBuilder {
      * because they must be applied after the modifier selection process
      */
     private final HashMap<UUID, NameModifier> nameModifiers = new HashMap<>();
+    private boolean hideModifiersNames = true;
 
     /**
      * Instance which is created everytime an mmoitem is being randomly
@@ -52,6 +53,7 @@ public class MMOItemBuilder {
         // Capacity is not final as it keeps lowering as modifiers are selected
         double capacity = (tier != null && tier.hasCapacity() ? tier.getModifierCapacity() : MMOItems.plugin.getLanguage().defaultItemCapacity).calculate(level);
         mmoitem = new MMOItem(template.getType(), template.getId());
+
 
         // Apply base item data
         template.getBaseItemData().forEach((stat, random) -> applyData(stat, random.randomize(this)));
@@ -95,8 +97,11 @@ public class MMOItemBuilder {
      *
      * @return Built MMOItem instance
      */
-    public MMOItem build() {
+    public MMOItem build(boolean hideModifierNames) {
 
+        if (hideModifierNames){
+            return mmoitem;
+        }
         if (!nameModifiers.isEmpty()) {
 
             // Get name data
@@ -128,6 +133,9 @@ public class MMOItemBuilder {
         }
 
         return mmoitem;
+    }
+    public MMOItem build(){
+        return build(false);
     }
 
     /**
@@ -219,4 +227,5 @@ public class MMOItemBuilder {
         Collections.shuffle(modifiers);
         return modifiers;
     }
+
 }
