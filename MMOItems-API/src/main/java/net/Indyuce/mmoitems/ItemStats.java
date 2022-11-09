@@ -193,7 +193,15 @@ public class ItemStats {
             STORED_TAGS = new StoredTags(),
             ITEM_LEVEL = new ItemLevel(),
             INTERNAL_REVISION_ID = new InternalRevisionID(),
-            BROWSER_DISPLAY_IDX = new BrowserDisplayIDX();
+            BROWSER_DISPLAY_IDX = new BrowserDisplayIDX(),
+
+    // Dummy Stats
+    DUMMY_A = new DoubleStat("DUMMY_A", Material.ARMOR_STAND, "Dummy A", new String[]{"Dummy stats for server builders."}),
+    DUMMY_B = new DoubleStat("DUMMY_B", Material.ARMOR_STAND, "Dummy B", new String[]{"Dummy stats for server builders."}),
+    DUMMY_C = new DoubleStat("DUMMY_C", Material.ARMOR_STAND, "Dummy C", new String[]{"Dummy stats for server builders."}),
+    DUMMY_D = new DoubleStat("DUMMY_D", Material.ARMOR_STAND, "Dummy D", new String[]{"Dummy stats for server builders."}),
+    DUMMY_E = new DoubleStat("DUMMY_E", Material.ARMOR_STAND, "Dummy E", new String[]{"Dummy stats for server builders."});
+
 
     /**
      * @deprecated Item damage is now {@link ItemDamage} and

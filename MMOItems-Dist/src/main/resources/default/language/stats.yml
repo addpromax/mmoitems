@@ -146,3 +146,10 @@ elemental-damage-percent: '{color}{icon}&7 +{value}% {element} Damage'
 elemental-defense: '{color}{icon}&7 {value} {element} Defense'
 elemental-defense-percent: '{color}{icon}&7 +{value}% {element} Defense'
 elemental-weakness: '{color}{icon}&7 {value}% {element} Weakness'
+
+# Dummy Stats
+dummy-a: '&3 &7➸ Dummy A: &f{value}'
+dummy-b: '&3 &7➸ Dummy B: &f{value}'
+dummy-c: '&3 &7➸ Dummy C: &f{value}'
+dummy-d: '&3 &7➸ Dummy D: &f{value}'
+dummy-e: '&3 &7➸ Dummy E: &f{value}'
