@@ -112,7 +112,7 @@ public class CraftingStationPreview extends PluginInventory {
 			inv.setItem(16, item);
 		}
 		if (recipe.getRecipe() instanceof UpgradingRecipe) {
-			NBTItem nbtItem = NBTItem.get(((UpgradingRecipe) recipe.getRecipe()).getItem().getPreview());
+			NBTItem nbtItem = NBTItem.get(((UpgradingRecipe) recipe.getRecipe()).getItem().getPreview(true));
 			nbtItem.setDisplayNameComponent(LegacyComponent.parse(
 					nbtItem.toItem().getItemMeta().getDisplayName() + ChatColor.GREEN + "+1!"));
 

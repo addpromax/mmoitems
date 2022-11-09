@@ -196,7 +196,7 @@ public class MMOItemTemplate extends PostLoadObject implements ItemReference {
 	 * @return           Item builder with specific item level and tier
 	 */
 	public MMOItemBuilder newBuilder(int itemLevel, @Nullable ItemTier itemTier,boolean noModifiers) {
-		return new MMOItemBuilder(this, itemLevel, itemTier);
+		return new MMOItemBuilder(this, itemLevel, itemTier,noModifiers);
 	}
 	/**
 	 * @param  itemLevel The desired item level
