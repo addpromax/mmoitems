@@ -3,11 +3,14 @@ package net.Indyuce.mmoitems.api.crafting.recipe;
 import net.Indyuce.mmoitems.api.crafting.CraftingStation;
 import net.Indyuce.mmoitems.api.crafting.CraftingStatus;
 import net.Indyuce.mmoitems.api.player.PlayerData;
+import net.Indyuce.mmoitems.api.player.RPGPlayer;
 import net.Indyuce.mmoitems.api.util.message.Message;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * mmoitems
@@ -39,6 +42,10 @@ public abstract class TimedRecipe extends Recipe {
     public boolean isInstant() {
         return craftingTime <= 0;
     }
+
+    public abstract ItemStack getOutputItemStack(@Nullable RPGPlayer rpg);
+
+    public abstract ItemStack getPreviewItemStack();
 
     protected boolean canBeQueued(CraftingStation station, PlayerData data) {
         CraftingStatus.CraftingQueue queue = data.getCrafting().getQueue(station);

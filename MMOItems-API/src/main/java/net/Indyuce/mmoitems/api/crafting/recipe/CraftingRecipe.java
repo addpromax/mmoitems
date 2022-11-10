@@ -151,6 +151,7 @@ public class CraftingRecipe extends TimedRecipe {
      */
     @SuppressWarnings("ConstantConditions")
     @NotNull
+    @Override
     public ItemStack getOutputItemStack(@Nullable RPGPlayer rpg) {
 
         // Generate as MMOItem
@@ -172,6 +173,7 @@ public class CraftingRecipe extends TimedRecipe {
      * @return The preview ItemStack from this
      */
     @NotNull
+    @Override
     public ItemStack getPreviewItemStack() {
 
         // Generate as MMOItem

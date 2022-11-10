@@ -13,6 +13,6 @@ public class UpgradingRecipeDisplay extends ConfigItem {
     }
 
     public TimedItemBuilder<UpgradingRecipe> newBuilder(CheckedRecipe recipe) {
-        return new TimedItemBuilder<>(this, recipe, r -> r.getItem().getPreview(), upgradingRecipe -> 1);
+        return new TimedItemBuilder<>(this, recipe, upgradingRecipe -> 1);
     }
 }

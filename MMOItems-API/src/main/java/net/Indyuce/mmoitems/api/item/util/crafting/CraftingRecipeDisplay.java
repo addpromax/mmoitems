@@ -13,6 +13,6 @@ public class CraftingRecipeDisplay extends ConfigItem {
     }
 
     public TimedItemBuilder<CraftingRecipe> newBuilder(CheckedRecipe recipe) {
-        return new TimedItemBuilder<>(this, recipe, CraftingRecipe::getPreviewItemStack, CraftingRecipe::getOutputAmount);
+        return new TimedItemBuilder<>(this, recipe, CraftingRecipe::getOutputAmount);
     }
 }

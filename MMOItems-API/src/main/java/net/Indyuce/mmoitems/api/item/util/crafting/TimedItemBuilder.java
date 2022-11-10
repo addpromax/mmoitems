@@ -33,15 +33,13 @@ public class TimedItemBuilder<R extends TimedRecipe> {
 
     private final String name;
     private final List<String> lore;
-    private final Function<R, ItemStack> itemProvider;
     private final Function<R, Integer> amountProvider;
 
-    public TimedItemBuilder(ConfigItem item, CheckedRecipe recipe, Function<R, ItemStack> itemProvider, Function<R, Integer> amountProvider) {
+    public TimedItemBuilder(ConfigItem item, CheckedRecipe recipe, Function<R, Integer> amountProvider) {
         this.recipe = recipe;
         this.name = item.getName();
         this.lore = new ArrayList<>(item.getLore());
         this.craftingRecipe = (R) recipe.getRecipe();
-        this.itemProvider = itemProvider;
         this.amountProvider = amountProvider;
     }
 
@@ -101,7 +99,7 @@ public class TimedItemBuilder<R extends TimedRecipe> {
                     lore.add(conditionsIndex++, condition.format());
             }
 
-        ItemStack item = this.itemProvider.apply(craftingRecipe);
+        ItemStack item = this.craftingRecipe.getPreviewItemStack();
         int amount = this.amountProvider.apply(craftingRecipe);
 
 

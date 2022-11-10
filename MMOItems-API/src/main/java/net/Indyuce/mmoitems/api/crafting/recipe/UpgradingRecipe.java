@@ -12,6 +12,7 @@ import net.Indyuce.mmoitems.api.event.PlayerUseCraftingStationEvent;
 import net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem;
 import net.Indyuce.mmoitems.api.item.util.ConfigItems;
 import net.Indyuce.mmoitems.api.player.PlayerData;
+import net.Indyuce.mmoitems.api.player.RPGPlayer;
 import net.Indyuce.mmoitems.api.util.message.Message;
 import net.Indyuce.mmoitems.stat.data.UpgradeData;
 import net.Indyuce.mmoitems.util.MMOUtils;
@@ -20,6 +21,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
@@ -38,6 +40,20 @@ public class UpgradingRecipe extends TimedRecipe {
         ingredient = new MMOItemIngredient(item);
     }
 
+    @Override
+    public ItemStack getOutputItemStack(@Nullable RPGPlayer rpg) {
+        // recipe.getUpgradeData().upgrade(recipe.getMMOItem());
+        // recipe.getUpgraded().setItemMeta(recipe.getMMOItem().newBuilder().build().getItemMeta());
+        if (rpg != null)
+            return item.generate(rpg);
+        return item.generate(null);
+    }
+
+    @Override
+    public ItemStack getPreviewItemStack() {
+        return item.getPreview();
+    }
+
     public ConfigMMOItem getItem() {
         return item;
     }
@@ -53,15 +69,26 @@ public class UpgradingRecipe extends TimedRecipe {
         if (event.isCancelled())
             return false;
 
-        // Update item
-        recipe.getUpgradeData().upgrade(recipe.getMMOItem());
-        recipe.getUpgraded().setItemMeta(recipe.getMMOItem().newBuilder().build().getItemMeta());
+        if (isInstant()) {
+            // Update item
+            recipe.getUpgradeData().upgrade(recipe.getMMOItem());
+            recipe.getUpgraded().setItemMeta(recipe.getMMOItem().newBuilder().build().getItemMeta());
 
-        Message.UPGRADE_SUCCESS.format(ChatColor.YELLOW, "#item#", MMOUtils.getDisplayName(recipe.getUpgraded())).send(data.getPlayer());
+            Message.UPGRADE_SUCCESS.format(ChatColor.YELLOW, "#item#", MMOUtils.getDisplayName(recipe.getUpgraded())).send(data.getPlayer());
+
+            // Play sound
+            if (!hasOption(RecipeOption.SILENT_CRAFT))
+                data.getPlayer().playSound(data.getPlayer().getLocation(), station.getSound(), 1, 1);
+
+            // Recipe used successfully
+            return true;
+        }
 
         // Play sound
         if (!hasOption(RecipeOption.SILENT_CRAFT))
             data.getPlayer().playSound(data.getPlayer().getLocation(), station.getSound(), 1, 1);
+
+        data.getCrafting().getQueue(station).add(this);
 
         // Recipe used successfully
         return true;

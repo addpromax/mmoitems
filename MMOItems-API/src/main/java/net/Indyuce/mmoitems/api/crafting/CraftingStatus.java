@@ -2,8 +2,8 @@ package net.Indyuce.mmoitems.api.crafting;
 
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.crafting.CraftingStatus.CraftingQueue.CraftingInfo;
-import net.Indyuce.mmoitems.api.crafting.recipe.CraftingRecipe;
 import net.Indyuce.mmoitems.api.crafting.recipe.Recipe;
+import net.Indyuce.mmoitems.api.crafting.recipe.TimedRecipe;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -45,13 +45,13 @@ public class CraftingStatus {
 				}
 
 				Recipe recipe = station.getRecipe(recipeId);
-				if (!(recipe instanceof CraftingRecipe)) {
+				if (!(recipe instanceof TimedRecipe)) {
 					MMOItems.plugin.getLogger().log(Level.WARNING, "An error occurred while trying to load crafting station recipe data of '"
 							+ name + "': " + "recipe '" + recipe.getId() + "' is not a CRAFTING recipe.");
 					continue;
 				}
 
-				queue.add((CraftingRecipe) recipe, config.getLong(stationId + "." + recipeConfigId + ".started"),
+				queue.add((TimedRecipe) recipe, config.getLong(stationId + "." + recipeConfigId + ".started"),
 						config.getLong(stationId + "." + recipeConfigId + ".delay"));
 			}
 		}
@@ -110,12 +110,12 @@ public class CraftingStatus {
 		 * when adding a crafting recipe, the delay is the actual crafting time
 		 * PLUS the delay left for the previous item since it's a queue.
 		 */
-		public void add(CraftingRecipe recipe) {
+		public void add(TimedRecipe recipe) {
 			add(recipe, System.currentTimeMillis(),
 					(crafts.size() == 0 ? 0 : crafts.get(crafts.size() - 1).getLeft()) + (long) recipe.getCraftingTime() * 1000);
 		}
 
-		private void add(CraftingRecipe recipe, long started, long delay) {
+		private void add(TimedRecipe recipe, long started, long delay) {
 			crafts.add(new CraftingInfo(recipe, started, delay));
 		}
 
@@ -130,7 +130,7 @@ public class CraftingStatus {
 			private final long started;
 			private long delay;
 
-			private CraftingInfo(CraftingRecipe recipe, long started, long delay) {
+			private CraftingInfo(TimedRecipe recipe, long started, long delay) {
 				this.recipe = recipe.getId();
 				this.started = started;
 				this.delay = delay;
@@ -145,8 +145,8 @@ public class CraftingStatus {
 			 *         IDs instead of a direct reference to the crafting recipe
 			 */
 			@Deprecated
-			public CraftingRecipe getRecipe() {
-				return (CraftingRecipe) getStation().getRecipe(recipe);
+			public TimedRecipe getRecipe() {
+				return (TimedRecipe) getStation().getRecipe(recipe);
 			}
 
 			public boolean isReady() {
