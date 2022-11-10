@@ -25,7 +25,6 @@ public class ConfigMMOItem {
 		Validate.isTrue(config.contains("type") && config.contains("id"), "Config must contain type and ID");
 		Type type = MMOItems.plugin.getTypes().getOrThrow(config.getString("type").toUpperCase().replace("-", "_").replace(" ", "_"));
 		template = MMOItems.plugin.getTemplates().getTemplateOrThrow(type, config.getString("id"));
-		preview = template.newBuilder(0,null,true).build().newBuilder().build();
 
 		this.amount = Math.max(1, config.getInt("amount"));
 	}
