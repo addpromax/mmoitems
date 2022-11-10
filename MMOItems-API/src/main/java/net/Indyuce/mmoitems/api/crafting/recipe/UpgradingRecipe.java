@@ -2,7 +2,6 @@ package net.Indyuce.mmoitems.api.crafting.recipe;
 
 import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmoitems.ItemStats;
-import net.Indyuce.mmoitems.util.MMOUtils;
 import net.Indyuce.mmoitems.api.crafting.ConfigMMOItem;
 import net.Indyuce.mmoitems.api.crafting.CraftingStation;
 import net.Indyuce.mmoitems.api.crafting.ingredient.CheckedIngredient;
@@ -15,6 +14,7 @@ import net.Indyuce.mmoitems.api.item.util.ConfigItems;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.util.message.Message;
 import net.Indyuce.mmoitems.stat.data.UpgradeData;
+import net.Indyuce.mmoitems.util.MMOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -69,7 +69,6 @@ public class UpgradingRecipe extends TimedRecipe {
 
     @Override
     public boolean canUse(PlayerData data, IngredientInventory inv, CheckedRecipe uncastRecipe, CraftingStation station) {
-
         // Find the item which should be upgraded
         CheckedIngredient upgraded = inv.findMatching(ingredient);
         if (!upgraded.isHad()) {
@@ -99,6 +98,9 @@ public class UpgradingRecipe extends TimedRecipe {
             return false;
         }
 
+        if (!canBeQueued(station, data))
+            return false;
+
         // Checks for failure
         if (random.nextDouble() > recipe.getUpgradeData().getSuccess()) {
 
@@ -107,7 +109,7 @@ public class UpgradingRecipe extends TimedRecipe {
                 recipe.getUpgraded().setAmount(recipe.getUpgraded().getAmount() - 1);
 
             // Take away ingredients
-            recipe.getIngredients().forEach(ingredient -> ingredient.takeAway());
+            recipe.getIngredients().forEach(CheckedIngredient::takeAway);
 
             if (!data.isOnline())
                 return false;
