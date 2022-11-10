@@ -23,134 +23,135 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Random;
 
-public class UpgradingRecipe extends Recipe {
-	private final ConfigMMOItem item;
-	private final Ingredient ingredient;
+public class UpgradingRecipe extends TimedRecipe {
 
-	private static final Random random = new Random();
+    private final ConfigMMOItem item;
+    private final Ingredient ingredient;
 
-	public UpgradingRecipe(ConfigurationSection config) {
-		super(config);
+    private static final Random random = new Random();
 
-		// load item being upgraded.
-		item = new ConfigMMOItem(config.getConfigurationSection("item"));
-		ingredient = new MMOItemIngredient(item);
-	}
+    public UpgradingRecipe(ConfigurationSection config) {
+        super(config);
 
-	public ConfigMMOItem getItem() {
-		return item;
-	}
+        // load item being upgraded.
+        item = new ConfigMMOItem(config.getConfigurationSection("item"));
+        ingredient = new MMOItemIngredient(item);
+    }
 
-	@Override
-	public boolean whenUsed(PlayerData data, IngredientInventory inv, CheckedRecipe castRecipe, CraftingStation station) {
-		if (!data.isOnline())
-			return false;
+    public ConfigMMOItem getItem() {
+        return item;
+    }
 
-		CheckedUpgradingRecipe recipe = (CheckedUpgradingRecipe) castRecipe;
-		PlayerUseCraftingStationEvent event = new PlayerUseCraftingStationEvent(data, station, recipe);
-		Bukkit.getPluginManager().callEvent(event);
-		if (event.isCancelled())
-			return false;
+    @Override
+    public boolean whenUsed(PlayerData data, IngredientInventory inv, CheckedRecipe castRecipe, CraftingStation station) {
+        if (!data.isOnline())
+            return false;
 
-		// Update item
-		recipe.getUpgradeData().upgrade(recipe.getMMOItem());
-		recipe.getUpgraded().setItemMeta(recipe.getMMOItem().newBuilder().build().getItemMeta());
+        CheckedUpgradingRecipe recipe = (CheckedUpgradingRecipe) castRecipe;
+        PlayerUseCraftingStationEvent event = new PlayerUseCraftingStationEvent(data, station, recipe);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled())
+            return false;
 
-		Message.UPGRADE_SUCCESS.format(ChatColor.YELLOW, "#item#", MMOUtils.getDisplayName(recipe.getUpgraded())).send(data.getPlayer());
+        // Update item
+        recipe.getUpgradeData().upgrade(recipe.getMMOItem());
+        recipe.getUpgraded().setItemMeta(recipe.getMMOItem().newBuilder().build().getItemMeta());
 
-		// Play sound
-		if (!hasOption(RecipeOption.SILENT_CRAFT))
-			data.getPlayer().playSound(data.getPlayer().getLocation(), station.getSound(), 1, 1);
+        Message.UPGRADE_SUCCESS.format(ChatColor.YELLOW, "#item#", MMOUtils.getDisplayName(recipe.getUpgraded())).send(data.getPlayer());
 
-		// Recipe used successfully
-		return true;
-	}
+        // Play sound
+        if (!hasOption(RecipeOption.SILENT_CRAFT))
+            data.getPlayer().playSound(data.getPlayer().getLocation(), station.getSound(), 1, 1);
 
-	@Override
-	public boolean canUse(PlayerData data, IngredientInventory inv, CheckedRecipe uncastRecipe, CraftingStation station) {
+        // Recipe used successfully
+        return true;
+    }
 
-		// Find the item which should be upgraded
-		CheckedIngredient upgraded = inv.findMatching(ingredient);
-		if (!upgraded.isHad()) {
-			if (!data.isOnline())
-				return false;
+    @Override
+    public boolean canUse(PlayerData data, IngredientInventory inv, CheckedRecipe uncastRecipe, CraftingStation station) {
 
-			Message.NOT_HAVE_ITEM_UPGRADE.format(ChatColor.RED).send(data.getPlayer());
-			data.getPlayer().playSound(data.getPlayer().getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
-			return false;
-		}
+        // Find the item which should be upgraded
+        CheckedIngredient upgraded = inv.findMatching(ingredient);
+        if (!upgraded.isHad()) {
+            if (!data.isOnline())
+                return false;
 
-		// Finds the item that will be upgraded
-		NBTItem firstItem = NBTItem.get(upgraded.getFound().stream().findFirst().get().getItem());
+            Message.NOT_HAVE_ITEM_UPGRADE.format(ChatColor.RED).send(data.getPlayer());
+            data.getPlayer().playSound(data.getPlayer().getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
+            return false;
+        }
 
-		// Checks if upgraded item DOES has an upgrade template
-		CheckedUpgradingRecipe recipe = (CheckedUpgradingRecipe) uncastRecipe;
-		if (!(recipe.mmoitem = new LiveMMOItem(firstItem)).hasData(ItemStats.UPGRADE))
-			return false;
+        // Finds the item that will be upgraded
+        NBTItem firstItem = NBTItem.get(upgraded.getFound().stream().findFirst().get().getItem());
 
-		// Checks for max upgrade level
-		if (!(recipe.upgradeData = (UpgradeData) recipe.getMMOItem().getData(ItemStats.UPGRADE)).canLevelUp()) {
-			if (!data.isOnline())
-				return false;
+        // Checks if upgraded item DOES has an upgrade template
+        CheckedUpgradingRecipe recipe = (CheckedUpgradingRecipe) uncastRecipe;
+        if (!(recipe.mmoitem = new LiveMMOItem(firstItem)).hasData(ItemStats.UPGRADE))
+            return false;
 
-			Message.MAX_UPGRADES_HIT.format(ChatColor.RED).send(data.getPlayer());
-			data.getPlayer().playSound(data.getPlayer().getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
-			return false;
-		}
+        // Checks for max upgrade level
+        if (!(recipe.upgradeData = (UpgradeData) recipe.getMMOItem().getData(ItemStats.UPGRADE)).canLevelUp()) {
+            if (!data.isOnline())
+                return false;
 
-		// Checks for failure
-		if (random.nextDouble() > recipe.getUpgradeData().getSuccess()) {
+            Message.MAX_UPGRADES_HIT.format(ChatColor.RED).send(data.getPlayer());
+            data.getPlayer().playSound(data.getPlayer().getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 2);
+            return false;
+        }
 
-			// Should the item be destroyed when failing to upgrade
-			if (recipe.getUpgradeData().destroysOnFail())
-				recipe.getUpgraded().setAmount(recipe.getUpgraded().getAmount() - 1);
+        // Checks for failure
+        if (random.nextDouble() > recipe.getUpgradeData().getSuccess()) {
 
-			// Take away ingredients
-			recipe.getIngredients().forEach(ingredient -> ingredient.takeAway());
+            // Should the item be destroyed when failing to upgrade
+            if (recipe.getUpgradeData().destroysOnFail())
+                recipe.getUpgraded().setAmount(recipe.getUpgraded().getAmount() - 1);
 
-			if (!data.isOnline())
-				return false;
+            // Take away ingredients
+            recipe.getIngredients().forEach(ingredient -> ingredient.takeAway());
 
-			Message.UPGRADE_FAIL_STATION.format(ChatColor.RED).send(data.getPlayer());
-			data.getPlayer().playSound(data.getPlayer().getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 2);
-			return false;
-		}
+            if (!data.isOnline())
+                return false;
 
-		return true;
-	}
+            Message.UPGRADE_FAIL_STATION.format(ChatColor.RED).send(data.getPlayer());
+            data.getPlayer().playSound(data.getPlayer().getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 2);
+            return false;
+        }
 
-	@Override
-	public ItemStack display(CheckedRecipe recipe) {
-		return ConfigItems.UPGRADING_RECIPE_DISPLAY.newBuilder(recipe).build();
-	}
+        return true;
+    }
 
-	@Override
-	public CheckedRecipe evaluateRecipe(PlayerData data, IngredientInventory inv) {
-		return new CheckedUpgradingRecipe(this, data, inv);
-	}
+    @Override
+    public ItemStack display(CheckedRecipe recipe) {
+        return ConfigItems.UPGRADING_RECIPE_DISPLAY.newBuilder(recipe).build();
+    }
 
-	/**
-	 * Used to cache the LiveMMOItem instance and UpgradeData
-	 * which take a little performance to calculate.
-	 */
-	public class CheckedUpgradingRecipe extends CheckedRecipe {
-		private LiveMMOItem mmoitem;
-		private UpgradeData upgradeData;
+    @Override
+    public CheckedRecipe evaluateRecipe(PlayerData data, IngredientInventory inv) {
+        return new CheckedUpgradingRecipe(this, data, inv);
+    }
 
-		public CheckedUpgradingRecipe(Recipe recipe, PlayerData data, IngredientInventory inv) {
-			super(recipe, data, inv);
-		}
+    /**
+     * Used to cache the LiveMMOItem instance and UpgradeData
+     * which take a little performance to calculate.
+     */
+    public class CheckedUpgradingRecipe extends CheckedRecipe {
+        private LiveMMOItem mmoitem;
+        private UpgradeData upgradeData;
 
-		public UpgradeData getUpgradeData() {
-			return upgradeData;
-		}
+        public CheckedUpgradingRecipe(Recipe recipe, PlayerData data, IngredientInventory inv) {
+            super(recipe, data, inv);
+        }
 
-		public LiveMMOItem getMMOItem() {
-			return mmoitem;
-		}
+        public UpgradeData getUpgradeData() {
+            return upgradeData;
+        }
 
-		public ItemStack getUpgraded() {
-			return mmoitem.getNBT().getItem();
-		}
-	}
+        public LiveMMOItem getMMOItem() {
+            return mmoitem;
+        }
+
+        public ItemStack getUpgraded() {
+            return mmoitem.getNBT().getItem();
+        }
+    }
 }

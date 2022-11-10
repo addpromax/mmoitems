@@ -29,13 +29,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class CraftingRecipe extends Recipe {
+public class CraftingRecipe extends TimedRecipe {
 	@NotNull public static final String UNSPECIFIED = "N/A";
 
 	public CraftingRecipe(@NotNull ConfigurationSection config) throws IllegalArgumentException {
 		super(config);
 
-		craftingTime = config.getDouble("crafting-time");
 
 		// Legacy loading
 		String uiFilter = config.getString("output.item", UNSPECIFIED);
@@ -115,14 +114,6 @@ public class CraftingRecipe extends Recipe {
 			identifiedMMO = new ConfigMMOItem(template, output.getAmount(1));
 		}
 	}
-
-	/*
-	 * There can't be any crafting time for upgrading recipes since there is no
-	 * way to save an MMOItem in the config file TODO save as ItemStack
-	 */
-	private final double craftingTime;
-	public double getCraftingTime() { return craftingTime; }
-	public boolean isInstant() { return craftingTime <= 0; }
 
 	/**
 	 * @return The item specified by the player that will be produced by this recipe.
