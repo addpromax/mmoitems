@@ -38,6 +38,7 @@ public class UpgradingRecipe extends TimedRecipe {
         // load item being upgraded.
         item = new ConfigMMOItem(config.getConfigurationSection("item"));
         ingredient = new MMOItemIngredient(item);
+        this.addIngredient(new MMOItemIngredient(item));
     }
 
     @Override
@@ -70,6 +71,8 @@ public class UpgradingRecipe extends TimedRecipe {
             return false;
 
         if (isInstant()) {
+            recipe.getRecipe().whenClaimed().forEach(trigger -> trigger.whenCrafting(data));
+
             // Update item
             recipe.getUpgradeData().upgrade(recipe.getMMOItem());
             recipe.getUpgraded().setItemMeta(recipe.getMMOItem().newBuilder().build().getItemMeta());
@@ -170,6 +173,7 @@ public class UpgradingRecipe extends TimedRecipe {
         public CheckedUpgradingRecipe(Recipe recipe, PlayerData data, IngredientInventory inv) {
             super(recipe, data, inv);
         }
+
 
         public UpgradeData getUpgradeData() {
             return upgradeData;

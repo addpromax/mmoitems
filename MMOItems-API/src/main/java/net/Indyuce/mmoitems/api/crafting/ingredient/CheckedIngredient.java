@@ -59,7 +59,6 @@ public class CheckedIngredient {
      *               It most likely matches ingredient.getAmount()
      */
     public void reduceItem(int amount) {
-
         Iterator<PlayerIngredient> iterator = found.iterator();
         while (iterator.hasNext() && amount > 0) {
             ItemStack item = iterator.next().getItem();

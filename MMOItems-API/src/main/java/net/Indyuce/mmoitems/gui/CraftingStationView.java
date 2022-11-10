@@ -3,11 +3,13 @@ package net.Indyuce.mmoitems.gui;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.api.util.SmartGive;
+import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.crafting.CraftingStation;
 import net.Indyuce.mmoitems.api.crafting.CraftingStatus.CraftingQueue;
 import net.Indyuce.mmoitems.api.crafting.CraftingStatus.CraftingQueue.CraftingInfo;
 import net.Indyuce.mmoitems.api.crafting.Layout;
+import net.Indyuce.mmoitems.api.crafting.ingredient.CheckedIngredient;
 import net.Indyuce.mmoitems.api.crafting.ingredient.Ingredient;
 import net.Indyuce.mmoitems.api.crafting.ingredient.inventory.IngredientInventory;
 import net.Indyuce.mmoitems.api.crafting.recipe.CheckedRecipe;
@@ -16,10 +18,10 @@ import net.Indyuce.mmoitems.api.crafting.recipe.TimedRecipe;
 import net.Indyuce.mmoitems.api.crafting.recipe.UpgradingRecipe;
 import net.Indyuce.mmoitems.api.event.PlayerUseCraftingStationEvent;
 import net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem;
-import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
 import net.Indyuce.mmoitems.api.item.util.ConfigItems;
 import net.Indyuce.mmoitems.api.util.message.Message;
 import net.Indyuce.mmoitems.listener.CustomSoundListener;
+import net.Indyuce.mmoitems.stat.data.UpgradeData;
 import net.Indyuce.mmoitems.util.MMOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -174,6 +176,7 @@ public class CraftingStationView extends PluginInventory {
             }
         }
 
+
         if (!(tag = item.getString("queueId")).isEmpty()) {
             CraftingInfo recipeInfo = playerData.getCrafting().getQueue(station).getCraft(UUID.fromString(tag));
             TimedRecipe recipe = recipeInfo.getRecipe();
@@ -200,17 +203,11 @@ public class CraftingStationView extends PluginInventory {
                     player.playSound(player.getLocation(), station.getSound(), 1, 1);
 
                 if (recipeInfo.getRecipe() instanceof UpgradingRecipe upgradingRecipe) {
-                    NBTItem item1 = MythicLib.plugin.getVersion().getWrapper().getNBTItem(event.getCurrentItem());
-                    String tag1 = item.getString("recipeId");
-                    if (!tag.isEmpty()) {
-                        UpgradingRecipe.CheckedUpgradingRecipe recipe1 = (UpgradingRecipe.CheckedUpgradingRecipe) getRecipe(tag);
-                        MMOItem item2 = new LiveMMOItem(item1);
-                        recipe1.getUpgradeData().upgrade(item2);
-                        recipe1.getUpgraded().setItemMeta(item2.newBuilder().build().getItemMeta());
-                        new SmartGive(player).give(item2.newBuilder().build());
-                        System.out.println("Upgraded item");
-                    } else
-                        System.out.println("No item");
+                    LiveMMOItem upgradedItem = new LiveMMOItem(item);
+                    ((UpgradeData) upgradedItem.getData(ItemStats.UPGRADE)).upgrade(upgradedItem);
+
+                    upgradedItem.getNBT().getItem().setItemMeta(upgradedItem.newBuilder().getMeta());
+                    new SmartGive(player).give(upgradedItem.newBuilder().build());
                 } else if (result != null)
                     new SmartGive(player).give(result);
 
@@ -261,7 +258,7 @@ public class CraftingStationView extends PluginInventory {
         }
 
         if (recipe.getRecipe().whenUsed(playerData, ingredients, recipe, station)) {
-            recipe.getIngredients().forEach(ingredient -> ingredient.takeAway());
+            recipe.getIngredients().forEach(CheckedIngredient::takeAway);
             recipe.getConditions().forEach(condition -> condition.getCondition().whenCrafting(playerData));
             recipe.getRecipe().whenUsed().forEach(trigger -> trigger.whenCrafting(playerData));
 
