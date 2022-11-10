@@ -195,13 +195,13 @@
             <version>master</version>
             <scope>provided</scope>
         </dependency>
-        <!-- AE Api -->
-        <dependency>
-            <groupId>n3kas</groupId>
-            <artifactId>ae.api</artifactId>
-            <version>5.7.6</version>
-            <scope>provided</scope>
-        </dependency>
+        <!-- AE Api  [Outdated] -->
+<!--        <dependency>-->
+<!--            <groupId>n3kas</groupId>-->
+<!--            <artifactId>ae.api</artifactId>-->
+<!--            <version>5.7.6</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
         <!-- BossShop -->
         <dependency>
             <groupId>org.black_ixx</groupId>

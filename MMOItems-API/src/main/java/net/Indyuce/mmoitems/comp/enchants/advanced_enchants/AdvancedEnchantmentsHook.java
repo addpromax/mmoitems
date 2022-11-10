@@ -16,7 +16,7 @@ public class AdvancedEnchantmentsHook implements Listener {
 
     @EventHandler
     public void onEnchantApply(EnchantApplyEvent event) {
-        NBTItem item = MythicLib.plugin.getVersion().getWrapper().getNBTItem(event.getItem());
+        NBTItem item = MythicLib.plugin.getVersion().getWrapper().getNBTItem(event.getItemStack());
         if (item.getBoolean("MMOITEMS_DISABLE_ADVANCED_ENCHANTS"))
             event.setCancelled(true);
     }
