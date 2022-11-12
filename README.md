@@ -8,7 +8,7 @@ Register the PhoenixDev repo
     <url>https://nexus.phoenixdvpt.fr/repository/maven-public/</url>
 </repository>
 ```
-And then add MMOItems-API as dependency
+And then add MMOItems-API as dependencyy
 ```
 <dependency>
     <groupId>net.Indyuce</groupId>
