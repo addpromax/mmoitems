@@ -36,22 +36,21 @@ public class RepairPowerPercent extends DoubleStat implements ConsumableItemInte
             return false;
 
         // Check repair reference
-        final Player player = playerData.getPlayer();
         final @Nullable String repairType1 = target.getString(REPAIR_TYPE_TAG);
         final @Nullable String repairType2 = target.getString(REPAIR_TYPE_TAG);
+        final Player player = playerData.getPlayer();
         if (!MMOUtils.checkReference(repairType1, repairType2)) {
             Message.UNABLE_TO_REPAIR.format(ChatColor.RED, "#item#", MMOUtils.getDisplayName(target.getItem())).send(player);
-            player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1.5f);
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1.5f);
             return false;
         }
 
         final boolean customWeapon = target.hasTag("MMOITEMS_DURABILITY");
         final double maxDurability = customWeapon ? target.getDouble("MMOITEMS_MAX_DURABILITY") : target.getItem().getType().getMaxDurability();
-        final int repairAmount = (int) (repairPower * maxDurability);
+        final int repairAmount = (int) (repairPower <= 1.0 ? repairPower : (repairPower / 100) * maxDurability);
 
         // Custom durability
         if (customWeapon) {
-
             final DurabilityItem durItem = new DurabilityItem(player, target);
             if (durItem.getDurability() < durItem.getMaxDurability()) {
                 target.getItem().setItemMeta(durItem.addDurability(repairAmount).toItem().getItemMeta());
@@ -59,8 +58,9 @@ public class RepairPowerPercent extends DoubleStat implements ConsumableItemInte
                         .format(ChatColor.YELLOW, "#item#", MMOUtils.getDisplayName(target.getItem()), "#amount#", String.valueOf(repairAmount))
                         .send(player);
                 CustomSoundListener.playConsumableSound(consumable.getItem(), player);
+                return true;
             }
-            return true;
+            return false;
         }
 
         // vanilla durability
