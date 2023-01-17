@@ -1,4 +1,4 @@
-package net.Indyuce.mmoitems.comp.inventory;
+package net.Indyuce.mmoitems.comp.inventory.model.impl;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.item.NBTItem;
@@ -6,6 +6,8 @@ import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.player.inventory.EquippedItem;
+import net.Indyuce.mmoitems.comp.inventory.model.SlotEquippedItem;
+import net.Indyuce.mmoitems.comp.inventory.model.PlayerInventory;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;

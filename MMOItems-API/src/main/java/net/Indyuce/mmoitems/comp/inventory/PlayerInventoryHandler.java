@@ -2,6 +2,7 @@ package net.Indyuce.mmoitems.comp.inventory;
 
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.player.inventory.EquippedItem;
+import net.Indyuce.mmoitems.comp.inventory.model.PlayerInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -83,17 +84,14 @@ public class PlayerInventoryHandler {
      */
     @NotNull
     public List<EquippedItem> getInventory(@NotNull Player player) {
-
         // Get and add lists from every registered inventories
         ArrayList<EquippedItem> cummulative = new ArrayList<>();
-
         // For every registered inventory
         for (PlayerInventory inv : registeredInventories) {
-
             // Get
             cummulative.addAll(inv.getInventory(player));
         }
-
+        Bukkit.broadcastMessage("Cummulative: " + cummulative.size() + " PlayerInventoryHandler#93");
         // Return thay result
         return cummulative;
     }

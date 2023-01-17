@@ -24,7 +24,11 @@ import net.Indyuce.mmoitems.comp.enchants.CrazyEnchantsStat;
 import net.Indyuce.mmoitems.comp.enchants.EnchantPlugin;
 import net.Indyuce.mmoitems.comp.enchants.MythicEnchantsSupport;
 import net.Indyuce.mmoitems.comp.enchants.advanced_enchants.AdvancedEnchantmentsHook;
-import net.Indyuce.mmoitems.comp.inventory.*;
+import net.Indyuce.mmoitems.comp.inventory.PlayerInventoryRepository;
+import net.Indyuce.mmoitems.comp.inventory.model.PlayerInventory;
+import net.Indyuce.mmoitems.comp.inventory.model.impl.DefaultPlayerInventory;
+import net.Indyuce.mmoitems.comp.inventory.model.impl.OrnamentPlayerInventory;
+import net.Indyuce.mmoitems.comp.inventory.model.impl.RPGInventoryHook;
 import net.Indyuce.mmoitems.comp.mmocore.MMOCoreMMOLoader;
 import net.Indyuce.mmoitems.comp.mmoinventory.MMOInventorySupport;
 import net.Indyuce.mmoitems.comp.mythicmobs.LootsplosionListener;
@@ -70,7 +74,7 @@ public class MMOItems extends JavaPlugin {
     private final LayoutManager layoutManager = new LayoutManager();
     private final TypeManager typeManager = new TypeManager();
     private final ItemManager itemManager = new ItemManager();
-    private final PlayerInventoryHandler inventory = new PlayerInventoryHandler();
+    private final PlayerInventoryRepository inventory = new PlayerInventoryRepository();
     private final List<EnchantPlugin<? extends Enchantment>> enchantPlugins = new ArrayList<>();
     private final StatManager statManager = new StatManager();
 
@@ -168,7 +172,7 @@ public class MMOItems extends JavaPlugin {
         dropTableManager = new DropTableManager();
         worldGenManager = new WorldGenManager();
         blockManager = new BlockManager();
-       statManager.reload(false);
+        statManager.reload(false);
 
 
         PluginUtils.hookDependencyIfPresent("Vault", u -> vaultSupport = new VaultSupport());
@@ -366,7 +370,7 @@ public class MMOItems extends JavaPlugin {
         return pluginUpdateManager;
     }
 
-    public PlayerInventoryHandler getInventory() {
+    public PlayerInventoryRepository getInventory() {
         return inventory;
     }
 

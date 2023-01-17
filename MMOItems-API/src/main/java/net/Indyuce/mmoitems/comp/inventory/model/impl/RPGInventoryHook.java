@@ -1,8 +1,9 @@
-package net.Indyuce.mmoitems.comp.inventory;
+package net.Indyuce.mmoitems.comp.inventory.model.impl;
 
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.player.inventory.EquippedItem;
+import net.Indyuce.mmoitems.comp.inventory.model.PlayerInventory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

@@ -1,4 +1,4 @@
-package net.Indyuce.mmoitems.comp.inventory;
+package net.Indyuce.mmoitems.comp.inventory.model;
 
 import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;

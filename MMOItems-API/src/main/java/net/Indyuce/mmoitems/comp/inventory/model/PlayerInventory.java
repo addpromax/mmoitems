@@ -1,4 +1,4 @@
-package net.Indyuce.mmoitems.comp.inventory;
+package net.Indyuce.mmoitems.comp.inventory.model;
 
 import java.util.List;
 

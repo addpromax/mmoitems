@@ -50,7 +50,7 @@ public class DeathDowngrading {
 
         // Make sure the equipped items list is up to date and retrieve it
         data.updateInventory();
-        final List<EquippedItem> equipped = data.getInventory().getEquipped();
+        final List<EquippedItem> equipped = data.getInventory().equipped();
         for (Iterator<EquippedItem> ite = equipped.iterator(); ite.hasNext(); ) {
             EquippedItem next = ite.next();
             if (next == null || !canDeathDowngrade(next.getCached()))

@@ -20,7 +20,7 @@ import net.Indyuce.mmoitems.api.interaction.Tool;
 import net.Indyuce.mmoitems.api.item.ItemReference;
 import net.Indyuce.mmoitems.api.item.mmoitem.VolatileMMOItem;
 import net.Indyuce.mmoitems.api.player.inventory.EquippedItem;
-import net.Indyuce.mmoitems.api.player.inventory.InventoryUpdateHandler;
+import net.Indyuce.mmoitems.comp.inventory.model.PlayerMMOInventory;
 import net.Indyuce.mmoitems.particle.api.ParticleRunnable;
 import net.Indyuce.mmoitems.stat.data.*;
 import net.milkbowl.vault.permission.Permission;
@@ -46,7 +46,7 @@ public class PlayerData {
     // Reloaded everytime the player reconnects in case of major change.
     private RPGPlayer rpgPlayer;
 
-    private final InventoryUpdateHandler inventory = new InventoryUpdateHandler(this);
+    private final PlayerMMOInventory inventory;
     private final CraftingStatus craftingStatus = new CraftingStatus();
 
     // Specific stat calculation TODO compress it in Map<ItemStat, DynamicStatData>
@@ -63,8 +63,9 @@ public class PlayerData {
 
     private PlayerData(@NotNull MMOPlayerData mmoData) {
         this.mmoData = mmoData;
-        rpgPlayer = MMOItems.plugin.getRPG().getInfo(this);
-        stats = new PlayerStats(this);
+        this.rpgPlayer = MMOItems.plugin.getRPG().getInfo(this);
+        this.stats = new PlayerStats(this);
+        this.inventory = new PlayerMMOInventory(this);
 
         load(new ConfigFile("/userdata", getUniqueId().toString()).getConfig());
     }
@@ -73,13 +74,14 @@ public class PlayerData {
         if (config.contains("crafting-queue"))
             craftingStatus.load(this, config.getConfigurationSection("crafting-queue"));
 
-        if (MMOItems.plugin.hasPermissions() && config.contains("permissions-from-items")) {
-            final Permission perms = MMOItems.plugin.getVault().getPermissions();
-            config.getStringList("permissions-from-items").forEach(perm -> {
-                if (perms.has(getPlayer(), perm))
-                    perms.playerRemove(getPlayer(), perm);
-            });
-        }
+        if (!MMOItems.plugin.hasPermissions() || !config.contains("permissions-from-items"))
+            return;
+        final Permission perms = MMOItems.plugin.getVault().getPermissions();
+        config.getStringList("permissions-from-items")
+                .stream()
+                .filter(s -> perms.has(getPlayer(), s))
+                .forEach(perm -> perms.playerRemove(getPlayer(), perm));
+
     }
 
     public void save(boolean clearForMap) {
@@ -170,7 +172,7 @@ public class PlayerData {
          * Very important, clear particle data AFTER canceling the runnable
          * otherwise it cannot cancel and the runnable keeps going (severe)
          */
-        inventory.getEquipped().clear();
+        inventory.content().clear();
         permanentEffects.clear();
         cancelRunnables();
         mmoData.getPassiveSkillMap().removeModifiers("MMOItemsItem");
@@ -193,7 +195,7 @@ public class PlayerData {
         encumbered = isEncumbered();
 
         // Find all the items the player can actually use
-        for (EquippedItem item : MMOItems.plugin.getInventory().getInventory(getPlayer())) {
+        for (EquippedItem item : MMOItems.plugin.getInventory().inventory(getPlayer())) {
             NBTItem nbtItem = item.getNBT();
             if (nbtItem.getItem() == null || nbtItem.getItem().getType() == Material.AIR)
                 continue;
@@ -206,13 +208,13 @@ public class PlayerData {
                 continue;
 
             item.cacheItem();
-            inventory.getEquipped().add(item);
+            inventory.addItem(item);
         }
 
         // Call Bukkit event
-        Bukkit.getPluginManager().callEvent(new RefreshInventoryEvent(inventory.getEquipped(), getPlayer(), this));
+        Bukkit.getPluginManager().callEvent(new RefreshInventoryEvent(inventory.equipped(), getPlayer(), this));
 
-        for (EquippedItem equipped : inventory.getEquipped()) {
+        for (EquippedItem equipped : inventory.equipped()) {
             final VolatileMMOItem item = equipped.getCached();
 
             // Abilities
@@ -256,17 +258,19 @@ public class PlayerData {
                 });
             }
         }
+        Bukkit.broadcastMessage("Equipped: " + inventory.equipped().size() + " PlayerData#262");
 
         // Calculate the player's item set
         final Map<ItemSet, Integer> itemSetCount = new HashMap<>();
-        for (EquippedItem equipped : inventory.getEquipped()) {
-            final String tag =  equipped.getCached().getNBT().getString("MMOITEMS_ITEM_SET");
+        for (EquippedItem equipped : inventory.equipped()) {
+            final String tag = equipped.getCached().getNBT().getString("MMOITEMS_ITEM_SET");
             final @Nullable ItemSet itemSet = MMOItems.plugin.getSets().get(tag);
             if (itemSet == null)
                 continue;
 
             itemSetCount.put(itemSet, itemSetCount.getOrDefault(itemSet, 0) + 1);
         }
+        Bukkit.broadcastMessage("Equipped: " + inventory.equipped().size() + " PlayerData#274");
 
         // Reset and compute item set bonuses
         setBonuses = null;
@@ -307,12 +311,14 @@ public class PlayerData {
         MMOItems.plugin.getRPG().refreshStats(this);
 
         // Actually update cached player inventory so the task doesn't infinitely loop
-        inventory.helmet = getPlayer().getInventory().getHelmet();
-        inventory.chestplate = getPlayer().getInventory().getChestplate();
-        inventory.leggings = getPlayer().getInventory().getLeggings();
-        inventory.boots = getPlayer().getInventory().getBoots();
-        inventory.hand = getPlayer().getInventory().getItemInMainHand();
-        inventory.offhand = getPlayer().getInventory().getItemInOffHand();
+//        inventory.helmet = getPlayer().getInventory().getHelmet();
+//        inventory.chestplate = getPlayer().getInventory().getChestplate();
+//        inventory.leggings = getPlayer().getInventory().getLeggings();
+//        inventory.boots = getPlayer().getInventory().getBoots();
+//        inventory.hand = getPlayer().getInventory().getItemInMainHand();
+//        inventory.offhand = getPlayer().getInventory().getItemInOffHand();
+
+        Bukkit.broadcastMessage("Equipped: " + inventory.equipped().size() + " PlayerData#322");
     }
 
     public void updateStats() {
@@ -325,7 +331,7 @@ public class PlayerData {
             getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 1, true, false));
     }
 
-    public InventoryUpdateHandler getInventory() {
+    public PlayerMMOInventory getInventory() {
         return inventory;
     }
 
