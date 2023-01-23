@@ -34,6 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -321,8 +322,7 @@ public class PlayerData {
         Bukkit.broadcastMessage("Equipped: " + inventory.equipped().size() + " PlayerData#322");
     }
 
-    public void updateStats() {
-
+    public void updateStats() {1
         // Permanent effects
         permanentEffects.values().forEach(effect -> getPlayer().addPotionEffect(effect));
 
@@ -337,6 +337,16 @@ public class PlayerData {
 
     public SetBonuses getSetBonuses() {
         return setBonuses;
+    }
+
+    @ApiStatus.Internal
+    public void resetSetBonuses() {
+        setBonuses = null;
+    }
+
+    @ApiStatus.Internal
+    public void setSetBonuses(@NotNull SetBonuses setBonuses) {
+        this.setBonuses = setBonuses;
     }
 
     public boolean hasSetBonuses() {
@@ -355,6 +365,7 @@ public class PlayerData {
         return permanentEffects.values();
     }
 
+    @ApiStatus.Internal
     public Map<PotionEffectType, PotionEffect> getPermanentPotionEffectsMap() {
         return permanentEffects;
     }
@@ -410,18 +421,22 @@ public class PlayerData {
         return mmoData.getCooldownMap().getInfo(ref).getRemaining() / 1000d;
     }
 
+    @ApiStatus.Internal
     public @NotNull Set<ParticleRunnable> getItemParticles() {
         return itemParticles;
     }
 
+    @ApiStatus.Internal
     public @Nullable ParticleRunnable getOverridingItemParticles() {
         return overridingItemParticles;
     }
 
+    @ApiStatus.Internal
     public void resetOverridingItemParticles() {
         overridingItemParticles = null;
     }
 
+    @ApiStatus.Internal
     public @NotNull Set<String> permissions() {
         return permissions;
     }
