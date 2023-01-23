@@ -322,7 +322,7 @@ public class PlayerData {
         Bukkit.broadcastMessage("Equipped: " + inventory.equipped().size() + " PlayerData#322");
     }
 
-    public void updateStats() {1
+    public void updateStats() {
         // Permanent effects
         permanentEffects.values().forEach(effect -> getPlayer().addPotionEffect(effect));
 

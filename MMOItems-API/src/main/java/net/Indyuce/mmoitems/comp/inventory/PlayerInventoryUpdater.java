@@ -18,10 +18,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * mmoitems
@@ -34,6 +31,7 @@ public class PlayerInventoryUpdater implements Runnable {
     private final PlayerData data;
     private final Map<Integer, Integer> lastHashCodes = new HashMap<>();
     private final Map<Integer, SlotEquippedItem> CACHE = new HashMap<>();
+    private final Map<Integer, List<UUID>> MODIFIERS_CACHE = new HashMap<>();
 
     private boolean running;
 
@@ -70,9 +68,9 @@ public class PlayerInventoryUpdater implements Runnable {
                     Bukkit.getPluginManager().callEvent(new MMOItemEquipEvent(currentHashcode, newHashcode, oldItem, eItem));
                     MMOItems.log("Calling item equip event for slot: " + eItem.getSlotNumber() + " with hashcodes: " + currentHashcode + " -> " + newHashcode);
 
-                    this.removeStats(oldItem);
+                    this.removeStats(oldItem, currentHashcode);
 
-                    this.addStats(eItem);
+                    this.addStats(eItem, newHashcode);
                 });
 
         // Refresh item sets
@@ -115,7 +113,7 @@ public class PlayerInventoryUpdater implements Runnable {
      *
      * @param oldItem The old item
      */
-    private void removeStats(@Nullable SlotEquippedItem oldItem) {
+    private void removeStats(@Nullable SlotEquippedItem oldItem, int hashcode) {
         // Remove all old item attributes & effects
         if (oldItem == null || isEmpty(oldItem))
             return;
@@ -169,16 +167,12 @@ public class PlayerInventoryUpdater implements Runnable {
         // Abilities
         // TODO: find a solution for that:
         // Idea 1: cache ability uuid and remove it from the map
-//                        if (mmoItem.hasData(ItemStats.ABILITIES)) {
-//                            ModifierSource modSource = oldItem.getCached().getType().getModifierSource();
-//                            ((AbilityListData) mmoItem.getData(ItemStats.ABILITIES))
-//                                    .getAbilities()
-//                                    .forEach(abilityData -> this.data.getMMOPlayerData()
-//                                            .getPassiveSkillMap()
-//                                            .getModifiers()
-//                                            .removeIf(passiveSkill -> passiveSkill.getSource().equals(modSource)
-//                                                    && passiveSkill.getType().equals(abilityData.getTrigger())));
-//                        }
+        if (mmoItem.hasData(ItemStats.ABILITIES))
+            MODIFIERS_CACHE.getOrDefault(hashcode, Collections.emptyList())
+                    .forEach(uuid -> this.data.getMMOPlayerData()
+                            .getPassiveSkillMap()
+                            .getModifiers()
+                            .removeIf(passiveSkill -> passiveSkill.getUniqueId().equals(uuid)));
     }
 
     /**
@@ -186,7 +180,7 @@ public class PlayerInventoryUpdater implements Runnable {
      *
      * @param eItem The new item
      */
-    private void addStats(@NotNull SlotEquippedItem eItem) {
+    private void addStats(@NotNull SlotEquippedItem eItem, int hashcode) {
         MMOItems.log("Adding new item attributes & effects");
 
         // Cache new item hashcode & item
@@ -221,9 +215,13 @@ public class PlayerInventoryUpdater implements Runnable {
         MMOItems.log("Adding abilities");
         if (mmoItem.hasData(ItemStats.ABILITIES)) {
             for (AbilityData abilityData : ((AbilityListData) mmoItem.getData(ItemStats.ABILITIES)).getAbilities()) {
+
                 MMOItems.log("Ability found: " + abilityData.getAbility().getName());
                 ModifierSource modSource = eItem.getCached().getType().getModifierSource();
-                this.data.getMMOPlayerData().getPassiveSkillMap().addModifier(new PassiveSkill("MMOItemsItem", abilityData, equipmentSlot, modSource));
+                PassiveSkill skill = this.data.getMMOPlayerData()
+                        .getPassiveSkillMap()
+                        .addModifier(new PassiveSkill("MMOItemsItem", abilityData, equipmentSlot, modSource));
+                MODIFIERS_CACHE.computeIfAbsent(hashcode, i -> new ArrayList<>()).add(skill.getUniqueId());
                 MMOItems.log("Ability added: " + abilityData.getTrigger());
             }
         } else
