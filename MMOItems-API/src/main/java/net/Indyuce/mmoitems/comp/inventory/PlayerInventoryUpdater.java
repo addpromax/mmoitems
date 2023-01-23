@@ -61,9 +61,11 @@ public class PlayerInventoryUpdater implements Runnable {
 
                     // Call item equip event
                     Bukkit.getPluginManager().callEvent(new MMOItemEquipEvent(currentHashcode, newHashcode, oldItem, eItem));
+                    MMOItems.log("Calling item equip event");
 
                     // Remove all old item attributes & effects
                     if (oldItem != null && !isEmpty(oldItem)) {
+                        MMOItems.log("Removing old item attributes & effects");
                         final MMOItem mmoItem = oldItem.getCached().clone();
 
                         // Potion effects
@@ -124,8 +126,10 @@ public class PlayerInventoryUpdater implements Runnable {
                     }
 
                     // Check if the new item is empty
-                    if (isEmpty(eItem))
+                    if (isEmpty(eItem)) {
+                        MMOItems.log("New item is empty");
                         return;
+                    }
 
                     // Check if item is legal
                     if (!eItem.isPlacementLegal() || !this.data.getRPG().canUse(eItem.getNBT(), false, false)) {
@@ -157,8 +161,10 @@ public class PlayerInventoryUpdater implements Runnable {
 
                     // Modifier application rules
                     final ModifierSource source = mmoItem.getType().getModifierSource();
-                    if (!EquipmentSlot.MAIN_HAND.isCompatible(source, equipmentSlot))
+                    if (!EquipmentSlot.MAIN_HAND.isCompatible(source, equipmentSlot)) {
+                        MMOItems.log("Modifier source is not compatible with equipment slot");
                         return;
+                    }
 
                     // Apply permanent potion effects
                     if (mmoItem.hasData(ItemStats.PERM_EFFECTS))
@@ -178,10 +184,6 @@ public class PlayerInventoryUpdater implements Runnable {
                                 .peek(s -> MMOItems.log("Perm added: " + s))
                                 .forEach(perm -> perms.playerAdd(this.data.getPlayer(), perm));
                     }
-
-
-
-
                 });
 
         // TODO: Call inventory refresh event
