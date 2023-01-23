@@ -1,8 +1,10 @@
 package net.Indyuce.mmoitems.comp.inventory.model;
 
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
+import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.player.inventory.EquippedItem;
+import net.Indyuce.mmoitems.comp.inventory.PlayerInventoryUpdater;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -16,10 +18,13 @@ import java.util.*;
 public class PlayerMMOInventory {
 
     private final UUID uniqueId;
+    private final PlayerData data;
     private final Map<EquippedItem, Integer> content = new HashMap<>();
 
     public PlayerMMOInventory(@NotNull PlayerData data) {
         this.uniqueId = data.getUniqueId();
+        this.data = data;
+        this.updater = new PlayerInventoryUpdater(data);
     }
 
     public void addItem(@NotNull EquippedItem item) {
@@ -64,5 +69,18 @@ public class PlayerMMOInventory {
     @Override
     public int hashCode() {
         return Objects.hash(uniqueId, content.keySet());
+    }
+
+    // Old weird code
+    @Deprecated
+    public void scheduleUpdate() {
+        MMOItems.log("PlayerMMOInventory#scheduleUpdate called!");
+    }
+
+    private final PlayerInventoryUpdater updater;
+    @Deprecated
+    public void updateCheck(){
+        this.updater.run();
+        // MMOItems.log("PlayerMMOInventory#updateCheck called!");
     }
 }

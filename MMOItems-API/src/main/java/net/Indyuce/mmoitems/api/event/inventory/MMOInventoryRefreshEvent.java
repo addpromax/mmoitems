@@ -1,4 +1,4 @@
-package net.Indyuce.mmoitems.api.event;
+package net.Indyuce.mmoitems.api.event.inventory;
 
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.player.inventory.EquippedItem;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class RefreshInventoryEvent extends Event {
+public class MMOInventoryRefreshEvent extends Event {
 
     @NotNull final List<EquippedItem> itemsToEquip;
     @NotNull public List<EquippedItem> getItemsToEquip() { return itemsToEquip; }
@@ -27,7 +27,7 @@ public class RefreshInventoryEvent extends Event {
     @NotNull final Player player;
     @NotNull final PlayerData playerData;
 
-    public RefreshInventoryEvent(@NotNull List<EquippedItem> itemsToEquip, @NotNull Player player, @NotNull PlayerData playerData) {
+    public MMOInventoryRefreshEvent(@NotNull List<EquippedItem> itemsToEquip, @NotNull Player player, @NotNull PlayerData playerData) {
         this.itemsToEquip = itemsToEquip;
         this.player = player;
         this.playerData = playerData;

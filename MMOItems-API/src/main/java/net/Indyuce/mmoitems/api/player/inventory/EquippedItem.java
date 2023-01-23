@@ -64,7 +64,6 @@ public abstract class EquippedItem {
      * @return If item placement is legal
      */
     public boolean isPlacementLegal() {
-
         // Vanilla items are ignored
         final @Nullable String typeFormat = item.getString("MMOITEMS_ITEM_TYPE");
         if (typeFormat == null)

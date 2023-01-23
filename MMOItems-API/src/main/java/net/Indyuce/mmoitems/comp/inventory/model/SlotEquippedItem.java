@@ -63,4 +63,31 @@ public class SlotEquippedItem extends EquippedItem {
                 break;
         }
     }
+
+    public ItemStack getItem() {
+        switch (getSlotNumber()) {
+            case -106:
+                return getPlayer().getInventory().getItemInOffHand();
+            case -7:
+                return getPlayer().getInventory().getItemInMainHand();
+            case 103:
+                return getPlayer().getInventory().getHelmet();
+            case 102:
+                return getPlayer().getInventory().getChestplate();
+            case 101:
+                return getPlayer().getInventory().getLeggings();
+            case 100:
+                return getPlayer().getInventory().getBoots();
+            default:
+                return getPlayer().getInventory().getItem(getSlotNumber());
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int accumulator = 0;
+        accumulator ^= getSlot().hashCode();
+        accumulator ^= getItem().hashCode();
+        return accumulator;
+    }
 }

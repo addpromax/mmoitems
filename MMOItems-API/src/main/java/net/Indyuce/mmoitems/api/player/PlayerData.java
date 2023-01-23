@@ -15,7 +15,7 @@ import net.Indyuce.mmoitems.api.ConfigFile;
 import net.Indyuce.mmoitems.api.ItemSet;
 import net.Indyuce.mmoitems.api.ItemSet.SetBonuses;
 import net.Indyuce.mmoitems.api.crafting.CraftingStatus;
-import net.Indyuce.mmoitems.api.event.RefreshInventoryEvent;
+import net.Indyuce.mmoitems.api.event.inventory.MMOInventoryRefreshEvent;
 import net.Indyuce.mmoitems.api.interaction.Tool;
 import net.Indyuce.mmoitems.api.item.ItemReference;
 import net.Indyuce.mmoitems.api.item.mmoitem.VolatileMMOItem;
@@ -212,7 +212,7 @@ public class PlayerData {
         }
 
         // Call Bukkit event
-        Bukkit.getPluginManager().callEvent(new RefreshInventoryEvent(inventory.equipped(), getPlayer(), this));
+        Bukkit.getPluginManager().callEvent(new MMOInventoryRefreshEvent(inventory.equipped(), getPlayer(), this));
 
         for (EquippedItem equipped : inventory.equipped()) {
             final VolatileMMOItem item = equipped.getCached();
@@ -355,6 +355,10 @@ public class PlayerData {
         return permanentEffects.values();
     }
 
+    public Map<PotionEffectType, PotionEffect> getPermanentPotionEffectsMap() {
+        return permanentEffects;
+    }
+
     public PlayerStats getStats() {
         return stats;
     }
@@ -404,6 +408,22 @@ public class PlayerData {
     @Deprecated
     public double getItemCooldown(ItemReference ref) {
         return mmoData.getCooldownMap().getInfo(ref).getRemaining() / 1000d;
+    }
+
+    public @NotNull Set<ParticleRunnable> getItemParticles() {
+        return itemParticles;
+    }
+
+    public @Nullable ParticleRunnable getOverridingItemParticles() {
+        return overridingItemParticles;
+    }
+
+    public void resetOverridingItemParticles() {
+        overridingItemParticles = null;
+    }
+
+    public @NotNull Set<String> permissions() {
+        return permissions;
     }
 
     @NotNull

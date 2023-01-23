@@ -64,7 +64,7 @@ public class PlayerStats {
             // The index of the mmoitem stat modifier being added
             int index = 0;
 
-            for (EquippedItem item : playerData.getInventory().getEquipped()) {
+            for (EquippedItem item : playerData.getInventory().equipped()) {
                 double value = item.getNBT().getStat(stat.getId());
 
                 if (value != 0) {
