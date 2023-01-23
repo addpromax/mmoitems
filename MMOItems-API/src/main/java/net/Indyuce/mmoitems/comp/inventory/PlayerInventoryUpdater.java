@@ -70,7 +70,10 @@ public class PlayerInventoryUpdater implements Runnable {
                         if (mmoItem.hasData(ItemStats.PERM_EFFECTS))
                             ((PotionEffectListData) mmoItem.getData(ItemStats.PERM_EFFECTS))
                                     .getEffects()
-                                    .forEach(effect -> this.data.getPermanentPotionEffectsMap().remove(effect.getType(), effect.toEffect()));
+                                    .forEach(effect -> {
+                                        this.data.getPermanentPotionEffectsMap().remove(effect.getType(), effect.toEffect());
+                                        MMOItems.log("Pot effect removed: " + effect.getType());
+                                    });
 
                         // Item particles
                         if (mmoItem.hasData(ItemStats.ITEM_PARTICLES)) {
@@ -81,11 +84,13 @@ public class PlayerInventoryUpdater implements Runnable {
                                         && this.data.getOverridingItemParticles().getParticleData().equals(particleData)) {
                                     this.data.getOverridingItemParticles().cancel();
                                     this.data.resetOverridingItemParticles();
+                                    MMOItems.log("Overriding particle removed: " + particleData.getType());
                                 }
                             } else {
                                 this.data.getItemParticles()
                                         .stream()
                                         .filter(particleRunnable -> particleRunnable.getParticleData().equals(particleData))
+                                        .peek(particleRunnable -> MMOItems.log("Particle removed: " + particleRunnable.getParticleData().getType()))
                                         .forEach(BukkitRunnable::cancel);
                                 this.data.getItemParticles().removeIf(BukkitRunnable::isCancelled);
                             }
@@ -97,6 +102,7 @@ public class PlayerInventoryUpdater implements Runnable {
                             List<String> permissions = new ArrayList<>(((StringListData) mmoItem.getData(ItemStats.GRANTED_PERMISSIONS)).getList());
                             permissions.forEach(s -> {
                                 this.data.permissions().remove(s);
+                                MMOItems.log("Perm removed: " + s);
                                 if (perms.has(this.data.getPlayer(), s))
                                     perms.playerRemove(this.data.getPlayer(), s);
                             });
@@ -145,6 +151,7 @@ public class PlayerInventoryUpdater implements Runnable {
                         for (AbilityData abilityData : ((AbilityListData) mmoItem.getData(ItemStats.ABILITIES)).getAbilities()) {
                             ModifierSource modSource = eItem.getCached().getType().getModifierSource();
                             this.data.getMMOPlayerData().getPassiveSkillMap().addModifier(new PassiveSkill("MMOItemsItem", abilityData, equipmentSlot, modSource));
+                            MMOItems.log("Ability added: " + abilityData.getTrigger());
                         }
                     }
 
@@ -159,6 +166,7 @@ public class PlayerInventoryUpdater implements Runnable {
                                 .getEffects()
                                 .stream()
                                 .filter(potionEffectData -> this.data.getPermanentPotionEffectAmplifier(potionEffectData.getType()) < potionEffectData.getLevel() - 1)
+                                .peek(potionEffectData -> MMOItems.log("Pot effect added: " + potionEffectData.getType()))
                                 .forEach(effect -> this.data.getPermanentPotionEffectsMap().put(effect.getType(), effect.toEffect()));
 
                     if (MMOItems.plugin.hasPermissions() && mmoItem.hasData(ItemStats.GRANTED_PERMISSIONS)) {
@@ -167,6 +175,7 @@ public class PlayerInventoryUpdater implements Runnable {
                         this.data.permissions()
                                 .stream()
                                 .filter(s -> !perms.has(this.data.getPlayer(), s))
+                                .peek(s -> MMOItems.log("Perm added: " + s))
                                 .forEach(perm -> perms.playerAdd(this.data.getPlayer(), perm));
                     }
 
