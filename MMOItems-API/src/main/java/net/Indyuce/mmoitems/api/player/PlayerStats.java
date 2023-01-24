@@ -78,6 +78,7 @@ public class PlayerStats {
                 }
             }
 
+
             // Finally run a stat update after all modifiers have been gathered in the packet
             packet.runUpdate();
         }

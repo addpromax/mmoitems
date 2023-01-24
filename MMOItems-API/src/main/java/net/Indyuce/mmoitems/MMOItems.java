@@ -40,6 +40,7 @@ import net.Indyuce.mmoitems.comp.rpg.McMMOHook;
 import net.Indyuce.mmoitems.comp.rpg.RPGHandler;
 import net.Indyuce.mmoitems.gui.PluginInventory;
 import net.Indyuce.mmoitems.gui.edition.recipe.RecipeBrowserGUI;
+import net.Indyuce.mmoitems.listener.InventoryListener;
 import net.Indyuce.mmoitems.manager.*;
 import net.Indyuce.mmoitems.util.PluginUtils;
 import org.apache.commons.lang.Validate;
@@ -187,6 +188,7 @@ public class MMOItems extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(entityManager, this);
         Bukkit.getPluginManager().registerEvents(dropTableManager, this);
+        Bukkit.getPluginManager().registerEvents(new InventoryListener(), this);
 
         // Load Dist module
         // Load MMOCore-Bukkit module
@@ -203,7 +205,7 @@ public class MMOItems extends JavaPlugin {
          */
         Bukkit.getScheduler().runTaskTimer(this, () -> {
             for (Player player : Bukkit.getOnlinePlayers())
-                PlayerData.get(player).getInventory().updateCheck();
+                PlayerData.get(player).getInventory().update();
         }, 100, getConfig().getInt("inventory-update-delay"));
 
         PluginUtils.isDependencyPresent("mcMMO", unused -> Bukkit.getPluginManager().registerEvents(new McMMONonRPGHook(), this));

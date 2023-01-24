@@ -47,6 +47,7 @@ public abstract class EquippedItem {
     public void cacheItem() {
         Validate.isTrue(cached == null, "MMOItem has already been cached");
         cached = new VolatileMMOItem(item);
+        MMOItems.log("Cached item " + cached.getType().getName() + " in slot " + slot);
     }
 
     public NBTItem getNBT() {

@@ -173,7 +173,7 @@ public class PlayerData {
          * Very important, clear particle data AFTER canceling the runnable
          * otherwise it cannot cancel and the runnable keeps going (severe)
          */
-        inventory.content().clear();
+        //inventory.content().clear();
         permanentEffects.clear();
         cancelRunnables();
         mmoData.getPassiveSkillMap().removeModifiers("MMOItemsItem");
@@ -434,6 +434,11 @@ public class PlayerData {
     @ApiStatus.Internal
     public void resetOverridingItemParticles() {
         overridingItemParticles = null;
+    }
+
+    @ApiStatus.Internal
+    public void setOverridingItemParticles(@NotNull ParticleRunnable overridingItemParticles) {
+        this.overridingItemParticles = overridingItemParticles;
     }
 
     @ApiStatus.Internal

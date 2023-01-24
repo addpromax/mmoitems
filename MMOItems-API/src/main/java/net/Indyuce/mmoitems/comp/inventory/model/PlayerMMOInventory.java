@@ -1,13 +1,15 @@
 package net.Indyuce.mmoitems.comp.inventory.model;
 
-import io.lumine.mythic.lib.api.player.EquipmentSlot;
-import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.player.inventory.EquippedItem;
-import net.Indyuce.mmoitems.comp.inventory.PlayerInventoryUpdater;
+import net.Indyuce.mmoitems.comp.inventory.PlayerInventoryHandler;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * mmoitems
@@ -18,25 +20,33 @@ import java.util.*;
 public class PlayerMMOInventory {
 
     private final UUID uniqueId;
-    private final PlayerData data;
-    private final Map<EquippedItem, Integer> content = new HashMap<>();
+    private final List<EquippedItem> content = new ArrayList<>();
+    private final PlayerInventoryHandler handler;
 
     public PlayerMMOInventory(@NotNull PlayerData data) {
         this.uniqueId = data.getUniqueId();
-        this.data = data;
-        this.updater = new PlayerInventoryUpdater(data);
+        this.handler = new PlayerInventoryHandler(data, this);
     }
 
     public void addItem(@NotNull EquippedItem item) {
-        content.put(item, item.hashCode());
+        content.add(item);
     }
 
     public void remove(@NotNull EquippedItem item) {
         content.remove(item);
     }
 
-    public void remove(@NotNull EquipmentSlot slot) {
-        content.keySet().removeIf((item) -> item.getSlot() == slot);
+    public void remove(int slot) {
+        content.removeIf(item -> item instanceof SlotEquippedItem && ((SlotEquippedItem) item).getSlotNumber() == slot);
+    }
+
+    public void update() {
+        handler.start();
+    }
+
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
+    public void scheduleUpdate() {
     }
 
     /* Getters */
@@ -45,42 +55,6 @@ public class PlayerMMOInventory {
     }
 
     public List<EquippedItem> equipped() {
-        return Collections.unmodifiableList(new ArrayList<>(content.keySet()));
-    }
-
-    public List<Integer> hashCodes() {
-        return Collections.unmodifiableList(new ArrayList<>(content.values()));
-    }
-
-    public int hashCode(EquipmentSlot slot) {
-        return content.entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().getSlot() == slot)
-                .map(Map.Entry::getValue)
-                .findFirst()
-                .orElse(0);
-    }
-
-
-    public Map<EquippedItem, Integer> content() {
-        return content;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(uniqueId, content.keySet());
-    }
-
-    // Old weird code
-    @Deprecated
-    public void scheduleUpdate() {
-        MMOItems.log("PlayerMMOInventory#scheduleUpdate called!");
-    }
-
-    private final PlayerInventoryUpdater updater;
-    @Deprecated
-    public void updateCheck(){
-        this.updater.run();
-        // MMOItems.log("PlayerMMOInventory#updateCheck called!");
+        return Collections.unmodifiableList(content);
     }
 }
