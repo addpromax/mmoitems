@@ -55,7 +55,7 @@ public class PlayerStats {
             StatInstance.ModifierPacket packet = getInstance(stat).newPacket();
 
             // Remove previous potential modifiers
-            // packet.removeIf(name -> name.startsWith("MMOItem"));
+            packet.removeIf(name -> name.startsWith("MMOItem"));
 
             // Add set bonuses
             if (playerData.hasSetBonuses() && playerData.getSetBonuses().hasStat(stat))

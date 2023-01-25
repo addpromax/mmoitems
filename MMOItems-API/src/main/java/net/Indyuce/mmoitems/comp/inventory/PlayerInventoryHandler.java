@@ -9,6 +9,7 @@ import net.Indyuce.mmoitems.api.ItemSet;
 import net.Indyuce.mmoitems.api.event.inventory.MMOInventoryRefreshEvent;
 import net.Indyuce.mmoitems.api.item.mmoitem.VolatileMMOItem;
 import net.Indyuce.mmoitems.api.player.PlayerData;
+import net.Indyuce.mmoitems.api.player.PlayerStats;
 import net.Indyuce.mmoitems.api.player.inventory.EquippedItem;
 import net.Indyuce.mmoitems.comp.inventory.model.PlayerInventoryImage;
 import net.Indyuce.mmoitems.comp.inventory.model.PlayerMMOInventory;
@@ -144,7 +145,10 @@ public class PlayerInventoryHandler implements Runnable {
 
         // Potion effects
         bonuses.getPotionEffects()
-                .forEach(effect -> this.data.getPermanentPotionEffectsMap().remove(effect.getType(), effect));
+                .forEach(effect -> {
+                    this.data.getPermanentPotionEffectsMap().remove(effect.getType(), effect);
+                    this.player.removePotionEffect(effect.getType());
+                });
     }
 
     private void processNewItemSets(@NotNull PlayerInventoryImage newImage) {
@@ -217,6 +221,7 @@ public class PlayerInventoryHandler implements Runnable {
             ((PotionEffectListData) oldItem.getData(ItemStats.PERM_EFFECTS)).getEffects()
                     .stream()
                     .filter(e -> this.data.getPermanentPotionEffectAmplifier(e.getType()) == e.getLevel() - 1)
+                    .peek(potionEffectData -> this.player.removePotionEffect(potionEffectData.getType()))
                     .forEach(e -> this.data.getPermanentPotionEffectsMap().remove(e.getType(), e.toEffect()));
 
         // Abilities
@@ -311,12 +316,15 @@ public class PlayerInventoryHandler implements Runnable {
 
     public void start() {
         running = true;
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                PlayerInventoryHandler.this.run();
-            }
-        }.runTaskAsynchronously(MMOItems.plugin);
+        if (Bukkit.isPrimaryThread())
+            run();
+        else
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    PlayerInventoryHandler.this.run();
+                }
+            }.runTask(MMOItems.plugin);
     }
 
     public void stop() {
