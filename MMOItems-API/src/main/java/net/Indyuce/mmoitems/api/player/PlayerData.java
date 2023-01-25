@@ -259,7 +259,6 @@ public class PlayerData {
                 });
             }
         }
-        Bukkit.broadcastMessage("Equipped: " + inventory.equipped().size() + " PlayerData#262");
 
         // Calculate the player's item set
         final Map<ItemSet, Integer> itemSetCount = new HashMap<>();
@@ -271,7 +270,6 @@ public class PlayerData {
 
             itemSetCount.put(itemSet, itemSetCount.getOrDefault(itemSet, 0) + 1);
         }
-        Bukkit.broadcastMessage("Equipped: " + inventory.equipped().size() + " PlayerData#274");
 
         // Reset and compute item set bonuses
         setBonuses = null;
@@ -318,8 +316,6 @@ public class PlayerData {
 //        inventory.boots = getPlayer().getInventory().getBoots();
 //        inventory.hand = getPlayer().getInventory().getItemInMainHand();
 //        inventory.offhand = getPlayer().getInventory().getItemInOffHand();
-
-        Bukkit.broadcastMessage("Equipped: " + inventory.equipped().size() + " PlayerData#322");
     }
 
     public void updateStats() {
@@ -439,6 +435,11 @@ public class PlayerData {
     @ApiStatus.Internal
     public void setOverridingItemParticles(@NotNull ParticleRunnable overridingItemParticles) {
         this.overridingItemParticles = overridingItemParticles;
+    }
+
+    @ApiStatus.Internal
+    public void refreshEncumberedValue() {
+        this.encumbered = isEncumbered();
     }
 
     @ApiStatus.Internal

@@ -6,6 +6,7 @@ import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ItemSet;
+import net.Indyuce.mmoitems.api.event.inventory.MMOInventoryRefreshEvent;
 import net.Indyuce.mmoitems.api.item.mmoitem.VolatileMMOItem;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.player.inventory.EquippedItem;
@@ -14,6 +15,7 @@ import net.Indyuce.mmoitems.comp.inventory.model.PlayerMMOInventory;
 import net.Indyuce.mmoitems.comp.inventory.model.SlotEquippedItem;
 import net.Indyuce.mmoitems.stat.data.*;
 import net.milkbowl.vault.permission.Permission;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -79,6 +81,12 @@ public class PlayerInventoryHandler implements Runnable {
             // Process old item sets
             this.processOldItemSets();
 
+            // Refresh player data
+            this.data.refreshEncumberedValue();
+
+            // Call Bukkit event
+            Bukkit.getPluginManager().callEvent(new MMOInventoryRefreshEvent(inventory.equipped(), this.data.getPlayer(), this.data));
+
             // Process new item sets
             this.processNewItemSets(newImage);
         }
@@ -140,6 +148,8 @@ public class PlayerInventoryHandler implements Runnable {
     }
 
     private void processNewItemSets(@NotNull PlayerInventoryImage newImage) {
+        MMOItems.log("Processing new item sets...");
+
         // Count the number of items in each set
         final Map<ItemSet, Integer> itemSetCount = new HashMap<>();
         for (EquippedItem equipped : inventory.equipped()) {
@@ -151,8 +161,10 @@ public class PlayerInventoryHandler implements Runnable {
         }
 
         // Add item sets to the image
-        itemSetCount.forEach((itemSet, integer) -> newImage.itemSets().put(itemSet.getId(), integer));
-
+        itemSetCount.forEach((itemSet, integer) -> {
+            newImage.itemSets().put(itemSet.getId(), integer);
+            MMOItems.log("Added item set " + itemSet.getId() + " with " + integer + " items.");
+        });
         // Determine the bonuses to apply
         ItemSet.SetBonuses bonuses = null;
         for (Map.Entry<ItemSet, Integer> equippedSetBonus : itemSetCount.entrySet()) {
@@ -163,8 +175,12 @@ public class PlayerInventoryHandler implements Runnable {
         }
 
         // Apply the bonuses
-        if (bonuses == null)
+        if (bonuses == null) {
+            MMOItems.log("No bonuses to apply.");
             return;
+        }
+        MMOItems.log("Applying bonuses... Abilities: " + bonuses.getAbilities().size() + " Particles: " + bonuses.getParticles().size() + " Potion effects: " + bonuses.getPotionEffects().size() + " Permissions: " + bonuses.getPermissions().size());
+
         if (MMOItems.plugin.hasPermissions()) {
             final Permission perms = MMOItems.plugin.getVault().getPermissions();
             for (String perm : bonuses.getPermissions())
@@ -174,6 +190,7 @@ public class PlayerInventoryHandler implements Runnable {
 
         // Abilities
         for (AbilityData ability : bonuses.getAbilities()) {
+            MMOItems.log("Adding ability: " + ability.getAbility().getName());
             PassiveSkill skill = this.data.getMMOPlayerData().getPassiveSkillMap().addModifier(new PassiveSkill("MMOItemsItem", ability, EquipmentSlot.OTHER, ModifierSource.OTHER));
             if (skill != null)
                 newImage.setAbilities().add(skill.getUniqueId());
@@ -184,9 +201,12 @@ public class PlayerInventoryHandler implements Runnable {
             this.data.getItemParticles().add(particle.start(this.data));
 
         // Potion effects
-        for (PotionEffect effect : bonuses.getPotionEffects())
+        for (PotionEffect effect : bonuses.getPotionEffects()) {
+            MMOItems.log("Adding potion effect: " + effect.getType().getName());
             if (this.data.getPermanentPotionEffectAmplifier(effect.getType()) < effect.getAmplifier())
                 this.data.getPermanentPotionEffectsMap().put(effect.getType(), effect);
+        }
+
     }
 
     private void processOldItem(int slot, @Nullable VolatileMMOItem oldItem) {
@@ -202,7 +222,7 @@ public class PlayerInventoryHandler implements Runnable {
         // Abilities
         if (oldItem.hasData(ItemStats.ABILITIES))
             image.itemAbilities()
-                    .get(slot)
+                    .getOrDefault(slot, new ArrayList<>())
                     .forEach(uuid -> this.data.getMMOPlayerData().getPassiveSkillMap().removeModifier(uuid));
 
         // Item particles
