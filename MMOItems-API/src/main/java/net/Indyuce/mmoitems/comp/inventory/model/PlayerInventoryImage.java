@@ -22,6 +22,8 @@ public class PlayerInventoryImage {
     private final Map<Integer, VolatileMMOItem> cache;
     private final Map<Integer, Integer> hashCodes;
     private final Map<String, Integer> itemSets;
+    private final Map<Integer, List<UUID>> itemAbilities;
+    private final List<UUID> setAbilities;
     private final long timestamp;
 
     public PlayerInventoryImage(@NotNull PlayerData data) {
@@ -31,6 +33,8 @@ public class PlayerInventoryImage {
         this.timestamp = System.currentTimeMillis();
         this.itemSets = new HashMap<>();
         this.cache = new HashMap<>();
+        this.itemAbilities = new HashMap<>();
+        this.setAbilities = new ArrayList<>();
     }
 
     public @NotNull PlayerData data() {
@@ -47,6 +51,14 @@ public class PlayerInventoryImage {
 
     public @NotNull Map<String, Integer> itemSets() {
         return itemSets;
+    }
+
+    public @NotNull Map<Integer, List<UUID>> itemAbilities() {
+        return itemAbilities;
+    }
+
+    public @NotNull List<UUID> setAbilities() {
+        return setAbilities;
     }
 
     public long timestamp() {

@@ -20,8 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -72,7 +71,7 @@ public class PlayerInventoryHandler implements Runnable {
                     this.processOldItem(slot, oldItem);
 
                     // Process new item
-                    this.processNewItem(item, newItem);
+                    this.processNewItem(newImage, item, newItem);
                 });
 
         // If the armor changed, process the item sets
@@ -130,7 +129,7 @@ public class PlayerInventoryHandler implements Runnable {
         }
 
         // Abilities
-        // TODO: cache uuid and remove modifiers from the player
+        this.image.setAbilities().forEach(uuid -> this.data.getMMOPlayerData().getPassiveSkillMap().removeModifier(uuid));
 
         // Particles
         bonuses.getParticles().forEach(particleData -> this.data.getItemParticles().removeIf(particleRunnable -> particleRunnable.getParticleData().equals(particleData)));
@@ -173,10 +172,18 @@ public class PlayerInventoryHandler implements Runnable {
                     perms.playerAdd(this.player, perm);
         }
 
-        for (AbilityData ability : bonuses.getAbilities())
-            this.data.getMMOPlayerData().getPassiveSkillMap().addModifier(new PassiveSkill("MMOItemsItem", ability, EquipmentSlot.OTHER, ModifierSource.OTHER));
+        // Abilities
+        for (AbilityData ability : bonuses.getAbilities()) {
+            PassiveSkill skill = this.data.getMMOPlayerData().getPassiveSkillMap().addModifier(new PassiveSkill("MMOItemsItem", ability, EquipmentSlot.OTHER, ModifierSource.OTHER));
+            if (skill != null)
+                newImage.setAbilities().add(skill.getUniqueId());
+        }
+
+        // Particles
         for (ParticleData particle : bonuses.getParticles())
             this.data.getItemParticles().add(particle.start(this.data));
+
+        // Potion effects
         for (PotionEffect effect : bonuses.getPotionEffects())
             if (this.data.getPermanentPotionEffectAmplifier(effect.getType()) < effect.getAmplifier())
                 this.data.getPermanentPotionEffectsMap().put(effect.getType(), effect);
@@ -193,6 +200,10 @@ public class PlayerInventoryHandler implements Runnable {
                     .forEach(e -> this.data.getPermanentPotionEffectsMap().remove(e.getType(), e.toEffect()));
 
         // Abilities
+        if (oldItem.hasData(ItemStats.ABILITIES))
+            image.itemAbilities()
+                    .get(slot)
+                    .forEach(uuid -> this.data.getMMOPlayerData().getPassiveSkillMap().removeModifier(uuid));
 
         // Item particles
         if (oldItem.hasData(ItemStats.ITEM_PARTICLES)) {
@@ -217,7 +228,7 @@ public class PlayerInventoryHandler implements Runnable {
         this.inventory.remove(slot);
     }
 
-    private void processNewItem(@Nullable SlotEquippedItem item, @Nullable VolatileMMOItem newItem) {
+    private void processNewItem(@NotNull PlayerInventoryImage newImage, @Nullable SlotEquippedItem item, @Nullable VolatileMMOItem newItem) {
         if (newItem == null || item == null)
             return;
         if (!item.isPlacementLegal() || !this.data.getRPG().canUse(item.getNBT(), false, false))
@@ -228,11 +239,16 @@ public class PlayerInventoryHandler implements Runnable {
         this.inventory.addItem(item);
 
         // Abilities
-        if (newItem.hasData(ItemStats.ABILITIES))
+        if (newItem.hasData(ItemStats.ABILITIES)) {
+            List<UUID> uuids = new ArrayList<>();
             for (AbilityData abilityData : ((AbilityListData) newItem.getData(ItemStats.ABILITIES)).getAbilities()) {
                 ModifierSource modSource = item.getCached().getType().getModifierSource();
-                this.data.getMMOPlayerData().getPassiveSkillMap().addModifier(new PassiveSkill("MMOItemsItem", abilityData, item.getSlot(), modSource));
+                PassiveSkill skill = this.data.getMMOPlayerData().getPassiveSkillMap().addModifier(new PassiveSkill("MMOItemsItem", abilityData, item.getSlot(), modSource));
+                if (skill != null)
+                    uuids.add(skill.getUniqueId());
             }
+            newImage.itemAbilities().put(item.getSlotNumber(), uuids);
+        }
 
         // Modifier application rules
         final ModifierSource source = newItem.getType().getModifierSource();

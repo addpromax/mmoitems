@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SlotEquippedItem extends EquippedItem implements Cloneable {
+public class SlotEquippedItem extends EquippedItem {
     private final Player player;
     private final int slotNumber;
 
@@ -89,14 +89,5 @@ public class SlotEquippedItem extends EquippedItem implements Cloneable {
         accumulator ^= getSlot().hashCode();
         accumulator ^= getItem().hashCode();
         return accumulator;
-    }
-
-    @Override
-    public SlotEquippedItem clone() {
-        try {
-            return (SlotEquippedItem) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
     }
 }
