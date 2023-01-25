@@ -21,6 +21,7 @@ public class PlayerInventoryImage {
     private final List<SlotEquippedItem> equipped;
     private final Map<Integer, VolatileMMOItem> cache;
     private final Map<Integer, Integer> hashCodes;
+    private final Map<String, Integer> itemSets;
     private final long timestamp;
 
     public PlayerInventoryImage(@NotNull PlayerData data) {
@@ -28,6 +29,7 @@ public class PlayerInventoryImage {
         this.equipped = new ArrayList<>();
         this.hashCodes = new HashMap<>();
         this.timestamp = System.currentTimeMillis();
+        this.itemSets = new HashMap<>();
         this.cache = new HashMap<>();
     }
 
@@ -41,6 +43,10 @@ public class PlayerInventoryImage {
 
     public @NotNull Map<Integer, Integer> hashCodes() {
         return hashCodes;
+    }
+
+    public @NotNull Map<String, Integer> itemSets() {
+        return itemSets;
     }
 
     public long timestamp() {
