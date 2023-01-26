@@ -16,6 +16,7 @@ import net.Indyuce.mmoitems.api.player.inventory.EquippedItem;
 import net.Indyuce.mmoitems.comp.inventory.model.PlayerInventoryImage;
 import net.Indyuce.mmoitems.comp.inventory.model.PlayerMMOInventory;
 import net.Indyuce.mmoitems.comp.inventory.model.SlotEquippedItem;
+import net.Indyuce.mmoitems.particle.api.ParticleRunnable;
 import net.Indyuce.mmoitems.stat.data.*;
 import net.Indyuce.mmoitems.stat.type.AttackWeaponStat;
 import net.milkbowl.vault.permission.Permission;
@@ -95,10 +96,6 @@ public class PlayerInventoryHandler implements Runnable {
             this.processNewItemSets(newImage);
         }
 
-        // Calculate player stats
-        // this.data.getStats().updateStats();
-        //this.updateStats(newImage);
-
         // Update stats from external plugins
         MMOItems.plugin.getRPG().refreshStats(this.data);
 
@@ -158,10 +155,11 @@ public class PlayerInventoryHandler implements Runnable {
         this.image.setAbilities().forEach(uuid -> this.data.getMMOPlayerData().getPassiveSkillMap().removeModifier(uuid));
 
         // Particles
-        bonuses.getParticles()
-                .forEach(particleData -> this.data.getItemParticles()
+        this.image.particles()
+                .getOrDefault(-99, new ArrayList<>())
+                .forEach(uuid -> this.data.getItemParticles()
                         .stream()
-                        .filter(particleRunnable -> particleRunnable.getParticleData().equals(particleData))
+                        .filter(particleRunnable -> particleRunnable.getUniqueId().equals(uuid))
                         .findFirst()
                         .ifPresent(particleRunnable -> {
                             particleRunnable.cancel();
@@ -215,7 +213,6 @@ public class PlayerInventoryHandler implements Runnable {
                     packet.runUpdate();
                 });
 
-
         // Permissions
         if (MMOItems.plugin.hasPermissions()) {
             final Permission perms = MMOItems.plugin.getVault().getPermissions();
@@ -232,8 +229,14 @@ public class PlayerInventoryHandler implements Runnable {
         }
 
         // Particles
-        for (ParticleData particle : bonuses.getParticles())
-            this.data.getItemParticles().add(particle.start(this.data));
+        List<UUID> particleRunnables = new ArrayList<>();
+        for (ParticleData particle : bonuses.getParticles()) {
+            final ParticleRunnable pRunnable = particle.start(this.data);
+            this.data.getItemParticles().add(pRunnable);
+            particleRunnables.add(pRunnable.getUniqueId());
+        }
+        // -99 is a special value that means the particle is not tied to an item
+        newImage.particles().put(-99, particleRunnables);
 
         // Potion effects
         for (PotionEffect effect : bonuses.getPotionEffects()) {
@@ -268,14 +271,16 @@ public class PlayerInventoryHandler implements Runnable {
             if (particleData.getType().hasPriority())
                 this.data.resetOverridingItemParticles();
             else {
-                this.data.getItemParticles()
-                        .stream()
-                        .filter(particleRunnable -> particleRunnable.getParticleData().equals(particleData))
-                        .findFirst()
-                        .ifPresent(particleRunnable -> {
-                            particleRunnable.cancel();
-                            this.data.getItemParticles().remove(particleRunnable);
-                        });
+                this.image.particles()
+                        .getOrDefault(slot, new ArrayList<>())
+                        .forEach(uuid -> this.data.getItemParticles()
+                                .stream()
+                                .filter(particleRunnable -> particleRunnable.getUniqueId().equals(uuid))
+                                .findFirst()
+                                .ifPresent(particleRunnable -> {
+                                    particleRunnable.cancel();
+                                    this.data.getItemParticles().remove(particleRunnable);
+                                }));
             }
         }
 
@@ -362,10 +367,16 @@ public class PlayerInventoryHandler implements Runnable {
         if (newItem.hasData(ItemStats.ITEM_PARTICLES)) {
             ParticleData particleData = (ParticleData) newItem.getData(ItemStats.ITEM_PARTICLES);
             if (particleData.getType().hasPriority()) {
-                if (this.data.getOverridingItemParticles() == null)
-                    this.data.setOverridingItemParticles(particleData.start(this.data));
-            } else
-                this.data.getItemParticles().add(particleData.start(this.data));
+                if (this.data.getOverridingItemParticles() == null) {
+                    ParticleRunnable particleRunnable = particleData.start(this.data);
+                    newImage.particles().computeIfAbsent(item.getSlotNumber(), k -> new ArrayList<>()).add(particleRunnable.getUniqueId());
+                    this.data.setOverridingItemParticles(particleRunnable);
+                }
+            } else {
+                ParticleRunnable particleRunnable = particleData.start(this.data);
+                newImage.particles().computeIfAbsent(item.getSlotNumber(), k -> new ArrayList<>()).add(particleRunnable.getUniqueId());
+                this.data.setOverridingItemParticles(particleRunnable);
+            }
         }
 
         // Permissions

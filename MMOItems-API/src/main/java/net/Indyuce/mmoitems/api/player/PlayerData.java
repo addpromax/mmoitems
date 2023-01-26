@@ -429,6 +429,8 @@ public class PlayerData {
 
     @ApiStatus.Internal
     public void resetOverridingItemParticles() {
+        if (overridingItemParticles != null)
+            overridingItemParticles.cancel();
         overridingItemParticles = null;
     }
 
