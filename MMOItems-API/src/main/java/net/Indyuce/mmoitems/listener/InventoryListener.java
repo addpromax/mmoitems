@@ -25,12 +25,12 @@ public class InventoryListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent e) {
+        PlayerData.get(e.getPlayer()).getInventory().unload();
         triggerUpdate(e.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent e) {
-        PlayerData.get(e.getPlayer()).getInventory().unload();
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

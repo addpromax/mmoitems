@@ -416,5 +416,11 @@ public class PlayerInventoryHandler implements Runnable {
     public void reset() {
         this.stop();
         this.image = new PlayerInventoryImage(this.data);
+        this.data.getMMOPlayerData().getPassiveSkillMap().removeModifiers("MMOItemsItem");
+        this.data.getPermanentPotionEffectsMap().clear();
+        this.data.resetSetBonuses();
+        this.data.resetOverridingItemParticles();
+        this.data.permissions().clear();
+        this.data.getStats().updateStats();
     }
 }

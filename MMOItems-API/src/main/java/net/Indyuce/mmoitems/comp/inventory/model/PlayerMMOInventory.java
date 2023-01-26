@@ -46,8 +46,8 @@ public class PlayerMMOInventory {
     }
 
     public void unload() {
-        this.handler.reset();
         this.content.clear();
+        this.handler.reset();
     }
 
     @Deprecated
