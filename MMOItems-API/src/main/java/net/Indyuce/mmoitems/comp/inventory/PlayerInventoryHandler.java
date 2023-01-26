@@ -89,11 +89,14 @@ public class PlayerInventoryHandler implements Runnable {
 
             // Process new item sets
             this.processNewItemSets(newImage);
+
         }
 
         // Check if the player is encumbered
         if (this.data.isEncumbered())
-            this.player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 1, true, false));
+            this.player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 1, true, false));
+        else
+            this.player.removePotionEffect(PotionEffectType.SLOW);
 
         // Update stats from external plugins
         MMOItems.plugin.getRPG().refreshStats(this.data);
