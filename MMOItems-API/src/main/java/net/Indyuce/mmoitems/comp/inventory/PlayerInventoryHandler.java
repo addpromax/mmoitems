@@ -1,7 +1,10 @@
 package net.Indyuce.mmoitems.comp.inventory;
 
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
+import io.lumine.mythic.lib.api.stat.StatInstance;
+import io.lumine.mythic.lib.api.stat.modifier.StatModifier;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
+import io.lumine.mythic.lib.player.modifier.ModifierType;
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
@@ -9,12 +12,12 @@ import net.Indyuce.mmoitems.api.ItemSet;
 import net.Indyuce.mmoitems.api.event.inventory.MMOInventoryRefreshEvent;
 import net.Indyuce.mmoitems.api.item.mmoitem.VolatileMMOItem;
 import net.Indyuce.mmoitems.api.player.PlayerData;
-import net.Indyuce.mmoitems.api.player.PlayerStats;
 import net.Indyuce.mmoitems.api.player.inventory.EquippedItem;
 import net.Indyuce.mmoitems.comp.inventory.model.PlayerInventoryImage;
 import net.Indyuce.mmoitems.comp.inventory.model.PlayerMMOInventory;
 import net.Indyuce.mmoitems.comp.inventory.model.SlotEquippedItem;
 import net.Indyuce.mmoitems.stat.data.*;
+import net.Indyuce.mmoitems.stat.type.AttackWeaponStat;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -93,7 +96,8 @@ public class PlayerInventoryHandler implements Runnable {
         }
 
         // Calculate player stats
-        this.data.getStats().updateStats();
+        // this.data.getStats().updateStats();
+        //this.updateStats(newImage);
 
         // Update stats from external plugins
         MMOItems.plugin.getRPG().refreshStats(this.data);
@@ -141,7 +145,15 @@ public class PlayerInventoryHandler implements Runnable {
         this.image.setAbilities().forEach(uuid -> this.data.getMMOPlayerData().getPassiveSkillMap().removeModifier(uuid));
 
         // Particles
-        bonuses.getParticles().forEach(particleData -> this.data.getItemParticles().removeIf(particleRunnable -> particleRunnable.getParticleData().equals(particleData)));
+        bonuses.getParticles()
+                .forEach(particleData -> this.data.getItemParticles()
+                        .stream()
+                        .filter(particleRunnable -> particleRunnable.getParticleData().equals(particleData))
+                        .findFirst()
+                        .ifPresent(particleRunnable -> {
+                            particleRunnable.cancel();
+                            this.data.getItemParticles().remove(particleRunnable);
+                        }));
 
         // Potion effects
         bonuses.getPotionEffects()
@@ -152,8 +164,6 @@ public class PlayerInventoryHandler implements Runnable {
     }
 
     private void processNewItemSets(@NotNull PlayerInventoryImage newImage) {
-        MMOItems.log("Processing new item sets...");
-
         // Count the number of items in each set
         final Map<ItemSet, Integer> itemSetCount = new HashMap<>();
         for (EquippedItem equipped : inventory.equipped()) {
@@ -165,10 +175,7 @@ public class PlayerInventoryHandler implements Runnable {
         }
 
         // Add item sets to the image
-        itemSetCount.forEach((itemSet, integer) -> {
-            newImage.itemSets().put(itemSet.getId(), integer);
-            MMOItems.log("Added item set " + itemSet.getId() + " with " + integer + " items.");
-        });
+        itemSetCount.forEach((itemSet, integer) -> newImage.itemSets().put(itemSet.getId(), integer));
         // Determine the bonuses to apply
         ItemSet.SetBonuses bonuses = null;
         for (Map.Entry<ItemSet, Integer> equippedSetBonus : itemSetCount.entrySet()) {
@@ -179,10 +186,8 @@ public class PlayerInventoryHandler implements Runnable {
         }
 
         // Apply the bonuses
-        if (bonuses == null) {
-            MMOItems.log("No bonuses to apply.");
+        if (bonuses == null)
             return;
-        }
         MMOItems.log("Applying bonuses... Abilities: " + bonuses.getAbilities().size() + " Particles: " + bonuses.getParticles().size() + " Potion effects: " + bonuses.getPotionEffects().size() + " Permissions: " + bonuses.getPermissions().size());
 
         if (MMOItems.plugin.hasPermissions()) {
@@ -194,7 +199,6 @@ public class PlayerInventoryHandler implements Runnable {
 
         // Abilities
         for (AbilityData ability : bonuses.getAbilities()) {
-            MMOItems.log("Adding ability: " + ability.getAbility().getName());
             PassiveSkill skill = this.data.getMMOPlayerData().getPassiveSkillMap().addModifier(new PassiveSkill("MMOItemsItem", ability, EquipmentSlot.OTHER, ModifierSource.OTHER));
             if (skill != null)
                 newImage.setAbilities().add(skill.getUniqueId());
@@ -206,7 +210,6 @@ public class PlayerInventoryHandler implements Runnable {
 
         // Potion effects
         for (PotionEffect effect : bonuses.getPotionEffects()) {
-            MMOItems.log("Adding potion effect: " + effect.getType().getName());
             if (this.data.getPermanentPotionEffectAmplifier(effect.getType()) < effect.getAmplifier())
                 this.data.getPermanentPotionEffectsMap().put(effect.getType(), effect);
         }
@@ -216,12 +219,14 @@ public class PlayerInventoryHandler implements Runnable {
     private void processOldItem(int slot, @Nullable VolatileMMOItem oldItem) {
         if (oldItem == null)
             return;
+
         // Potion effects
         if (oldItem.hasData(ItemStats.PERM_EFFECTS))
             ((PotionEffectListData) oldItem.getData(ItemStats.PERM_EFFECTS)).getEffects()
                     .stream()
                     .filter(e -> this.data.getPermanentPotionEffectAmplifier(e.getType()) == e.getLevel() - 1)
                     .peek(potionEffectData -> this.player.removePotionEffect(potionEffectData.getType()))
+
                     .forEach(e -> this.data.getPermanentPotionEffectsMap().remove(e.getType(), e.toEffect()));
 
         // Abilities
@@ -235,8 +240,16 @@ public class PlayerInventoryHandler implements Runnable {
             ParticleData particleData = (ParticleData) oldItem.getData(ItemStats.ITEM_PARTICLES);
             if (particleData.getType().hasPriority())
                 this.data.resetOverridingItemParticles();
-            else
-                this.data.getItemParticles().removeIf(particleRunnable -> particleRunnable.getParticleData().equals(particleData));
+            else {
+                this.data.getItemParticles()
+                        .stream()
+                        .filter(particleRunnable -> particleRunnable.getParticleData().equals(particleData))
+                        .findFirst()
+                        .ifPresent(particleRunnable -> {
+                            particleRunnable.cancel();
+                            this.data.getItemParticles().remove(particleRunnable);
+                        });
+            }
         }
 
         // Permissions
@@ -248,6 +261,17 @@ public class PlayerInventoryHandler implements Runnable {
                         perms.playerRemove(player, s);
                     });
         }
+
+        // Stats
+        MMOItems.plugin.getStats()
+                .getNumericStats()
+                .stream()
+                .filter(doubleStat -> oldItem.getNBT().getStat(doubleStat.getId()) > 0)
+                .forEach(stat -> {
+                    final StatInstance.ModifierPacket packet = this.data.getStats().getInstance(stat).newPacket();
+                    packet.remove("MMOItem-" + slot);
+                    packet.runUpdate();
+                });
 
         // Remove the item from the inventory
         this.inventory.remove(slot);
@@ -262,6 +286,25 @@ public class PlayerInventoryHandler implements Runnable {
         // Cache item and add it to the inventory
         item.cacheItem();
         this.inventory.addItem(item);
+
+        // Stats
+        MMOItems.plugin.getStats()
+                .getNumericStats()
+                .stream()
+                .filter(doubleStat -> item.getNBT().getStat(doubleStat.getId()) > 0)
+                .forEach(stat -> {
+                    final StatInstance.ModifierPacket packet = this.data.getStats().getInstance(stat).newPacket();
+                    final ModifierSource source = item.getCached().getType().getModifierSource();
+
+                    double value = item.getNBT().getStat(stat.getId());
+
+                    // Apply hand weapon stat offset
+                    if (source.isWeapon() && stat instanceof AttackWeaponStat)
+                        value -= ((AttackWeaponStat) stat).getOffset(this.data);
+
+                    packet.addModifier(new StatModifier("MMOItem-" + item.getSlotNumber(), stat.getId(), value, ModifierType.FLAT, item.getSlot(), source));
+                    packet.runUpdate();
+                });
 
         // Abilities
         if (newItem.hasData(ItemStats.ABILITIES)) {

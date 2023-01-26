@@ -3,6 +3,8 @@ package net.Indyuce.mmoitems.comp.inventory.model;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.item.mmoitem.VolatileMMOItem;
 import net.Indyuce.mmoitems.api.player.PlayerData;
+import net.Indyuce.mmoitems.stat.type.ItemStat;
+import net.Indyuce.mmoitems.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,6 +26,7 @@ public class PlayerInventoryImage {
     private final Map<String, Integer> itemSets;
     private final Map<Integer, List<UUID>> itemAbilities;
     private final List<UUID> setAbilities;
+    private final Map<Integer, List<Pair<ItemStat, Double>>> stats;
     private final long timestamp;
 
     public PlayerInventoryImage(@NotNull PlayerData data) {
@@ -35,6 +38,7 @@ public class PlayerInventoryImage {
         this.cache = new HashMap<>();
         this.itemAbilities = new HashMap<>();
         this.setAbilities = new ArrayList<>();
+        this.stats = new HashMap<>();
     }
 
     public @NotNull PlayerData data() {
@@ -59,6 +63,10 @@ public class PlayerInventoryImage {
 
     public @NotNull List<UUID> setAbilities() {
         return setAbilities;
+    }
+
+    public @NotNull Map<Integer, List<Pair<ItemStat, Double>>> stats() {
+        return stats;
     }
 
     public long timestamp() {
@@ -104,18 +112,26 @@ public class PlayerInventoryImage {
                 .filter(i -> i instanceof SlotEquippedItem)
                 .map(i -> (SlotEquippedItem) i)
                 .forEach(i -> {
+                    // Hashcode
                     image.equipped.add(i);
                     image.hashCodes.put(i.getSlotNumber(), isEmpty(i) ? -1 : i.hashCode());
+
+                    // Stats
+                    if (!isEmpty(i))
+                        image.stats.put(i.getSlotNumber(), new VolatileMMOItem(i.getNBT()).getStats()
+                                .stream()
+                                .map(itemStat -> new Pair<>(itemStat, i.getNBT().getStat(itemStat.getId())))
+                                .collect(Collectors.toList()));
                 });
         return image;
     }
 
-    private static boolean isEmpty(@Nullable SlotEquippedItem item) {
+    public static boolean isEmpty(@Nullable SlotEquippedItem item) {
         return item == null || item.getItem() == null;
     }
 
     @Override
     public int hashCode() {
-        return equipped.hashCode();
+        return Objects.hash(equipped);
     }
 }
