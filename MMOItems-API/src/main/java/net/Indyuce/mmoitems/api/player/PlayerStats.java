@@ -9,8 +9,10 @@ import io.lumine.mythic.lib.player.modifier.ModifierSource;
 import io.lumine.mythic.lib.player.modifier.ModifierType;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.player.inventory.EquippedItem;
+import net.Indyuce.mmoitems.comp.inventory.PlayerInventoryHandler;
 import net.Indyuce.mmoitems.stat.type.AttackWeaponStat;
 import net.Indyuce.mmoitems.stat.type.ItemStat;
+import org.jetbrains.annotations.ApiStatus;
 
 public class PlayerStats {
     private final PlayerData playerData;
@@ -48,6 +50,11 @@ public class PlayerStats {
         return playerData.getMMOPlayerData().getStatMap().cache(castSlot);
     }
 
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
+    /**
+     * @deprecated Use {@link PlayerInventoryHandler#start()} instead
+     */
     public void updateStats() {
         for (ItemStat<?, ?> stat : MMOItems.plugin.getStats().getNumericStats()) {
 

@@ -20,6 +20,7 @@ import net.Indyuce.mmoitems.api.interaction.Tool;
 import net.Indyuce.mmoitems.api.item.ItemReference;
 import net.Indyuce.mmoitems.api.item.mmoitem.VolatileMMOItem;
 import net.Indyuce.mmoitems.api.player.inventory.EquippedItem;
+import net.Indyuce.mmoitems.comp.inventory.PlayerInventoryHandler;
 import net.Indyuce.mmoitems.comp.inventory.model.PlayerMMOInventory;
 import net.Indyuce.mmoitems.particle.api.ParticleRunnable;
 import net.Indyuce.mmoitems.stat.data.*;
@@ -163,7 +164,11 @@ public class PlayerData {
         this.rpgPlayer = rpgPlayer;
     }
 
-    @SuppressWarnings("deprecation")
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
+    /**
+     * @deprecated Use {@link PlayerInventoryHandler#start()} instead
+     */
     public void updateInventory() {
         if (!mmoData.isOnline())
             return;
