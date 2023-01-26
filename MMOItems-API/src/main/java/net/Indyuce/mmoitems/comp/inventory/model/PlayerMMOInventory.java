@@ -1,12 +1,16 @@
 package net.Indyuce.mmoitems.comp.inventory.model;
 
+import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.player.inventory.EquippedItem;
 import net.Indyuce.mmoitems.comp.inventory.PlayerInventoryHandler;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * mmoitems
@@ -41,9 +45,19 @@ public class PlayerMMOInventory {
         handler.start();
     }
 
+    public void unload() {
+        this.handler.reset();
+        this.content.clear();
+    }
+
     @Deprecated
     @ApiStatus.ScheduledForRemoval
+    /**
+     * @deprecated Use {@link PlayerMMOInventory#update()} instead.
+     */
     public void scheduleUpdate() {
+        this.update();
+        MMOItems.plugin.getLogger().warning("PlayerMMOInventory#scheduleUpdate() is deprecated and will be removed in the next version. Use PlayerMMOInventory#update() instead.");
     }
 
     /* Getters */

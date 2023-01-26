@@ -412,4 +412,9 @@ public class PlayerInventoryHandler implements Runnable {
     public void stop() {
         running = false;
     }
+
+    public void reset() {
+        this.stop();
+        this.image = new PlayerInventoryImage(this.data);
+    }
 }

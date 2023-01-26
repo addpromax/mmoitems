@@ -1,7 +1,6 @@
 package net.Indyuce.mmoitems.listener;
 
 import io.lumine.mythic.lib.api.event.armorequip.ArmorEquipEvent;
-import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,10 +8,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -30,7 +26,11 @@ public class InventoryListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent e) {
         triggerUpdate(e.getPlayer());
-        MMOItems.log("Player " + e.getPlayer().getName() + " joined the server. Inventory updated.");
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerQuit(PlayerQuitEvent e) {
+        PlayerData.get(e.getPlayer()).getInventory().unload();
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
