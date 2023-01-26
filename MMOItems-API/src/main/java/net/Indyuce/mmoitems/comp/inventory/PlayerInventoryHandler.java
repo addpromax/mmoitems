@@ -132,6 +132,19 @@ public class PlayerInventoryHandler implements Runnable {
         if (bonuses == null)
             return;
 
+        // Stats
+        ItemSet.SetBonuses finalBonuses = bonuses;
+        MMOItems.plugin.getStats()
+                .getNumericStats()
+                .stream()
+                .filter(finalBonuses::hasStat)
+                .forEach(stat -> {
+                    final StatInstance.ModifierPacket packet = this.data.getStats().getInstance(stat).newPacket();
+                    packet.remove("MMOItemSetBonus");
+                    packet.runUpdate();
+                });
+
+
         // Permissions
         if (MMOItems.plugin.hasPermissions()) {
             final Permission perms = MMOItems.plugin.getVault().getPermissions();
@@ -190,6 +203,20 @@ public class PlayerInventoryHandler implements Runnable {
             return;
         MMOItems.log("Applying bonuses... Abilities: " + bonuses.getAbilities().size() + " Particles: " + bonuses.getParticles().size() + " Potion effects: " + bonuses.getPotionEffects().size() + " Permissions: " + bonuses.getPermissions().size());
 
+        // Stats
+        final ItemSet.SetBonuses finalBonuses = bonuses;
+        MMOItems.plugin.getStats()
+                .getNumericStats()
+                .stream()
+                .filter(finalBonuses::hasStat)
+                .forEach(stat -> {
+                    final StatInstance.ModifierPacket packet = this.data.getStats().getInstance(stat).newPacket();
+                    packet.addModifier(new StatModifier("MMOItemSetBonus", stat.getId(), finalBonuses.getStat(stat), ModifierType.FLAT, EquipmentSlot.OTHER, ModifierSource.OTHER));
+                    packet.runUpdate();
+                });
+
+
+        // Permissions
         if (MMOItems.plugin.hasPermissions()) {
             final Permission perms = MMOItems.plugin.getVault().getPermissions();
             for (String perm : bonuses.getPermissions())
