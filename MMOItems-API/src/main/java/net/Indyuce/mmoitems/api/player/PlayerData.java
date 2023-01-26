@@ -54,7 +54,6 @@ public class PlayerData {
     private final Map<PotionEffectType, PotionEffect> permanentEffects = new HashMap<>();
     private final Set<ParticleRunnable> itemParticles = new HashSet<>();
     private ParticleRunnable overridingItemParticles = null;
-    private boolean encumbered = false;
     @Nullable
     private SetBonuses setBonuses = null;
     private final PlayerStats stats;
@@ -193,7 +192,7 @@ public class PlayerData {
          * Updates the encumbered boolean, this way it can be
          * cached and used in the updateEffects() method
          */
-        encumbered = isEncumbered();
+        // encumbered = isEncumbered();
 
         // Find all the items the player can actually use
         for (EquippedItem item : MMOItems.plugin.getInventory().inventory(getPlayer())) {
@@ -318,14 +317,6 @@ public class PlayerData {
 //        inventory.offhand = getPlayer().getInventory().getItemInOffHand();
     }
 
-    public void updateStats() {
-        // Permanent effects
-        permanentEffects.values().forEach(effect -> getPlayer().addPotionEffect(effect));
-
-        // Two handed slowness
-        if (encumbered)
-            getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 1, true, false));
-    }
 
     public PlayerMMOInventory getInventory() {
         return inventory;
@@ -437,11 +428,6 @@ public class PlayerData {
     @ApiStatus.Internal
     public void setOverridingItemParticles(@NotNull ParticleRunnable overridingItemParticles) {
         this.overridingItemParticles = overridingItemParticles;
-    }
-
-    @ApiStatus.Internal
-    public void refreshEncumberedValue() {
-        this.encumbered = isEncumbered();
     }
 
     @ApiStatus.Internal

@@ -23,6 +23,7 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -71,9 +72,6 @@ public class PlayerInventoryHandler implements Runnable {
                     if (item.getSlot().equals(EquipmentSlot.ARMOR))
                         armorChanged.set(true);
 
-                    // TODO: remove the following line
-                    MMOItems.log(String.format("Slot #%d: %s -> %s", slot, oldItem == null ? "AIR" : oldItem.getId(), newItem == null ? "AIR" : newItem.getId()));
-
                     // Process old item
                     this.processOldItem(slot, oldItem);
 
@@ -86,15 +84,16 @@ public class PlayerInventoryHandler implements Runnable {
             // Process old item sets
             this.processOldItemSets();
 
-            // Refresh player data
-            this.data.refreshEncumberedValue();
-
             // Call Bukkit event
             Bukkit.getPluginManager().callEvent(new MMOInventoryRefreshEvent(inventory.equipped(), this.data.getPlayer(), this.data));
 
             // Process new item sets
             this.processNewItemSets(newImage);
         }
+
+        // Check if the player is encumbered
+        if (this.data.isEncumbered())
+            this.player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 1, true, false));
 
         // Update stats from external plugins
         MMOItems.plugin.getRPG().refreshStats(this.data);
@@ -199,7 +198,6 @@ public class PlayerInventoryHandler implements Runnable {
         // Apply the bonuses
         if (bonuses == null)
             return;
-        MMOItems.log("Applying bonuses... Abilities: " + bonuses.getAbilities().size() + " Particles: " + bonuses.getParticles().size() + " Potion effects: " + bonuses.getPotionEffects().size() + " Permissions: " + bonuses.getPermissions().size());
 
         // Stats
         final ItemSet.SetBonuses finalBonuses = bonuses;

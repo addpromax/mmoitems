@@ -28,7 +28,5 @@ public class MMOItemsBukkit {
 
         if (plugin.getConfig().getBoolean("dropped-items.tier-glow") || plugin.getConfig().getBoolean("dropped-items.hints"))
             Bukkit.getPluginManager().registerEvents(new DroppedItems(plugin.getConfig().getConfigurationSection("dropped-items")), plugin);
-
-        Bukkit.getScheduler().runTaskTimer(plugin, () -> Bukkit.getOnlinePlayers().forEach(player -> PlayerData.get(player).updateStats()), 100, 20);
     }
 }
