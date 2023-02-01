@@ -1,5 +1,6 @@
 package net.Indyuce.mmoitems.api;
 
+import io.lumine.mythic.lib.util.ConfigurationUpdater;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.item.ItemReference;
 import org.bukkit.configuration.file.FileConfiguration;

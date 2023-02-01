@@ -2,6 +2,7 @@ package net.Indyuce.mmoitems.manager;
 
 import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
+import io.lumine.mythic.lib.util.ConfigurationUpdater;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ConfigFile;
 import net.Indyuce.mmoitems.api.ReforgeOptions;
@@ -101,7 +102,6 @@ public class ConfigManager implements Reloadable {
      * These two steps are necessary for smooth language updates
      */
     private void loadTranslations() {
-
         // TODO items
         ConfigFile items = new ConfigFile("/language", "items");
         for (ConfigItem item : ConfigItems.values) {
@@ -147,6 +147,10 @@ public class ConfigManager implements Reloadable {
         final FileConfiguration abilities = new ConfigFile("/language", "abilities").getConfig();
         for (TriggerType type : TriggerType.values())
             triggerTypeNames.put(type, abilities.getString("cast-mode." + type.getLowerCaseId(), type.getName()));
+
+        // Update language files
+        Arrays.asList("abilities", "attack-effects", "crafting-stations", "items", "lore-format", "messages", "potion-effects", "stats")
+                .forEach(s -> new ConfigurationUpdater(MMOItems.plugin.getDataFolder().toPath().resolve(String.format("language/%s.yml", s)), String.format("default/language/%s.yml", s), MMOItems.class.getClassLoader()).update());
     }
 
     public void reload() {
