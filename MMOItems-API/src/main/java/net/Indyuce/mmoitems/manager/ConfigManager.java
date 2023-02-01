@@ -13,10 +13,8 @@ import net.Indyuce.mmoitems.api.util.message.Message;
 import net.Indyuce.mmoitems.stat.GemUpgradeScaling;
 import net.Indyuce.mmoitems.stat.LuteAttackEffectStat.LuteAttackEffect;
 import net.Indyuce.mmoitems.stat.StaffSpiritStat.StaffSpirit;
-import net.Indyuce.mmoitems.util.LanguageFile;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -102,52 +100,6 @@ public class ConfigManager implements Reloadable {
      * These two steps are necessary for smooth language updates
      */
     private void loadTranslations() {
-        // TODO items
-        ConfigFile items = new ConfigFile("/language", "items");
-        for (ConfigItem item : ConfigItems.values) {
-            if (!items.getConfig().contains(item.getId())) {
-                items.getConfig().createSection(item.getId());
-                item.setup(items.getConfig().getConfigurationSection(item.getId()));
-            }
-            item.update(items.getConfig());
-        }
-        items.save();
-
-        // TODO messages
-        final LanguageFile messages = new LanguageFile("messages");
-        for (Message message : Message.values()) {
-            String path = message.name().toLowerCase().replace("_", "-");
-            if (!messages.getConfig().contains(path))
-                messages.getConfig().set(path, message.getDefault());
-
-        }
-        messages.save();
-
-        // Potion effects
-        final LanguageFile potionEffects = new LanguageFile("potion-effects");
-        for (PotionEffectType effect : PotionEffectType.values())
-            potionNames.put(effect, potionEffects.computeTranslation(effect.getName().toLowerCase().replace("_", "-"),
-                    () -> UtilityMethods.caseOnWords(effect.getName().toLowerCase().replace("_", " "))));
-        potionEffects.save();
-
-        // Staff spirits
-        final LanguageFile attackEffects = new LanguageFile("attack-effects");
-        for (StaffSpirit sp : StaffSpirit.values())
-            sp.setName(attackEffects.computeTranslation("staff-spirit." + sp.name().toLowerCase().replace("_", "-"),
-                    () -> UtilityMethods.caseOnWords(sp.name().toLowerCase().replace("_", " "))));
-
-        // Lute attack effects
-        for (LuteAttackEffect eff : LuteAttackEffect.values())
-            eff.setName(attackEffects.computeTranslation("lute-attack." + eff.name().toLowerCase().replace("_", "-"),
-                    () -> UtilityMethods.caseOnWords(eff.name().toLowerCase().replace("_", " "))));
-        attackEffects.save();
-
-        // Trigger types
-        triggerTypeNames.clear();
-        final FileConfiguration abilities = new ConfigFile("/language", "abilities").getConfig();
-        for (TriggerType type : TriggerType.values())
-            triggerTypeNames.put(type, abilities.getString("cast-mode." + type.getLowerCaseId(), type.getName()));
-
         // Update language files
         Arrays.asList("abilities", "attack-effects", "crafting-stations", "items", "lore-format", "messages", "potion-effects", "stats")
                 .forEach(s -> new ConfigurationUpdater(MMOItems.plugin.getDataFolder().toPath().resolve(String.format("language/%s.yml", s)), String.format("default/language/%s.yml", s), MMOItems.class.getClassLoader()).update());
