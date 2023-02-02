@@ -3,8 +3,11 @@ package net.Indyuce.mmoitems.command.mmoitems;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.util.MMOItemReforger;
 import net.Indyuce.mmoitems.api.util.NumericStatFormula;
+import net.Indyuce.mmoitems.comp.inventory.PlayerInventoryHandler;
+import net.Indyuce.mmoitems.comp.inventory.model.PlayerMMOInventory;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -50,6 +53,8 @@ public class ReloadCommandTreeNode extends CommandTreeNode {
         MythicLib.plugin.getSkills().initialize(true);
         MMOItems.plugin.getSkills().initialize(true);
         sender.sendMessage(MMOItems.plugin.getPrefix() + "Successfully reloaded " + MMOItems.plugin.getSkills().getAll().size() + " skills.");
+
+        reloadPlayerInventories();
     }
 
     public void reloadMain(CommandSender sender) {
@@ -99,5 +104,14 @@ public class ReloadCommandTreeNode extends CommandTreeNode {
                 + MMOItems.plugin.getCrafting().getAll().size() + ChatColor.GRAY + " Crafting Stations");
         sender.sendMessage(MMOItems.plugin.getPrefix() + "- " + ChatColor.RED
                 + MMOItems.plugin.getCrafting().countRecipes() + ChatColor.GRAY + " Recipes");
+    }
+
+    public void reloadPlayerInventories() {
+        PlayerData.getLoaded()
+                .stream()
+                .map(PlayerData::getInventory)
+                .map(PlayerMMOInventory::getHandler)
+                .peek(PlayerInventoryHandler::reset)
+                .forEach(PlayerInventoryHandler::start);
     }
 }

@@ -68,4 +68,8 @@ public class PlayerMMOInventory {
     public List<EquippedItem> equipped() {
         return Collections.unmodifiableList(content);
     }
+
+    public PlayerInventoryHandler getHandler() {
+        return handler;
+    }
 }
