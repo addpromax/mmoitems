@@ -30,12 +30,12 @@ public class RacesAndClassesHook implements RPGHandler, Listener {
      */
     @EventHandler
     public void a(LevelUpEvent event) {
-        PlayerData.get(event.getPlayer()).getInventory().scheduleUpdate();
+        PlayerData.get(event.getPlayer()).getInventory().update();
     }
 
     @EventHandler
     public void b(LevelDownEvent event) {
-        PlayerData.get(event.getPlayer()).getInventory().scheduleUpdate();
+        PlayerData.get(event.getPlayer()).getInventory().update();
     }
 
     public static class RacePlayer extends RPGPlayer {

@@ -6,8 +6,8 @@ import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.player.inventory.EquippedItem;
-import net.Indyuce.mmoitems.comp.inventory.model.SlotEquippedItem;
 import net.Indyuce.mmoitems.comp.inventory.model.PlayerInventory;
+import net.Indyuce.mmoitems.comp.inventory.model.SlotEquippedItem;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -54,7 +54,7 @@ public class OrnamentPlayerInventory implements PlayerInventory, Listener {
         if (event.getEntityType() == EntityType.PLAYER) {
             final NBTItem nbt = NBTItem.get(event.getItem().getItemStack());
             if (nbt.hasType() && Type.get(nbt.getType()).getSupertype().equals(Type.ORNAMENT))
-                PlayerData.get((Player) event.getEntity()).getInventory().scheduleUpdate();
+                PlayerData.get((Player) event.getEntity()).getInventory().update();
         }
     }
 
@@ -62,6 +62,6 @@ public class OrnamentPlayerInventory implements PlayerInventory, Listener {
     public void updateOnItemDrop(PlayerDropItemEvent event) {
         final NBTItem nbt = NBTItem.get(event.getItemDrop().getItemStack());
         if (nbt.hasType() && Type.get(nbt.getType()).getSupertype().equals(Type.ORNAMENT))
-            PlayerData.get(event.getPlayer()).updateInventory();
+            PlayerData.get(event.getPlayer()).getInventory().update();
     }
 }

@@ -1,19 +1,16 @@
 package net.Indyuce.mmoitems.comp.rpg;
 
-import net.Indyuce.mmoitems.MMOItems;
-import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-
 import com.gmail.nossr50.api.ExperienceAPI;
 import com.gmail.nossr50.api.exceptions.McMMOPlayerNotFoundException;
 import com.gmail.nossr50.events.experience.McMMOPlayerLevelDownEvent;
 import com.gmail.nossr50.events.experience.McMMOPlayerLevelUpEvent;
-
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.player.RPGPlayer;
 import net.Indyuce.mmoitems.stat.type.DisableStat;
 import net.Indyuce.mmoitems.stat.type.ItemStat;
+import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 public class McMMOHook implements RPGHandler, Listener {
 
@@ -28,12 +25,12 @@ public class McMMOHook implements RPGHandler, Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void a(McMMOPlayerLevelUpEvent event) {
-		PlayerData.get(event.getPlayer()).getInventory().scheduleUpdate();
+		PlayerData.get(event.getPlayer()).getInventory().update();
 	}
 
 	@EventHandler(ignoreCancelled = true)
 	public void b(McMMOPlayerLevelDownEvent event) {
-		PlayerData.get(event.getPlayer()).getInventory().scheduleUpdate();
+		PlayerData.get(event.getPlayer()).getInventory().update();
 	}
 
 	@Override

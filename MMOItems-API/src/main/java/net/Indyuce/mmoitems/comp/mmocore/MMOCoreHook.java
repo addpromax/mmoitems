@@ -67,12 +67,12 @@ public class MMOCoreHook implements RPGHandler, Listener {
 
     @EventHandler
     public void updateInventoryOnLevelUp(PlayerLevelUpEvent event) {
-        PlayerData.get(event.getPlayer()).getInventory().scheduleUpdate();
+        PlayerData.get(event.getPlayer()).getInventory().update();
     }
 
     @EventHandler
     public void updateInventoryOnClassChange(PlayerChangeClassEvent event) {
-        PlayerData.get(event.getPlayer()).getInventory().scheduleUpdate();
+        PlayerData.get(event.getPlayer()).getInventory().update();
     }
 
     /**
@@ -86,7 +86,7 @@ public class MMOCoreHook implements RPGHandler, Listener {
     @EventHandler
     public void updateInventoryOnLoad(AsyncPlayerDataLoadEvent event) {
         if (PlayerData.has(event.getPlayer()))
-            PlayerData.get(event.getPlayer()).getInventory().scheduleUpdate();
+            PlayerData.get(event.getPlayer()).getInventory().update();
     }
 
     public static class MMOCoreRPGPlayer extends RPGPlayer {

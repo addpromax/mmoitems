@@ -170,7 +170,7 @@ public class DurabilityItem {
         // Play sound when item breaks
         if (isBroken()) {
             player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
-            PlayerData.get(player).getInventory().scheduleUpdate();
+            PlayerData.get(player).getInventory().update();
         }
 
         return this;

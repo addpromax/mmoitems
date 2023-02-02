@@ -76,7 +76,7 @@ public class HeroesHook implements RPGHandler, Listener, AttackHandler {
      */
     @EventHandler
     public void a(HeroChangeLevelEvent event) {
-        PlayerData.get(event.getHero().getPlayer()).getInventory().scheduleUpdate();
+        PlayerData.get(event.getHero().getPlayer()).getInventory().update();
     }
 
     /**
@@ -85,7 +85,7 @@ public class HeroesHook implements RPGHandler, Listener, AttackHandler {
      */
     @EventHandler
     public void b(ClassChangeEvent event) {
-        PlayerData.get(event.getHero().getPlayer()).getInventory().scheduleUpdate();
+        PlayerData.get(event.getHero().getPlayer()).getInventory().update();
     }
 
     public static class HeroesPlayer extends RPGPlayer {

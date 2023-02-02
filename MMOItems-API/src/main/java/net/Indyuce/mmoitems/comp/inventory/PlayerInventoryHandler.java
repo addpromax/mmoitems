@@ -311,9 +311,7 @@ public class PlayerInventoryHandler implements Runnable {
     }
 
     private void processNewItem(@NotNull PlayerInventoryImage newImage, @Nullable SlotEquippedItem item, @Nullable VolatileMMOItem newItem) {
-        if (newItem == null || item == null)
-            return;
-        if (!item.isPlacementLegal() || !this.data.getRPG().canUse(item.getNBT(), false, false))
+        if (newItem == null || item == null || !item.isPlacementLegal() || !this.data.getRPG().canUse(item.getNBT(), false, false))
             return;
 
         // Cache item and add it to the inventory
@@ -330,7 +328,6 @@ public class PlayerInventoryHandler implements Runnable {
                     final ModifierSource source = item.getCached().getType().getModifierSource();
 
                     double value = item.getNBT().getStat(stat.getId());
-
                     // Apply hand weapon stat offset
                     if (source.isWeapon() && stat instanceof AttackWeaponStat)
                         value -= ((AttackWeaponStat) stat).getOffset(this.data);
@@ -344,9 +341,9 @@ public class PlayerInventoryHandler implements Runnable {
             List<UUID> uuids = new ArrayList<>();
             for (AbilityData abilityData : ((AbilityListData) newItem.getData(ItemStats.ABILITIES)).getAbilities()) {
                 ModifierSource modSource = item.getCached().getType().getModifierSource();
-                PassiveSkill skill = this.data.getMMOPlayerData().getPassiveSkillMap().addModifier(new PassiveSkill("MMOItemsItem", abilityData, item.getSlot(), modSource));
-                if (skill != null)
-                    uuids.add(skill.getUniqueId());
+                PassiveSkill skill = new PassiveSkill("MMOItemsItem", abilityData, item.getSlot(), modSource);
+                this.data.getMMOPlayerData().getPassiveSkillMap().addModifier(skill);
+                uuids.add(skill.getUniqueId());
             }
             newImage.itemAbilities().put(item.getSlotNumber(), uuids);
         }

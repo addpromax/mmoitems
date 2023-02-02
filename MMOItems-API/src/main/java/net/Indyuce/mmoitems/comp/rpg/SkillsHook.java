@@ -16,7 +16,7 @@ public class SkillsHook implements RPGHandler, Listener {
     public void a(SkillLevelUpEvent event) {
         OfflinePlayer player = event.getPlayer();
         if (player.isOnline())
-            PlayerData.get(player).getInventory().scheduleUpdate();
+            PlayerData.get(player).getInventory().update();
     }
 
     @Override

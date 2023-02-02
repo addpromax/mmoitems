@@ -166,7 +166,7 @@ public class PlayerListener implements Listener {
     @Deprecated
     @EventHandler
     public void registerInventoryUpdates1(PlayerSwapHandItemsEvent event) {
-        PlayerData.get(event.getPlayer()).getInventory().scheduleUpdate();
+        PlayerData.get(event.getPlayer()).getInventory().update();
     }
 
     /**
@@ -180,7 +180,7 @@ public class PlayerListener implements Listener {
     @Deprecated
     @EventHandler
     public void registerInventoryUpdates2(PlayerItemHeldEvent event) {
-        PlayerData.get(event.getPlayer()).getInventory().scheduleUpdate();
+        PlayerData.get(event.getPlayer()).getInventory().update();
     }
 
     /**

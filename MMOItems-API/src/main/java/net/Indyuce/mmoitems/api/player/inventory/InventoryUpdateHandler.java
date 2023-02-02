@@ -5,17 +5,15 @@ import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
+@ApiStatus.ScheduledForRemoval
 /**
- * TODO
- * <p>
- * It's one of the most urgent systems to update. Moving everything to a new
- * class to mark everything that needs to be changed
- *
- * @author indyuce
+ * @deprecated Use {@link net.Indyuce.mmoitems.comp.inventory.PlayerInventoryHandler} instead
  */
 public class InventoryUpdateHandler {
     private final PlayerData player;
@@ -38,7 +36,7 @@ public class InventoryUpdateHandler {
      * - the player meets the item requirements (class, level etc)
      *
      * @return All equipped MMOItems in the player's inventory. Also includes
-     *         items from custom inventory plugins like MMOInventory
+     * items from custom inventory plugins like MMOInventory
      */
     public List<EquippedItem> getEquipped() {
         return items;

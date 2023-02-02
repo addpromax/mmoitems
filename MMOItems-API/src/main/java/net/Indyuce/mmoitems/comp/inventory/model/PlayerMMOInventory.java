@@ -8,7 +8,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -66,7 +65,7 @@ public class PlayerMMOInventory {
     }
 
     public List<EquippedItem> equipped() {
-        return Collections.unmodifiableList(content);
+        return content;
     }
 
     public PlayerInventoryHandler getHandler() {
