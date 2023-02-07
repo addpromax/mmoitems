@@ -84,6 +84,7 @@ public class ReloadCommandTreeNode extends CommandTreeNode {
         // This one is not implementing Reloadable
         NumericStatFormula.reload();
         MMOItemReforger.reload();
+        reloadPlayerInventories();
     }
 
     public void reloadRecipes(CommandSender sender) {
