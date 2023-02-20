@@ -21,6 +21,7 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public class Type {
 
+
     // Slashing
     public static final Type SWORD = new Type(TypeSet.SLASHING, "SWORD", true, ModifierSource.MELEE_WEAPON);
 
