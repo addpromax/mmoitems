@@ -314,5 +314,6 @@ public class Type {
      */
     public static boolean isValid(@Nullable String id) {
         return id != null && MMOItems.plugin.getTypes().has(id.toUpperCase().replace("-", "_").replace(" ", "_"));
+
     }
 }

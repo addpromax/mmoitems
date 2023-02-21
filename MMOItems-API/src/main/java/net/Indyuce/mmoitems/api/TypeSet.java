@@ -134,11 +134,11 @@ public enum TypeSet {
     private final SetAttackHandler attackHandler;
     private final String name;
 
-    private TypeSet() {
+    TypeSet() {
         this(null);
     }
 
-    private TypeSet(SetAttackHandler attackHandler) {
+    TypeSet(SetAttackHandler attackHandler) {
         this.attackHandler = attackHandler;
 
         this.name = MMOUtils.caseOnWords(name().toLowerCase());
