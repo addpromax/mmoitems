@@ -6,9 +6,9 @@ import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.util.AdventureUtils;
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.api.ItemTier;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
 import net.Indyuce.mmoitems.api.item.mmoitem.VolatileMMOItem;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.item.util.ConfigItem;
 import net.Indyuce.mmoitems.stat.data.DoubleData;
 import org.bukkit.inventory.ItemFlag;
@@ -22,7 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.*;
 
 public class UnidentifiedItem extends ConfigItem {
-    public UnidentifiedItem(Type type) {
+    public UnidentifiedItem(MMOItemType type) {
         super("unidentified", type.getItem().getType());
 
         setName("#prefix#Unidentified " + type.getName());

@@ -1,4 +1,3 @@
-
 # Default item types. These cannot be removed. They
 # may be used as 'parents' to create new item types
 # which will behave just like another item type. Parents
@@ -19,6 +18,11 @@ SWORD:
     
     # Name displayed in the item lore.
     name: 'Sword'
+
+    weapon: true
+    modifier: "MELEE_WEAPON"
+    lore-format: ""
+    category: "SPLASHING"
     
     # Template of an unidentified item.
     unident-item:
