@@ -140,7 +140,7 @@ public class StringListStat extends ItemStat<StringListData, StringListData> {
         JsonArray array = new JsonArray();
 
         // For every list entry
-        for (String str : ((StringListData) data).getList()) {
+        for (String str : data.getList()) {
 
             // Add to the array as-is
             array.add(str);

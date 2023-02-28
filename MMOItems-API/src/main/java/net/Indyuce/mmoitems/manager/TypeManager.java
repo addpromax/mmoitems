@@ -2,7 +2,6 @@ package net.Indyuce.mmoitems.manager;
 
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ConfigFile;
-import net.Indyuce.mmoitems.api.item.category.MMOTypeCategory;
 import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.manager.ConfigManager.DefaultFile;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,14 +17,12 @@ import java.util.stream.Collectors;
 public class TypeManager implements Reloadable {
 
     private final List<MMOItemType> types = new ArrayList<>();
-    private final List<MMOTypeCategory> categories = new ArrayList<>();
 
     /**
      * Reloads the type manager. It entirely empties the currently registered
      * item types, registers default item types again and reads item-types.yml
      */
     public void reload() {
-        this.categories.clear();
         this.types.clear();
 
         /*
@@ -34,24 +31,6 @@ public class TypeManager implements Reloadable {
          * and only custom types are registered with a parent.
          */
         DefaultFile.ITEM_TYPES.checkFile();
-
-        // Categories
-        ConfigFile categoriesConfig = new ConfigFile("type-categories.yml");
-        ConfigurationSection section = categoriesConfig.getConfig();
-        section.getKeys(false)
-                .stream()
-                .filter(section::isConfigurationSection)
-                .map(section::getConfigurationSection)
-                .filter(Objects::nonNull)
-                .map(MMOTypeCategory::load)
-                .peek(this.categories::add)
-                .peek(category -> category.getStats().clear())
-                .forEach(category -> MMOItems.plugin.getStats()
-                        .getAll()
-                        .forEach(stat -> category.getStats().add(stat)));
-
-        // DEBUG
-        MMOItems.log("Loaded " + this.categories.size() + " item categories.");
 
         // Types
         ConfigFile typesConfig = new ConfigFile("item-types.yml");
@@ -113,10 +92,6 @@ public class TypeManager implements Reloadable {
 
     public List<MMOItemType> getAll() {
         return this.types;
-    }
-
-    public List<MMOTypeCategory> getCategories() {
-        return this.categories;
     }
 
     /**

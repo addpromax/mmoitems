@@ -5,7 +5,6 @@ import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ConfigFile;
-import net.Indyuce.mmoitems.api.item.category.MMOTypeCategory;
 import net.Indyuce.mmoitems.api.item.util.identify.UnidentifiedItem;
 import net.Indyuce.mmoitems.manager.TypeManager;
 import net.Indyuce.mmoitems.stat.type.ItemStat;
@@ -34,18 +33,17 @@ public class MMOItemType {
     private final ModifierSource modifierSource;
     private final boolean weapon;
     private final String loreFormat;
-    private final MMOTypeCategory category;
     private final ItemStack item;
     private final UnidentifiedItem unidentifiedTemplate;
     private final List<ItemStat<?, ?>> stats;
 
-    private MMOItemType(String id, String name, ModifierSource modifierSource, boolean weapon, String loreFormat, MMOTypeCategory category, ItemStack item, List<ItemStat<?, ?>> stats) {
+
+    private MMOItemType(String id, String name, ModifierSource modifierSource, boolean weapon, String loreFormat, ItemStack item, List<ItemStat<?, ?>> stats) {
         this.id = id;
         this.name = name;
         this.modifierSource = modifierSource;
         this.weapon = weapon;
         this.loreFormat = loreFormat;
-        this.category = category;
         this.item = item;
         this.unidentifiedTemplate = new UnidentifiedItem(this);
         this.stats = stats;
@@ -71,9 +69,6 @@ public class MMOItemType {
         return loreFormat;
     }
 
-    public MMOTypeCategory getCategory() {
-        return category;
-    }
 
     public ItemStack getItem() {
         return item;
@@ -104,19 +99,10 @@ public class MMOItemType {
         final ItemStack item = read(section.getString("display", Material.STONE.toString()));
 
 
-        // TODO: Load the category
-        final String categoryId = section.getString("category");
-        final MMOTypeCategory category = manager.getCategories()
-                .stream()
-                .filter(mmoTypeCategory -> mmoTypeCategory.getId().equalsIgnoreCase(categoryId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(String.format("Category %s does not exist.", categoryId)));
-
-
         // TODO: Load the stats
         final List<ItemStat<?, ?>> stats = new ArrayList<>();
 
-        MMOItemType type = new MMOItemType(id, name, modifierSource, weapon, loreFormat, category, item, stats);
+        MMOItemType type = new MMOItemType(id, name, modifierSource, weapon, loreFormat, item, stats);
         type.getUnidentifiedTemplate().update(section.getConfigurationSection("unident-item"));
         return type;
     }
@@ -150,7 +136,6 @@ public class MMOItemType {
                 ", modifierSource=" + modifierSource +
                 ", weapon=" + weapon +
                 ", loreFormat='" + loreFormat + '\'' +
-                ", category=" + category +
                 '}';
     }
 
