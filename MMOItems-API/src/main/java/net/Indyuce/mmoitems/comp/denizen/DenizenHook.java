@@ -7,7 +7,7 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.TagManager;
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 
 public class DenizenHook {
 	/**
@@ -53,7 +53,7 @@ public class DenizenHook {
 			}
 
 			String typeName = type.toString().replace("-", "_").toUpperCase();
-			Type parsedType = MMOItems.plugin.getTypes().get(typeName);
+			MMOItemType parsedType = MMOItems.plugin.getTypes().get(typeName);
 			if (parsedType == null) {
 				attribute.echoError("Invalid type - cannot find type with name '" + typeName + "'");
 				return null;

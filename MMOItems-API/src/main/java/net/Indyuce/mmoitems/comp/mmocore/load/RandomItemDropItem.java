@@ -6,13 +6,13 @@ import net.Indyuce.mmocore.loot.LootBuilder;
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ItemTier;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
 import net.Indyuce.mmoitems.api.item.template.explorer.ClassFilter;
 import net.Indyuce.mmoitems.api.item.template.explorer.TemplateExplorer;
 import net.Indyuce.mmoitems.api.item.template.explorer.TierFilter;
 import net.Indyuce.mmoitems.api.item.template.explorer.TypeFilter;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.player.RPGPlayer;
 import net.Indyuce.mmoitems.stat.data.SoulboundData;
@@ -26,7 +26,7 @@ public class RandomItemDropItem extends ItemGenerationDropItem {
 	// generation options
 	private final boolean matchClass;
 	private final String profess;
-	private final Type type;
+	private final MMOItemType type;
 	private final ItemTier tier;
 
 	public RandomItemDropItem(MMOLineConfig config) {

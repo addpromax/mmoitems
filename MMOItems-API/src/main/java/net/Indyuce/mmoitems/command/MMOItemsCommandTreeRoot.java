@@ -3,10 +3,10 @@ package net.Indyuce.mmoitems.command;
 import io.lumine.mythic.lib.command.api.CommandTreeRoot;
 import io.lumine.mythic.lib.command.api.Parameter;
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
-import net.Indyuce.mmoitems.command.mmoitems.item.ItemCommandTreeNode;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.command.mmoitems.*;
 import net.Indyuce.mmoitems.command.mmoitems.debug.DebugCommandTreeNode;
+import net.Indyuce.mmoitems.command.mmoitems.item.ItemCommandTreeNode;
 import net.Indyuce.mmoitems.command.mmoitems.list.ListCommandTreeNode;
 import net.Indyuce.mmoitems.command.mmoitems.revid.RevisionIDCommandTreeNode;
 import net.Indyuce.mmoitems.command.mmoitems.stations.StationsCommandTreeNode;
@@ -17,7 +17,7 @@ public class MMOItemsCommandTreeRoot extends CommandTreeRoot {
 			(explorer, list) -> MMOItems.plugin.getTypes().getAll().forEach(type -> list.add(type.getId())));
 	public static final Parameter ID_2 = new Parameter("<id>", (explorer, list) -> {
 		try {
-			Type type = Type.get(explorer.getArguments()[1]);
+			MMOItemType type = MMOItemType.get(explorer.getArguments()[1]);
 			MMOItems.plugin.getTemplates().getTemplates(type).forEach(template -> list.add(template.getId()));
 		} catch (Exception ignored) {
 		}

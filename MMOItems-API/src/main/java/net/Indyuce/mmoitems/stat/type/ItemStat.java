@@ -2,9 +2,9 @@ package net.Indyuce.mmoitems.stat.type;
 
 import io.lumine.mythic.lib.api.item.ItemTag;
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.build.ItemStackBuilder;
 import net.Indyuce.mmoitems.api.item.mmoitem.ReadMMOItem;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.gui.edition.EditionInventory;
 import net.Indyuce.mmoitems.stat.data.random.RandomStatData;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
@@ -166,7 +166,7 @@ public abstract class ItemStat<R extends RandomStatData<S>, S extends StatData> 
     /**
      * @return The stat ID
      * @deprecated Use getId() instead. Type is no longer an util since they can
-     *         now be registered from external plugins
+     * now be registered from external plugins
      */
     @Deprecated
     @NotNull
@@ -184,8 +184,8 @@ public abstract class ItemStat<R extends RandomStatData<S>, S extends StatData> 
 
     /**
      * @return The NBT path used by the stat to save data in an item's NBTTags.
-     *         The format is 'MMOITEMS_' followed by the stat name in capital
-     *         letters only using _
+     * The format is 'MMOITEMS_' followed by the stat name in capital
+     * letters only using _
      */
     @NotNull
     public String getNBTPath() {
@@ -212,10 +212,9 @@ public abstract class ItemStat<R extends RandomStatData<S>, S extends StatData> 
      * @param type The item type to check
      * @return If a certain item type is compatible with this item stat
      */
-    public boolean isCompatible(Type type) {
+    public boolean isCompatible(MMOItemType type) {
         String lower = type.getId().toLowerCase();
-        return type.isSubtype() ? isCompatible(type.getParent())
-                : !compatibleTypes.contains("!" + lower) && (compatibleTypes.contains("all") || compatibleTypes.contains(lower)
+        return !compatibleTypes.contains("!" + lower) && (compatibleTypes.contains("all") || compatibleTypes.contains(lower)
                 || compatibleTypes.contains(type.getItemSet().getName().toLowerCase()));
     }
 

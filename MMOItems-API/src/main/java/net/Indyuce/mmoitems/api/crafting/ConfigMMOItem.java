@@ -1,9 +1,9 @@
 package net.Indyuce.mmoitems.api.crafting;
 
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.build.MMOItemBuilder;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.player.RPGPlayer;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
@@ -23,7 +23,7 @@ public class ConfigMMOItem {
 		Validate.notNull(config, "Could not read MMOItem config");
 
 		Validate.isTrue(config.contains("type") && config.contains("id"), "Config must contain type and ID");
-		Type type = MMOItems.plugin.getTypes().getOrThrow(config.getString("type").toUpperCase().replace("-", "_").replace(" ", "_"));
+		MMOItemType type = MMOItems.plugin.getTypes().getOrThrow(config.getString("type").toUpperCase().replace("-", "_").replace(" ", "_"));
 		template = MMOItems.plugin.getTemplates().getTemplateOrThrow(type, config.getString("id"));
 
 		this.amount = Math.max(1, config.getInt("amount"));

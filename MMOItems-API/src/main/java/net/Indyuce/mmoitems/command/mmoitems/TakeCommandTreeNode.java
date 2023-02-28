@@ -4,7 +4,7 @@ import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import io.lumine.mythic.lib.command.api.Parameter;
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.command.MMOItemsCommandTreeRoot;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -36,7 +36,7 @@ public class TakeCommandTreeNode extends CommandTreeNode {
         try {
 
             // Target item & player
-            final Type type = MMOItems.plugin.getTypes().getOrThrow(args[1].toUpperCase().replace("-", "_"));
+            final MMOItemType type = MMOItems.plugin.getTypes().getOrThrow(args[1].toUpperCase().replace("-", "_"));
             final String id = args[2].toUpperCase().replace("-", "_");
             final Player target = Bukkit.getPlayer(args[3]);
             Validate.notNull(target, "Could not find player called '" + args[3] + "'.");

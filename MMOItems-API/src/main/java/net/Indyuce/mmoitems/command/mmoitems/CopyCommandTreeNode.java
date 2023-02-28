@@ -1,16 +1,15 @@
 package net.Indyuce.mmoitems.command.mmoitems;
 
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
+import io.lumine.mythic.lib.command.api.Parameter;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.ConfigFile;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
+import net.Indyuce.mmoitems.command.MMOItemsCommandTreeRoot;
+import net.Indyuce.mmoitems.gui.edition.ItemEdition;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.ConfigFile;
-import net.Indyuce.mmoitems.api.Type;
-import net.Indyuce.mmoitems.command.MMOItemsCommandTreeRoot;
-import net.Indyuce.mmoitems.gui.edition.ItemEdition;
-import io.lumine.mythic.lib.command.api.CommandTreeNode;
-import io.lumine.mythic.lib.command.api.Parameter;
 
 public class CopyCommandTreeNode extends CommandTreeNode {
 	public CopyCommandTreeNode(CommandTreeNode parent) {
@@ -27,7 +26,7 @@ public class CopyCommandTreeNode extends CommandTreeNode {
 		if (args.length < 4)
 			return CommandResult.THROW_USAGE;
 
-		if (!Type.isValid(args[1])) {
+		if (!MMOItemType.isValid(args[1])) {
 			sender.sendMessage(
 					MMOItems.plugin.getPrefix() + ChatColor.RED + "There is no item type called " + args[1].toUpperCase().replace("-", "_") + ".");
 			sender.sendMessage(MMOItems.plugin.getPrefix() + "Type " + ChatColor.GREEN + "/mi list type " + ChatColor.GRAY
@@ -35,7 +34,7 @@ public class CopyCommandTreeNode extends CommandTreeNode {
 			return CommandResult.FAILURE;
 		}
 
-		Type type = Type.get(args[1]);
+		MMOItemType type = MMOItemType.get(args[1]);
 		ConfigFile config = type.getConfigFile();
 		String id1 = args[2].toUpperCase().replace("-", "_");
 		if (!config.getConfig().contains(id1)) {

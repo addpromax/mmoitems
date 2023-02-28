@@ -1,15 +1,14 @@
 package net.Indyuce.mmoitems.command.mmoitems;
 
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
+import net.Indyuce.mmoitems.command.MMOItemsCommandTreeRoot;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-
-import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
-import net.Indyuce.mmoitems.command.MMOItemsCommandTreeRoot;
-import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.command.api.CommandTreeNode;
 
 public class ItemListCommandTreeNode extends CommandTreeNode {
 	public ItemListCommandTreeNode(CommandTreeNode parent) {
@@ -23,7 +22,7 @@ public class ItemListCommandTreeNode extends CommandTreeNode {
 		if (args.length < 2)
 			return CommandResult.THROW_USAGE;
 
-		if (!Type.isValid(args[1])) {
+		if (!MMOItemType.isValid(args[1])) {
 			sender.sendMessage(
 					MMOItems.plugin.getPrefix() + ChatColor.RED + "There is no item type called " + args[1].toUpperCase().replace("-", "_"));
 			sender.sendMessage(MMOItems.plugin.getPrefix() + "Type " + ChatColor.GREEN + "/mi list type " + ChatColor.GRAY
@@ -31,7 +30,7 @@ public class ItemListCommandTreeNode extends CommandTreeNode {
 			return CommandResult.FAILURE;
 		}
 
-		Type type = Type.get(args[1]);
+		MMOItemType type = MMOItemType.get(args[1]);
 		sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.STRIKETHROUGH + "-----------------------------------------------------");
 		sender.sendMessage(ChatColor.GREEN + "List of all items in " + type.getId().toLowerCase() + ".yml:");
 		FileConfiguration config = type.getConfigFile().getConfig();

@@ -1,14 +1,13 @@
 package net.Indyuce.mmoitems.command.mmoitems;
 
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.command.MMOItemsCommandTreeRoot;
+import net.Indyuce.mmoitems.gui.ItemBrowser;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
-import net.Indyuce.mmoitems.gui.ItemBrowser;
-import io.lumine.mythic.lib.command.api.CommandTreeNode;
 
 public class BrowseCommandTreeNode extends CommandTreeNode {
 	public BrowseCommandTreeNode(CommandTreeNode parent) {
@@ -29,12 +28,12 @@ public class BrowseCommandTreeNode extends CommandTreeNode {
 			return CommandResult.SUCCESS;
 		}
 
-		if (!Type.isValid(args[1])) {
+		if (!MMOItemType.isValid(args[1])) {
 			sender.sendMessage(MMOItems.plugin.getPrefix() + ChatColor.RED + "Please specify a valid item type.");
 			return CommandResult.FAILURE;
 		}
 
-		new ItemBrowser((Player) sender, Type.get(args[1])).open();
+		new ItemBrowser((Player) sender, MMOItemType.get(args[1])).open();
 		return CommandResult.SUCCESS;
 	}
 }

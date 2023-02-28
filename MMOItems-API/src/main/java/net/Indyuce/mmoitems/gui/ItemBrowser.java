@@ -11,6 +11,7 @@ import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.edition.NewItemEdition;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.gui.edition.ItemEdition;
 import net.Indyuce.mmoitems.stat.BrowserDisplayIDX;
 import net.Indyuce.mmoitems.util.MMOUtils;
@@ -32,7 +33,7 @@ import java.util.*;
 public class ItemBrowser extends PluginInventory {
     private final Map<String, ItemStack> cached = new LinkedHashMap<>();
 
-    private final Type type;
+    private final MMOItemType type;
     private boolean deleteMode;
 
     // Slots used to display items based on the item type explored
@@ -43,7 +44,7 @@ public class ItemBrowser extends PluginInventory {
         this(player, null);
     }
 
-    public ItemBrowser(Player player, Type type) {
+    public ItemBrowser(Player player, MMOItemType type) {
         super(player);
 
         this.type = type;
@@ -72,11 +73,11 @@ public class ItemBrowser extends PluginInventory {
             Inventory inv = Bukkit.createInventory(this, 54, "Item Explorer");
 
             // Fetch the list of types
-            List<Type> types = new ArrayList<>(MMOItems.plugin.getTypes().getAll());
+            List<MMOItemType> types = new ArrayList<>(MMOItems.plugin.getTypes().getAll());
             for (int j = min; j < Math.min(max, types.size()); j++) {
 
                 // Current type to display into the GUI
-                Type currentType = types.get(j);
+                MMOItemType currentType = types.get(j);
 
                 // Get number of items
                 int items = MMOItems.plugin.getTemplates().getTemplates(currentType).size();
@@ -326,7 +327,7 @@ public class ItemBrowser extends PluginInventory {
         return inv;
     }
 
-    public Type getType() {
+    public MMOItemType getType() {
         return type;
     }
 

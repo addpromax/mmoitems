@@ -10,6 +10,7 @@ import io.lumine.mythic.lib.api.item.SupportedNBTTagValues;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.Type;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import org.apache.commons.codec.binary.Base64;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -25,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -190,10 +192,10 @@ public class MMOUtils {
      * @return The MMOItem Type of this item, if it is a MMOItem
      */
     @Nullable
-    public static Type getType(@Nullable NBTItem nbtItem) {
+    @Contract("null -> null")
+    public static MMOItemType getType(@Nullable NBTItem nbtItem) {
         if (nbtItem == null || !nbtItem.hasType())
             return null;
-
         // Try that one instead
         return MMOItems.plugin.getTypes().get(nbtItem.getType());
     }

@@ -1,12 +1,11 @@
 package net.Indyuce.mmoitems.command.mmoitems;
 
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
+import net.Indyuce.mmoitems.command.MMOItemsCommandTreeRoot;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-
-import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
-import net.Indyuce.mmoitems.command.MMOItemsCommandTreeRoot;
-import io.lumine.mythic.lib.command.api.CommandTreeNode;
 
 public class DeleteCommandTreeNode extends CommandTreeNode {
 	public DeleteCommandTreeNode(CommandTreeNode parent) {
@@ -21,7 +20,7 @@ public class DeleteCommandTreeNode extends CommandTreeNode {
 		if (args.length < 3)
 			return CommandResult.THROW_USAGE;
 
-		if (!Type.isValid(args[1])) {
+		if (!MMOItemType.isValid(args[1])) {
 			sender.sendMessage(
 					MMOItems.plugin.getPrefix() + ChatColor.RED + "There is no item type called " + args[1].toUpperCase().replace("-", "_") + ".");
 			sender.sendMessage(MMOItems.plugin.getPrefix() + ChatColor.RED + "Type " + ChatColor.GREEN + "/mi list type" + ChatColor.RED
@@ -29,7 +28,7 @@ public class DeleteCommandTreeNode extends CommandTreeNode {
 			return CommandResult.FAILURE;
 		}
 
-		Type type = Type.get(args[1]);
+		MMOItemType type = MMOItemType.get(args[1]);
 		String id = args[2].toUpperCase().replace("-", "_");
 		if (!MMOItems.plugin.getTemplates().hasTemplate(type, id)) {
 			sender.sendMessage(MMOItems.plugin.getPrefix() + ChatColor.RED + "There is no item called " + id + ".");

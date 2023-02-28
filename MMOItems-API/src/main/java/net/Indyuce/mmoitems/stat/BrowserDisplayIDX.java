@@ -41,7 +41,7 @@ public class BrowserDisplayIDX extends DoubleStat {
             if (template == null) { continue; }
 
             Double armorIDX = null;
-            if (template.getType().getAvailableStats().contains(ItemStats.BROWSER_DISPLAY_IDX)) {
+            if (template.getType().getStats().contains(ItemStats.BROWSER_DISPLAY_IDX)) {
                 NumericStatFormula indexData = (NumericStatFormula) template.getBaseItemData().get(ItemStats.BROWSER_DISPLAY_IDX);
 
                 // Get value if it existed

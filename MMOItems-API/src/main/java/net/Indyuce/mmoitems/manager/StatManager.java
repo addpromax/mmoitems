@@ -196,7 +196,7 @@ public class StatManager {
                     .getAll()
                     .stream()
                     .filter(stat::isCompatible)
-                    .forEach(type -> type.getAvailableStats().add(stat));
+                    .forEach(type -> type.getStats().add(stat));
     }
 
     private void registerCustomStat(@NotNull ConfigurationSection section) {

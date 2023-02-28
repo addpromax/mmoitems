@@ -5,10 +5,10 @@ import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ItemTier;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.UpgradeTemplate;
 import net.Indyuce.mmoitems.api.item.ItemReference;
 import net.Indyuce.mmoitems.api.item.build.ItemStackBuilder;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.util.MMOItemReforger;
 import net.Indyuce.mmoitems.stat.Enchants;
 import net.Indyuce.mmoitems.stat.data.*;
@@ -26,7 +26,7 @@ import java.util.*;
 
 @SuppressWarnings("unused")
 public class MMOItem implements ItemReference {
-	private final Type type;
+	private final MMOItemType type;
 	private final String id;
 
 	/**
@@ -47,13 +47,13 @@ public class MMOItem implements ItemReference {
 	 *            existing items not to interfere with MI features like the
 	 *            dynamic item updater
 	 */
-	public MMOItem(Type type, String id) {
+	public MMOItem(MMOItemType type, String id) {
 		this.type = type;
 		this.id = id;
 	}
 
 	@Override
-	public Type getType() { return type; }
+	public MMOItemType getType() { return type; }
 
 	@Override
 	public String getId() { return id; }

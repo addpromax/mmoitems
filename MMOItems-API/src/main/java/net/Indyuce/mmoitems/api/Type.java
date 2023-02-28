@@ -11,6 +11,7 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -18,7 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @deprecated Use {@link net.Indyuce.mmoitems.api.item.type.MMOItemType} instead.
+ */
 @SuppressWarnings("unused")
+@Deprecated
+@ApiStatus.ScheduledForRemoval
 public class Type {
 
 
@@ -106,7 +112,8 @@ public class Type {
     public Type(@NotNull TypeManager manager, @NotNull ConfigurationSection config) {
         id = config.getName().toUpperCase().replace("-", "_").replace(" ", "_");
 
-        parent = manager.get(config.getString("parent", "").toUpperCase().replace("-", "_").replace(" ", "_"));
+        // parent = manager.get(config.getString("parent", "").toUpperCase().replace("-", "_").replace(" ", "_"));
+        parent = null;
 
         set = (parent != null ? parent.set : TypeSet.EXTRA);
         weapon = (parent != null && parent.weapon);
@@ -120,7 +127,7 @@ public class Type {
         name = config.getString("name", name);
         item = read(config.getString("display", item == null ? Material.STONE.toString() : item.getType().toString()));
 
-        (unidentifiedTemplate = new UnidentifiedItem(this)).update(config.getConfigurationSection("unident-item"));
+        // (unidentifiedTemplate = new UnidentifiedItem(this)).update(config.getConfigurationSection("unident-item"));
 
         // Getting overridden?
         loreFormat = config.getString("LoreFormat", (parent != null ? parent.loreFormat : loreFormat));
@@ -303,7 +310,8 @@ public class Type {
             return null;
         }
         String format = id.toUpperCase().replace("-", "_").replace(" ", "_");
-        return MMOItems.plugin.getTypes().has(format) ? MMOItems.plugin.getTypes().get(format) : null;
+       //  return MMOItems.plugin.getTypes().has(format) ? MMOItems.plugin.getTypes().get(format) : null;
+        return null;
     }
 
     /**

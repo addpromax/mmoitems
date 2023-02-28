@@ -7,9 +7,9 @@ import io.lumine.mythic.lib.api.util.SmartGive;
 import io.lumine.mythic.lib.comp.flags.CustomFlag;
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.event.item.ConsumableConsumedEvent;
 import net.Indyuce.mmoitems.api.item.mmoitem.VolatileMMOItem;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.item.util.LoreUpdate;
 import net.Indyuce.mmoitems.stat.type.ConsumableItemInteraction;
 import net.Indyuce.mmoitems.stat.type.PlayerConsumable;
@@ -43,7 +43,7 @@ public class Consumable extends UseItem {
             return false;
 
         // Make sure it is an MMOItem
-        Type targetType = MMOItems.getType(target);
+        MMOItemType targetType = MMOItems.getType(target);
 
         for (ConsumableItemInteraction action : MMOItems.plugin.getStats().getConsumableActions())
             if (action.handleConsumableEffect(event, playerData, this, target, targetType))

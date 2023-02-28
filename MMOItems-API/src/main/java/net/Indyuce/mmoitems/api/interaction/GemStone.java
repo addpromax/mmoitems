@@ -6,6 +6,7 @@ import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.event.item.ApplyGemStoneEvent;
 import net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.util.message.Message;
 import net.Indyuce.mmoitems.stat.Enchants;
 import net.Indyuce.mmoitems.stat.GemUpgradeScaling;
@@ -34,7 +35,7 @@ public class GemStone extends UseItem {
     }
 
     @NotNull
-    public ApplyResult applyOntoItem(@NotNull NBTItem target, @NotNull Type targetType) {
+    public ApplyResult applyOntoItem(@NotNull NBTItem target, @NotNull MMOItemType targetType) {
 
         /*
          * Entirely loads the MMOItem and checks if it has the required empty
@@ -45,7 +46,7 @@ public class GemStone extends UseItem {
     }
 
     @NotNull
-    public ApplyResult applyOntoItem(@NotNull MMOItem targetMMO, @NotNull Type targetType, @NotNull String itemName, boolean buildStack, boolean silent) {
+    public ApplyResult applyOntoItem(@NotNull MMOItem targetMMO, @NotNull MMOItemType targetType, @NotNull String itemName, boolean buildStack, boolean silent) {
 
         if (!targetMMO.hasData(ItemStats.GEM_SOCKETS))
             return new ApplyResult(ResultType.NONE);

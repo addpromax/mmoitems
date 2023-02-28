@@ -1,13 +1,12 @@
 package net.Indyuce.mmoitems.command.mmoitems;
 
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-
-import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
-import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.command.api.CommandTreeNode;
 
 public class AllItemsCommandTreeNode extends CommandTreeNode {
 	public AllItemsCommandTreeNode(CommandTreeNode parent) {
@@ -18,7 +17,7 @@ public class AllItemsCommandTreeNode extends CommandTreeNode {
 	public CommandResult execute(CommandSender sender, String[] args) {
 		sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.STRIKETHROUGH + "-----------------------------------------------------");
 		sender.sendMessage(ChatColor.GREEN + "List of all MMOItems:");
-		for (Type type : MMOItems.plugin.getTypes().getAll()) {
+		for (MMOItemType type : MMOItems.plugin.getTypes().getAll()) {
 			FileConfiguration config = type.getConfigFile().getConfig();
 			for (String s : config.getKeys(false))
 				sender.sendMessage("* " + ChatColor.GREEN + s

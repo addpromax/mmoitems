@@ -1,10 +1,9 @@
 package net.Indyuce.mmoitems.manager;
 
-import org.bukkit.inventory.ItemStack;
-
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * ItemStack and MMOItem getters were moved over to MMOItems. There is no longer
@@ -22,7 +21,7 @@ public class ItemManager {
 	 * @deprecated      Use MMOItems.plugin.getMMOItem(Type, String) instead
 	 */
 	@Deprecated
-	public MMOItem getMMOItem(Type type, String id) {
+	public MMOItem getMMOItem(MMOItemType type, String id) {
 		return MMOItems.plugin.getMMOItem(type, id);
 	}
 
@@ -33,7 +32,7 @@ public class ItemManager {
 	 * @deprecated      Use MMOItems.plugin.getItem(Type, String) instead
 	 */
 	@Deprecated
-	public ItemStack getItem(Type type, String id) {
+	public ItemStack getItem(MMOItemType type, String id) {
 		return MMOItems.plugin.getItem(type, id);
 	}
 }

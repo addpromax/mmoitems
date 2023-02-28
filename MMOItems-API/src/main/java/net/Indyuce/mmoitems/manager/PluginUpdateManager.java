@@ -5,7 +5,7 @@ import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ConfigFile;
 import net.Indyuce.mmoitems.api.PluginUpdate;
-import net.Indyuce.mmoitems.api.Type;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.skill.RegisteredSkill;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.Validate;
@@ -32,7 +32,7 @@ public class PluginUpdateManager {
 				new String[]{"Applies a fix for skull textures values in 4.7.1.", "Texture values data storage changed in 4.7.1 due to the UUID change."},
 				sender -> {
 
-					for (Type type : MMOItems.plugin.getTypes().getAll()) {
+					for (MMOItemType type : MMOItems.plugin.getTypes().getAll()) {
 						ConfigFile config = type.getConfigFile();
 						for (String key : config.getConfig().getKeys(false)) {
 							ConfigurationSection section = config.getConfig().getConfigurationSection(key);
@@ -130,7 +130,7 @@ public class PluginUpdateManager {
 
 		register(new PluginUpdate(5, new String[]{"Transition to trigger types in 6.6.3", "Only scans through item configs"}, sender -> {
 
-			for (Type type : MMOItems.plugin.getTypes().getAll()) {
+			for (MMOItemType type : MMOItems.plugin.getTypes().getAll()) {
 				ConfigFile config = type.getConfigFile();
 				for (String id : config.getConfig().getKeys(false)) {
 					ConfigurationSection itemConfig = config.getConfig().getConfigurationSection(id);
@@ -153,7 +153,7 @@ public class PluginUpdateManager {
 				sender -> {
 
 					// fixes stat formats
-					for (Type type : MMOItems.plugin.getTypes().getAll()) {
+					for (MMOItemType type : MMOItems.plugin.getTypes().getAll()) {
 						ConfigFile config = type.getConfigFile();
 						for (String id : config.getConfig().getKeys(false)) {
 

@@ -1,22 +1,21 @@
 package net.Indyuce.mmoitems.comp.mmocore.load;
 
+import io.lumine.mythic.lib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.item.NBTItem;
+import net.Indyuce.mmocore.api.quest.ObjectiveProgress;
+import net.Indyuce.mmocore.api.quest.QuestProgress;
+import net.Indyuce.mmocore.api.quest.objective.Objective;
+import net.Indyuce.mmocore.comp.citizens.CitizenInteractEvent;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import net.Indyuce.mmocore.api.quest.ObjectiveProgress;
-import net.Indyuce.mmocore.api.quest.QuestProgress;
-import net.Indyuce.mmocore.api.quest.objective.Objective;
-import net.Indyuce.mmocore.comp.citizens.CitizenInteractEvent;
-import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
-import io.lumine.mythic.lib.api.MMOLineConfig;
-import io.lumine.mythic.lib.api.item.NBTItem;
-
 public class GetMMOItemObjective extends Objective {
-	private final Type type;
+	private final MMOItemType type;
 	private final String id;
 	private final int required, npcId;
 

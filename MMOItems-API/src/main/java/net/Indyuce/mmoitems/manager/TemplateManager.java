@@ -1,25 +1,27 @@
 package net.Indyuce.mmoitems.manager;
 
+import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.api.util.ui.FriendlyFeedbackCategory;
 import io.lumine.mythic.lib.api.util.ui.FriendlyFeedbackProvider;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ConfigFile;
 import net.Indyuce.mmoitems.api.ItemTier;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
 import net.Indyuce.mmoitems.api.item.template.TemplateModifier;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.util.TemplateMap;
-import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmoitems.api.util.message.FFPMMOItems;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class TemplateManager implements Reloadable {
 
@@ -42,7 +44,7 @@ public class TemplateManager implements Reloadable {
 	 *
 	 * @return If these two Strings represent a loaded MMOItem Template
 	 */
-	public boolean hasTemplate(@Nullable Type type, @Nullable String id) {
+	public boolean hasTemplate(@Nullable MMOItemType type, @Nullable String id) {
 		if (type == null || id == null) { return false; }
 		return templates.hasValue(type, id);
 	}
@@ -54,7 +56,7 @@ public class TemplateManager implements Reloadable {
 	 */
 	public boolean hasTemplate(@Nullable NBTItem nbt) {
 		if (nbt == null) { return false; }
-		return hasTemplate(Type.get(nbt.getType()), nbt.getString("MMOITEMS_ITEM_ID"));
+		return hasTemplate(MMOItemType.get(nbt.getType()), nbt.getString("MMOITEMS_ITEM_ID"));
 	}
 
 	/**
@@ -65,8 +67,10 @@ public class TemplateManager implements Reloadable {
 	 *
 	 * @return A template of these qualifications if it found them,
 	 */
-	@Nullable public MMOItemTemplate getTemplate(@Nullable Type type, @Nullable String id) {
-		if (type == null || id == null) { return null; }
+	@Nullable
+	@Contract("_, null -> null")
+	public MMOItemTemplate getTemplate(@Nullable MMOItemType type, @Nullable String id) {
+		if (type == null || id == null) return null;
 		return templates.getValue(type, id);
 	}
 
@@ -77,9 +81,11 @@ public class TemplateManager implements Reloadable {
 	 *
 	 * @return The MMOItem Template parent of it, if it has any.
 	 */
-	@Nullable public MMOItemTemplate getTemplate(@Nullable NBTItem nbt) {
-		if (nbt == null) { return null; }
-		return getTemplate(Type.get(nbt.getType()), nbt.getString("MMOITEMS_ITEM_ID"));
+	@Nullable
+	@Contract("null -> null")
+	public MMOItemTemplate getTemplate(@Nullable NBTItem nbt) {
+		if (nbt == null) return null;
+		return getTemplate(MMOItemType.get(nbt.getType()), nbt.getString("MMOITEMS_ITEM_ID"));
 	}
 
 	/**
@@ -89,18 +95,22 @@ public class TemplateManager implements Reloadable {
 	 * @param  id   The item ID
 	 * @return      MMOItem template if it exists, or throws an IAE otherwise
 	 */
-	@NotNull public MMOItemTemplate getTemplateOrThrow(@Nullable Type type, @Nullable String id) {
+	@NotNull
+	@Contract("_, null -> fail")
+	public MMOItemTemplate getTemplateOrThrow(@Nullable MMOItemType type, @Nullable String id) {
 		Validate.isTrue(type != null && hasTemplate(type, id), "Could not find a template with ID '" + id + "'");
 		return templates.getValue(type, id);
 	}
 
-	@NotNull public Collection<MMOItemTemplate> getTemplates(@NotNull Type type) {
+	@NotNull public Collection<MMOItemTemplate> getTemplates(@NotNull MMOItemType type) {
 		return templates.collectValues(type);
 	}
-	@NotNull public ArrayList<String> getTemplateNames(@NotNull Type type) {
-		ArrayList<String> names = new ArrayList<>();
-		for (MMOItemTemplate t : templates.collectValues(type)) { names.add(t.getId()); }
-		return names;
+
+	@NotNull public List<String> getTemplateNames(@NotNull MMOItemType type) {
+		return this.templates.collectValues(type)
+				.stream()
+				.map(MMOItemTemplate::getId)
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -122,7 +132,7 @@ public class TemplateManager implements Reloadable {
 	 * @param type The item type
 	 * @param id   The item ID
 	 */
-	public void unregisterTemplate(@NotNull Type type, @NotNull String id) {
+	public void unregisterTemplate(@NotNull MMOItemType type, @NotNull String id) {
 		templates.removeValue(type, id);
 	}
 
@@ -133,7 +143,7 @@ public class TemplateManager implements Reloadable {
 	 * @param type The item type
 	 * @param id   The item ID
 	 */
-	public void deleteTemplate(@NotNull Type type, @NotNull String id) {
+	public void deleteTemplate(@NotNull MMOItemType type, @NotNull String id) {
 		unregisterTemplate(type, id);
 
 		ConfigFile config = type.getConfigFile();
@@ -153,7 +163,7 @@ public class TemplateManager implements Reloadable {
 	 * @param id   The item ID
 	 */
 	@SuppressWarnings("UnusedReturnValue")
-	public MMOItemTemplate requestTemplateUpdate(@NotNull Type type, @NotNull String id) {
+	public MMOItemTemplate requestTemplateUpdate(@NotNull MMOItemType type, @NotNull String id) {
 		templates.removeValue(type, id);
 
 		try {
@@ -220,7 +230,7 @@ public class TemplateManager implements Reloadable {
 	 * are initialized
 	 */
 	public void preloadTemplates() {
-		for (Type type : MMOItems.plugin.getTypes().getAll()) {
+		for (MMOItemType type : MMOItems.plugin.getTypes().getAll()) {
 			FileConfiguration config = type.getConfigFile().getConfig();
 			for (String key : config.getKeys(false))
 				try {
@@ -235,7 +245,6 @@ public class TemplateManager implements Reloadable {
 	 * Loads item generator modifiers and post load item templates.
 	 */
 	public void postloadTemplates() {
-
 		FriendlyFeedbackProvider ffp = new FriendlyFeedbackProvider(FFPMMOItems.get());
 		ffp.activatePrefix(true, "Item Templates");
 		ffp.log(FriendlyFeedbackCategory.INFORMATION, "Loading template modifiers, please wait..");
@@ -296,7 +305,7 @@ public class TemplateManager implements Reloadable {
 
 		ffp.activatePrefix(true, "Item Templates");
 		ffp.log(FriendlyFeedbackCategory.INFORMATION, "Loading item templates, please wait...");
-		for (Type type : MMOItems.plugin.getTypes().getAll()) {
+		for (MMOItemType type : MMOItems.plugin.getTypes().getAll()) {
 			FileConfiguration config = type.getConfigFile().getConfig();
 			ffp.activatePrefix(true, "Item Templates \u00a78($r" + type.getId() + "\u00a78)");
 			for (String key : config.getKeys(false))

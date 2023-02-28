@@ -1,7 +1,7 @@
 package net.Indyuce.mmoitems.api.item;
 
 import io.lumine.mythic.lib.player.cooldown.CooldownObject;
-import net.Indyuce.mmoitems.api.Type;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 
 /**
  * Referenced objects are either item templates or MMOItems. They contain the
@@ -19,7 +19,7 @@ public interface ItemReference extends CooldownObject {
      * <p>
      * Example: <b>GREATSWORD</b> STEEL_CLAYMORE
      */
-    Type getType();
+    MMOItemType getType();
 
     /**
      * MMOItem templates have to identifiers: TYPE and <b>ID</b>

@@ -10,10 +10,10 @@ import io.lumine.mythic.lib.api.util.ui.FriendlyFeedbackMessage;
 import io.lumine.mythic.lib.api.util.ui.FriendlyFeedbackProvider;
 import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.crafting.MMOItemUIFilter;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.recipe.workbench.ingredients.AirIngredient;
 import net.Indyuce.mmoitems.api.recipe.workbench.ingredients.MMOItemIngredient;
 import net.Indyuce.mmoitems.api.recipe.workbench.ingredients.VanillaIngredient;
@@ -75,7 +75,7 @@ public class RecipeManager implements Reloadable {
         ffp.activatePrefix(true, "Custom Crafting");
 
         // Every single type yes
-        for (Type type : MMOItems.plugin.getTypes().getAll()) {
+        for (MMOItemType type : MMOItems.plugin.getTypes().getAll()) {
 
             // Find their config
             FileConfiguration config = type.getConfigFile().getConfig();
@@ -198,7 +198,7 @@ public class RecipeManager implements Reloadable {
     }
 
     @NotNull
-    public NamespacedKey getRecipeKey(@NotNull Type type, @NotNull String id, @NotNull String recipeType, @NotNull String number) {
+    public NamespacedKey getRecipeKey(@NotNull MMOItemType type, @NotNull String id, @NotNull String recipeType, @NotNull String number) {
         return new NamespacedKey(MMOItems.plugin, recipeType + "_" + type.getId() + "_" + id + "_" + number);
     }
 
@@ -364,7 +364,7 @@ public class RecipeManager implements Reloadable {
         if (poof.getParent() instanceof MMOItemUIFilter) {
 
             // Get those
-            Type miType = MMOItems.plugin.getTypes().getOrThrow(poof.getArgument());
+            MMOItemType miType = MMOItems.plugin.getTypes().getOrThrow(poof.getArgument());
 
             // Find template
             MMOItemTemplate mmo = MMOItems.plugin.getTemplates().getTemplateOrThrow(miType, poof.getData());

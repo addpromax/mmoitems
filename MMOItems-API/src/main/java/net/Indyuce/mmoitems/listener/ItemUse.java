@@ -17,6 +17,7 @@ import net.Indyuce.mmoitems.api.interaction.weapon.Weapon;
 import net.Indyuce.mmoitems.api.interaction.weapon.untargeted.Staff;
 import net.Indyuce.mmoitems.api.interaction.weapon.untargeted.UntargetedWeapon;
 import net.Indyuce.mmoitems.api.item.mmoitem.VolatileMMOItem;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.util.message.Message;
 import org.bukkit.Bukkit;
@@ -242,7 +243,7 @@ public class ItemUse implements Listener {
             if (!picked.hasType())
                 return;
 
-            GemStone.ApplyResult result = ((GemStone) useItem).applyOntoItem(picked, Type.get(picked.getType()));
+            GemStone.ApplyResult result = ((GemStone) useItem).applyOntoItem(picked, MMOItemType.get(picked.getType()));
             if (result.getType() == GemStone.ResultType.NONE)
                 return;
 

@@ -2,7 +2,7 @@ package net.Indyuce.mmoitems.api.item.mmoitem;
 
 import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmoitems.ItemStats;
-import net.Indyuce.mmoitems.api.Type;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,7 +19,7 @@ public abstract class ReadMMOItem extends MMOItem {
 	 *            The NBTItem being read to generate an MMOItem
 	 */
 	public ReadMMOItem(@NotNull NBTItem item) {
-		super(Type.get(item.getType()), item.getString("MMOITEMS_ITEM_ID"));
+		super(MMOItemType.get(item.getType()), item.getString("MMOITEMS_ITEM_ID"));
 
 		this.item = item;
 	}

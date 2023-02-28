@@ -40,7 +40,7 @@ public class ItemEdition extends EditionInventory {
          * it has to determine what stats can be applied first because otherwise
          * the for loop will just let some slots empty
          */
-        List<ItemStat> appliable = new ArrayList<>(getEdited().getType().getAvailableStats()).stream()
+        List<ItemStat<?, ?>> appliable = new ArrayList<>(getEdited().getType().getStats()).stream()
                 .filter(stat -> stat.hasValidMaterial(getCachedItem()) && !(stat instanceof InternalStat)).toList();
 
         Inventory inv = Bukkit.createInventory(this, 54, "Item Edition: " + getEdited().getId());

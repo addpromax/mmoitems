@@ -6,9 +6,9 @@ import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import io.lumine.mythic.lib.command.api.Parameter;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ItemTier;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
 import net.Indyuce.mmoitems.api.item.template.explorer.*;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.player.RPGPlayer;
 import org.apache.commons.lang.Validate;
@@ -68,8 +68,8 @@ public class GenerateCommandTreeNode extends CommandTreeNode {
             }
             if (handler.hasArgument("type")) {
                 type = handler.getValue("type");
-                Validate.isTrue(Type.isValid(type), "Could not find type with ID '" + type + "'");
-                builder.applyFilter(new TypeFilter(Type.get(type)));
+                Validate.isTrue(MMOItemType.isValid(type), "Could not find type with ID '" + type + "'");
+                builder.applyFilter(new TypeFilter(MMOItemType.get(type)));
             }
             if (handler.hasArgument("id")) {
                 Validate.isTrue(type != null, "You have to specify a type if using the id option!");

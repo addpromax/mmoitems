@@ -5,8 +5,8 @@ import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.mmoitem.VolatileMMOItem;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.ItemStack;
 
@@ -70,7 +70,7 @@ public abstract class EquippedItem {
         if (typeFormat == null)
             return false;
 
-        final @Nullable Type type = MMOItems.plugin.getTypes().get(typeFormat);
+        final @Nullable MMOItemType type = MMOItems.plugin.getTypes().get(typeFormat);
         if (type == null)
             return false;
 

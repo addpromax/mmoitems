@@ -1,15 +1,14 @@
 package net.Indyuce.mmoitems.api.crafting.trigger;
 
+import io.lumine.mythic.lib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.util.SmartGive;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
+import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
-import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
-import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
-import net.Indyuce.mmoitems.api.player.PlayerData;
-import io.lumine.mythic.lib.api.MMOLineConfig;
-import io.lumine.mythic.lib.api.util.SmartGive;
 
 public class MMOItemTrigger extends Trigger {
 	private final MMOItemTemplate template;
@@ -20,7 +19,7 @@ public class MMOItemTrigger extends Trigger {
 
 		config.validate("type", "id");
 
-		Type type = MMOItems.plugin.getTypes().getOrThrow(config.getString("type").toUpperCase().replace("-", "_").replace(" ", "_"));
+		MMOItemType type = MMOItems.plugin.getTypes().getOrThrow(config.getString("type").toUpperCase().replace("-", "_").replace(" ", "_"));
 		String id = config.getString("id").replace("-", "_").toUpperCase();
 		Validate.isTrue(MMOItems.plugin.getTemplates().hasTemplate(type, id), "Could not find MMOItem with ID '" + id + "'");
 

@@ -1,22 +1,21 @@
 package net.Indyuce.mmoitems.stat;
 
+import io.lumine.mythic.lib.api.item.NBTItem;
+import net.Indyuce.mmoitems.api.event.item.IdentifyItemEvent;
+import net.Indyuce.mmoitems.api.interaction.Consumable;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
+import net.Indyuce.mmoitems.api.item.util.identify.IdentifiedItem;
+import net.Indyuce.mmoitems.api.player.PlayerData;
+import net.Indyuce.mmoitems.api.util.message.Message;
+import net.Indyuce.mmoitems.stat.type.BooleanStat;
+import net.Indyuce.mmoitems.stat.type.ConsumableItemInteraction;
+import net.Indyuce.mmoitems.util.MMOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-
-import net.Indyuce.mmoitems.util.MMOUtils;
-import net.Indyuce.mmoitems.api.Type;
-import net.Indyuce.mmoitems.api.event.item.IdentifyItemEvent;
-import net.Indyuce.mmoitems.api.interaction.Consumable;
-import net.Indyuce.mmoitems.api.item.util.identify.IdentifiedItem;
-import net.Indyuce.mmoitems.api.player.PlayerData;
-import net.Indyuce.mmoitems.api.util.message.Message;
-import net.Indyuce.mmoitems.stat.type.BooleanStat;
-import net.Indyuce.mmoitems.stat.type.ConsumableItemInteraction;
-import io.lumine.mythic.lib.api.item.NBTItem;
 import org.jetbrains.annotations.NotNull;
 
 public class CanIdentify extends BooleanStat implements ConsumableItemInteraction {
@@ -26,7 +25,7 @@ public class CanIdentify extends BooleanStat implements ConsumableItemInteractio
 	}
 
 	@Override
-	public boolean handleConsumableEffect(@NotNull InventoryClickEvent event, @NotNull PlayerData playerData, @NotNull Consumable consumable, @NotNull NBTItem target, Type targetType) {
+	public boolean handleConsumableEffect(@NotNull InventoryClickEvent event, @NotNull PlayerData playerData, @NotNull Consumable consumable, @NotNull NBTItem target, MMOItemType targetType) {
 		if (targetType != null)
 			return false;
 

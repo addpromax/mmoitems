@@ -5,9 +5,9 @@ import io.lumine.mythic.lib.api.util.ui.FriendlyFeedbackCategory;
 import io.lumine.mythic.lib.api.util.ui.FriendlyFeedbackProvider;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ItemTier;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.ItemReference;
 import net.Indyuce.mmoitems.api.item.build.MMOItemBuilder;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.player.RPGPlayer;
 import net.Indyuce.mmoitems.api.util.message.FFPMMOItems;
@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class MMOItemTemplate extends PostLoadObject implements ItemReference {
-	private final Type type;
+	private final MMOItemType type;
 	private final String id;
 	private final int revId;
 
@@ -40,7 +40,7 @@ public class MMOItemTemplate extends PostLoadObject implements ItemReference {
 	 * @param id   The template identifier, it's ok if two templates with
 	 *             different item types share the same ID
 	 */
-	public MMOItemTemplate(Type type, String id) {
+	public MMOItemTemplate(MMOItemType type, String id) {
 		super(null);
 
 		this.type = type;
@@ -54,7 +54,7 @@ public class MMOItemTemplate extends PostLoadObject implements ItemReference {
 	 * @param type   The item type of your template
 	 * @param config The config file read to load the template
 	 */
-	public MMOItemTemplate(Type type, ConfigurationSection config) {
+	public MMOItemTemplate(MMOItemType type, ConfigurationSection config) {
 		super(config);
 		Validate.notNull(config, "Could not load template config");
 
@@ -127,7 +127,7 @@ public class MMOItemTemplate extends PostLoadObject implements ItemReference {
 	}
 
 	@Override
-	public Type getType() {
+	public MMOItemType getType() {
 		return type;
 	}
 

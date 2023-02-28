@@ -1,17 +1,17 @@
 package net.Indyuce.mmoitems.api.item.template.explorer;
 
-import java.util.function.Predicate;
-
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
+
+import java.util.function.Predicate;
 
 /**
  * Filters items with a specific type
  */
 public class TypeFilter implements Predicate<MMOItemTemplate> {
-	private final Type type;
+	private final MMOItemType type;
 
-	public TypeFilter(Type type) {
+	public TypeFilter(MMOItemType type) {
 		this.type = type;
 	}
 

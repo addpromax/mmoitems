@@ -1,10 +1,10 @@
 package net.Indyuce.mmoitems.command.mmoitems.revid;
 
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ConfigFile;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
-import io.lumine.mythic.lib.command.api.CommandTreeNode;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -28,13 +28,13 @@ public class RevIDActionCommandTreeNode extends CommandTreeNode {
 	public CommandResult execute(CommandSender sender, String[] args) {
 		if (args.length < 3) return CommandResult.THROW_USAGE;
 
-		if (!Type.isValid(args[2]) && !args[2].equalsIgnoreCase("all")) {
+		if (!MMOItemType.isValid(args[2]) && !args[2].equalsIgnoreCase("all")) {
 			sender.sendMessage(MMOItems.plugin.getPrefix() + ChatColor.RED + "There is no item type called " + args[2].toUpperCase().replace("-", "_") + ".");
 			sender.sendMessage(MMOItems.plugin.getPrefix() + ChatColor.RED + "Type " + ChatColor.GREEN + "/mi list type" + ChatColor.RED + " to see all the available item types.");
 			return CommandResult.FAILURE;
 		}
 
-		Type type = args[2].equalsIgnoreCase("all") ? null : Type.get(args[2]);
+		MMOItemType type = args[2].equalsIgnoreCase("all") ? null : MMOItemType.get(args[2]);
 		List<MMOItemTemplate> templates = new ArrayList<>(type == null ? MMOItems.plugin.getTemplates().collectTemplates() : MMOItems.plugin.getTemplates().getTemplates(type));
 		int failed = 0;
 		for(MMOItemTemplate template : templates) {

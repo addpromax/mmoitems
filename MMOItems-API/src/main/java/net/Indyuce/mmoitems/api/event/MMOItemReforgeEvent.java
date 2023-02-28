@@ -1,14 +1,10 @@
 package net.Indyuce.mmoitems.api.event;
 
 import net.Indyuce.mmoitems.api.ReforgeOptions;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.util.MMOItemReforger;
-import net.Indyuce.mmoitems.stat.data.type.Mergeable;
-import net.Indyuce.mmoitems.stat.data.type.StatData;
-import net.Indyuce.mmoitems.stat.type.ItemStat;
-import net.Indyuce.mmoitems.stat.type.StatHistory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -68,7 +64,7 @@ public class MMOItemReforgeEvent extends Event implements Cancellable {
     /**
      * @return MMOItems Type we are working with
      */
-    @NotNull public Type getType() { return getReforger().getTemplate().getType(); }
+    @NotNull public MMOItemType getType() { return getReforger().getTemplate().getType(); }
 
     /**
      * @return MMOItems Type we are working with

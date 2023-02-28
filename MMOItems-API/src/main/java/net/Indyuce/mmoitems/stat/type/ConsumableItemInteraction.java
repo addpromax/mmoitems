@@ -1,11 +1,10 @@
 package net.Indyuce.mmoitems.stat.type;
 
-import org.bukkit.event.inventory.InventoryClickEvent;
-
-import net.Indyuce.mmoitems.api.Type;
-import net.Indyuce.mmoitems.api.interaction.Consumable;
-import net.Indyuce.mmoitems.api.player.PlayerData;
 import io.lumine.mythic.lib.api.item.NBTItem;
+import net.Indyuce.mmoitems.api.interaction.Consumable;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
+import net.Indyuce.mmoitems.api.player.PlayerData;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,5 +30,5 @@ public interface ConsumableItemInteraction {
 	 *                    (basically return true if it should be the only
 	 *                    consumable effect applied).
 	 */
-	boolean handleConsumableEffect(@NotNull InventoryClickEvent event, @NotNull PlayerData playerData, @NotNull Consumable consumable, @NotNull NBTItem target, @Nullable Type targetType);
+	boolean handleConsumableEffect(@NotNull InventoryClickEvent event, @NotNull PlayerData playerData, @NotNull Consumable consumable, @NotNull NBTItem target, @Nullable MMOItemType targetType);
 }

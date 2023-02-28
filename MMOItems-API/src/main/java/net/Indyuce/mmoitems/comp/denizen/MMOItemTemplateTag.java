@@ -10,19 +10,19 @@ import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ItemTier;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 
 import java.util.Random;
 
 public class MMOItemTemplateTag extends SimpleTag {
-	private final Type type;
+	private final MMOItemType type;
 	private final String id;
 
 	private static final Random random = new Random();
 
-	public MMOItemTemplateTag(Type type, String id) {
+	public MMOItemTemplateTag(MMOItemType type, String id) {
 		this.type = type;
 		this.id = id;
 	}
@@ -134,7 +134,7 @@ public class MMOItemTemplateTag extends SimpleTag {
 			String typeId = split[0];
 			String itemId = split[1];
 
-			Type type = MMOItems.plugin.getTypes().getOrThrow(typeId);
+			MMOItemType type = MMOItems.plugin.getTypes().getOrThrow(typeId);
 			MMOItems.plugin.getTemplates().getTemplateOrThrow(type, itemId);
 
 			return new MMOItemTemplateTag(type, itemId);

@@ -2,9 +2,9 @@ package net.Indyuce.mmoitems.stat;
 
 import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmoitems.ItemStats;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.interaction.Consumable;
 import net.Indyuce.mmoitems.api.interaction.util.DurabilityItem;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.util.message.Message;
 import net.Indyuce.mmoitems.listener.CustomSoundListener;
@@ -30,7 +30,7 @@ public class RepairPowerPercent extends DoubleStat implements ConsumableItemInte
     private static final String REPAIR_TYPE_TAG = "MMOITEMS_REPAIR_TYPE";
 
     @Override
-    public boolean handleConsumableEffect(@NotNull InventoryClickEvent event, @NotNull PlayerData playerData, @NotNull Consumable consumable, @NotNull NBTItem target, @Nullable Type targetType) {
+    public boolean handleConsumableEffect(@NotNull InventoryClickEvent event, @NotNull PlayerData playerData, @NotNull Consumable consumable, @NotNull NBTItem target, @Nullable MMOItemType targetType) {
         final double repairPower = consumable.getNBTItem().getStat(ItemStats.REPAIR_PERCENT.getId());
         if (repairPower <= 0)
             return false;

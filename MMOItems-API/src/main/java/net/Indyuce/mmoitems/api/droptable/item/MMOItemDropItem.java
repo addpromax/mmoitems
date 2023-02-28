@@ -1,24 +1,23 @@
 package net.Indyuce.mmoitems.api.droptable.item;
 
+import io.lumine.mythic.lib.api.item.NBTItem;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
+import net.Indyuce.mmoitems.api.player.PlayerData;
+import net.Indyuce.mmoitems.api.util.RandomAmount;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
-import net.Indyuce.mmoitems.api.player.PlayerData;
-import net.Indyuce.mmoitems.api.util.RandomAmount;
-import io.lumine.mythic.lib.api.item.NBTItem;
-
 public class MMOItemDropItem extends DropItem {
-	private final Type type;
+	private final MMOItemType type;
 	private final String id;
 	private final double unidentification;
 
-	public MMOItemDropItem(Type type, String id, double drop, double unidentification, RandomAmount amount) {
+	public MMOItemDropItem(MMOItemType type, String id, double drop, double unidentification, RandomAmount amount) {
 		this(type, id, drop, unidentification, amount.getMin(), amount.getMax());
 	}
 
-	public MMOItemDropItem(Type type, String id, double drop, double unidentification, int min, int max) {
+	public MMOItemDropItem(MMOItemType type, String id, double drop, double unidentification, int min, int max) {
 		super(drop, min, max);
 
 		this.type = type;
@@ -26,7 +25,7 @@ public class MMOItemDropItem extends DropItem {
 		this.unidentification = unidentification;
 	}
 
-	public MMOItemDropItem(Type type, String id, String info) {
+	public MMOItemDropItem(MMOItemType type, String id, String info) {
 		super(info);
 
 		this.type = type;
@@ -36,7 +35,7 @@ public class MMOItemDropItem extends DropItem {
 		unidentification = Double.parseDouble(argSplit[2]) / 100;
 	}
 
-	public Type getType() {
+	public MMOItemType getType() {
 		return type;
 	}
 

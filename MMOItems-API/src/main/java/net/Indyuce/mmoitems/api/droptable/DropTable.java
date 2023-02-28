@@ -1,10 +1,10 @@
 package net.Indyuce.mmoitems.api.droptable;
 
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.droptable.item.BlockDropItem;
 import net.Indyuce.mmoitems.api.droptable.item.DropItem;
 import net.Indyuce.mmoitems.api.droptable.item.MMOItemDropItem;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
@@ -83,7 +83,7 @@ public class DropTable {
 
 			if (subtable.contains("items"))
 				for (String typeFormat : subtable.getConfigurationSection("items").getKeys(false)) {
-					Type type = MMOItems.plugin.getTypes().getOrThrow(typeFormat.toUpperCase().replace("-", "_"));
+					MMOItemType type = MMOItems.plugin.getTypes().getOrThrow(typeFormat.toUpperCase().replace("-", "_"));
 					for (String id : subtable.getConfigurationSection("items." + typeFormat).getKeys(false))
 						items.add(new MMOItemDropItem(type, id, subtable.getString("items." + typeFormat + "." + id)));
 				}

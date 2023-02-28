@@ -3,10 +3,10 @@ package net.Indyuce.mmoitems.api.item.type;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
+import io.lumine.mythic.lib.script.Script;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ConfigFile;
 import net.Indyuce.mmoitems.api.item.util.identify.UnidentifiedItem;
-import net.Indyuce.mmoitems.manager.TypeManager;
 import net.Indyuce.mmoitems.stat.type.ItemStat;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
@@ -36,9 +36,10 @@ public class MMOItemType {
     private final ItemStack item;
     private final UnidentifiedItem unidentifiedTemplate;
     private final List<ItemStat<?, ?>> stats;
+    private final @org.jetbrains.annotations.Nullable Script script;
 
 
-    private MMOItemType(String id, String name, ModifierSource modifierSource, boolean weapon, String loreFormat, ItemStack item, List<ItemStat<?, ?>> stats) {
+    protected MMOItemType(String id, String name, ModifierSource modifierSource, boolean weapon, String loreFormat, ItemStack item, @org.jetbrains.annotations.Nullable Script script, List<ItemStat<?, ?>> stats) {
         this.id = id;
         this.name = name;
         this.modifierSource = modifierSource;
@@ -46,6 +47,7 @@ public class MMOItemType {
         this.loreFormat = loreFormat;
         this.item = item;
         this.unidentifiedTemplate = new UnidentifiedItem(this);
+        this.script = script;
         this.stats = stats;
     }
 
@@ -90,21 +92,8 @@ public class MMOItemType {
         return new ConfigFile("/item", getId().toLowerCase());
     }
 
-    public static MMOItemType load(@NotNull TypeManager manager, @NotNull ConfigurationSection section) {
-        final String id = section.getName();
-        final String name = section.getString("name");
-        final ModifierSource modifierSource = ModifierSource.valueOf(section.getString("modifier-source"));
-        final boolean weapon = section.getBoolean("weapon");
-        final String loreFormat = section.getString("lore-format");
-        final ItemStack item = read(section.getString("display", Material.STONE.toString()));
-
-
-        // TODO: Load the stats
-        final List<ItemStat<?, ?>> stats = new ArrayList<>();
-
-        MMOItemType type = new MMOItemType(id, name, modifierSource, weapon, loreFormat, item, stats);
-        type.getUnidentifiedTemplate().update(section.getConfigurationSection("unident-item"));
-        return type;
+    public @org.jetbrains.annotations.Nullable Script getScript() {
+        return script;
     }
 
     public static ItemStack read(String str) {
@@ -174,5 +163,23 @@ public class MMOItemType {
      */
     public static boolean isValid(@Nullable String id) {
         return id != null && MMOItems.plugin.getTypes().has(id.toUpperCase().replace("-", "_").replace(" ", "_"));
+    }
+
+    public static MMOItemType load(@NotNull ConfigurationSection section) {
+        final String id = section.getName();
+        final String name = section.getString("name");
+        final ModifierSource modifierSource = ModifierSource.valueOf(section.getString("modifier-source"));
+        final boolean weapon = section.getBoolean("weapon");
+        final String loreFormat = section.getString("lore-format");
+        final ItemStack item = read(section.getString("display", Material.STONE.toString()));
+        final Script script = section.isString("script") ? MythicLib.plugin.getSkills().getScriptOrThrow(section.getString("script")) : null;
+
+
+        // TODO: Load the stats
+        final List<ItemStat<?, ?>> stats = new ArrayList<>();
+
+        MMOItemType type = new MMOItemType(id, name, modifierSource, weapon, loreFormat, item, script, stats);
+        type.getUnidentifiedTemplate().update(section.getConfigurationSection("unident-item"));
+        return type;
     }
 }

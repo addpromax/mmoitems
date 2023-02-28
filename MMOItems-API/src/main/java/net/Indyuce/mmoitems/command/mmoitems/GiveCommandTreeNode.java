@@ -5,9 +5,9 @@ import io.lumine.mythic.lib.command.api.CommandTreeNode;
 import io.lumine.mythic.lib.command.api.Parameter;
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.util.RandomAmount;
 import net.Indyuce.mmoitems.api.util.message.Message;
@@ -54,7 +54,7 @@ public class GiveCommandTreeNode extends CommandTreeNode {
 			Validate.notNull(target, "Could not find player called '" + args[args.length > 3 ? 3 : 2] + "'.");
 
 			// item
-			Type type = MMOItems.plugin.getTypes().getOrThrow(args[1].toUpperCase().replace("-", "_"));
+			MMOItemType type = MMOItems.plugin.getTypes().getOrThrow(args[1].toUpperCase().replace("-", "_"));
 			MMOItemTemplate template = MMOItems.plugin.getTemplates().getTemplateOrThrow(type, args[2].toUpperCase().replace("-", "_"));
 			RandomAmount amount = args.length > 4 ? new RandomAmount(args[4]) : new RandomAmount(1, 1);
 			double unidentify = args.length > 5 ? Double.parseDouble(args[5]) / 100 : 0;

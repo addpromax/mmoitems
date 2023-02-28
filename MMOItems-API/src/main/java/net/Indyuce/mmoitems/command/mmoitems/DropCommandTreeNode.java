@@ -1,20 +1,15 @@
 package net.Indyuce.mmoitems.command.mmoitems;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import io.lumine.mythic.lib.command.api.CommandTreeNode;
+import io.lumine.mythic.lib.command.api.Parameter;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.droptable.item.MMOItemDropItem;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
+import net.Indyuce.mmoitems.command.MMOItemsCommandTreeRoot;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-
-import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
-import net.Indyuce.mmoitems.api.droptable.item.MMOItemDropItem;
-import net.Indyuce.mmoitems.command.MMOItemsCommandTreeRoot;
-import io.lumine.mythic.lib.command.api.CommandTreeNode;
-import io.lumine.mythic.lib.command.api.Parameter;
 
 public class DropCommandTreeNode extends CommandTreeNode {
 	public DropCommandTreeNode(CommandTreeNode parent) {
@@ -36,7 +31,7 @@ public class DropCommandTreeNode extends CommandTreeNode {
 		if (args.length != 10)
 			return CommandResult.THROW_USAGE;
 
-		if (!Type.isValid(args[1])) {
+		if (!MMOItemType.isValid(args[1])) {
 			sender.sendMessage(
 					MMOItems.plugin.getPrefix() + ChatColor.RED + "There is no item type called " + args[1].toUpperCase().replace("-", "_") + ".");
 			sender.sendMessage(MMOItems.plugin.getPrefix() + ChatColor.RED + "Type " + ChatColor.GREEN + "/mi list type " + ChatColor.RED
@@ -44,7 +39,7 @@ public class DropCommandTreeNode extends CommandTreeNode {
 			return CommandResult.FAILURE;
 		}
 
-		Type type = Type.get(args[1].toUpperCase());
+		MMOItemType type = MMOItemType.get(args[1].toUpperCase());
 		String name = args[2].toUpperCase().replace("-", "_");
 		FileConfiguration config = type.getConfigFile().getConfig();
 		if (!config.contains(name)) {

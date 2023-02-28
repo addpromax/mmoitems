@@ -6,10 +6,10 @@ import io.lumine.mythic.lib.api.util.ui.FriendlyFeedbackProvider;
 import io.lumine.mythic.lib.version.SpigotPlugin;
 import net.Indyuce.mmoitems.api.ItemTier;
 import net.Indyuce.mmoitems.api.SoulboundInfo;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.crafting.MMOItemUIFilter;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.util.MMOItemReforger;
 import net.Indyuce.mmoitems.api.util.NumericStatFormula;
@@ -49,6 +49,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -168,7 +169,7 @@ public class MMOItems extends JavaPlugin {
         dropTableManager = new DropTableManager();
         worldGenManager = new WorldGenManager();
         blockManager = new BlockManager();
-       statManager.reload(false);
+        statManager.reload(false);
 
 
         PluginUtils.hookDependencyIfPresent("Vault", u -> vaultSupport = new VaultSupport());
@@ -507,11 +508,10 @@ public class MMOItems extends JavaPlugin {
      * template has the 'tiered' option
      */
     @Nullable
-    public MMOItem getMMOItem(@Nullable Type type, @Nullable String id, @Nullable PlayerData player) {
-        if (type == null || id == null) {
+    @Contract("_, _, null -> null")
+    public MMOItem getMMOItem(@Nullable MMOItemType type, @Nullable String id, @Nullable PlayerData player) {
+        if (type == null || id == null)
             return null;
-        }
-
         // Valid template?
         MMOItemTemplate found = getTemplates().getTemplate(type, id);
         if (found == null) return null;
@@ -527,8 +527,7 @@ public class MMOItems extends JavaPlugin {
      * template has the 'tiered' option
      */
     @Nullable
-    public ItemStack getItem(@Nullable Type type, @Nullable String id, @NotNull PlayerData player) {
-
+    public ItemStack getItem(@Nullable MMOItemType type, @Nullable String id, @NotNull PlayerData player) {
         // Valid MMOItem?
         MMOItem m = getMMOItem(type, id, player);
         if (m == null) return null;
@@ -544,11 +543,10 @@ public class MMOItems extends JavaPlugin {
      * specific item level and item tier
      */
     @Nullable
-    public MMOItem getMMOItem(@Nullable Type type, @Nullable String id, int itemLevel, @Nullable ItemTier itemTier) {
-        if (type == null || id == null) {
+    @Contract("null, null, _, _ -> null")
+    public MMOItem getMMOItem(@Nullable MMOItemType type, @Nullable String id, int itemLevel, @Nullable ItemTier itemTier) {
+        if (type == null || id == null)
             return null;
-        }
-
         // Valid template?
         MMOItemTemplate found = getTemplates().getTemplate(type, id);
         if (found == null) return null;
@@ -564,8 +562,7 @@ public class MMOItems extends JavaPlugin {
      * specific item level and item tier
      */
     @Nullable
-    public ItemStack getItem(@Nullable Type type, @Nullable String id, int itemLevel, @Nullable ItemTier itemTier) {
-
+    public ItemStack getItem(@Nullable MMOItemType type, @Nullable String id, int itemLevel, @Nullable ItemTier itemTier) {
         // Valid MMOItem?
         MMOItem m = getMMOItem(type, id, itemLevel, itemTier);
         if (m == null) return null;
@@ -582,7 +579,8 @@ public class MMOItems extends JavaPlugin {
      * Will return <code>null</code> if such MMOItem does not exist.
      */
     @Nullable
-    public MMOItem getMMOItem(@Nullable Type type, @Nullable String id) {
+    @Contract("null, _ -> null")
+    public MMOItem getMMOItem(@Nullable MMOItemType type, @Nullable String id) {
         return getMMOItem(type, id, 0, null);
     }
 
@@ -595,10 +593,10 @@ public class MMOItems extends JavaPlugin {
      */
 
     @Nullable
+    @Contract("null, _ -> null")
     public ItemStack getItem(@Nullable String type, @Nullable String id) {
-        if (type == null || id == null) {
+        if (type == null || id == null)
             return null;
-        }
         return getItem(getTypes().get(type), id);
     }
 
@@ -610,16 +608,15 @@ public class MMOItems extends JavaPlugin {
      * Will return <code>null</code> if such MMOItem does not exist.
      */
     @Nullable
-    public ItemStack getItem(@Nullable Type type, @Nullable String id) {
-        if (type == null || id == null) {
+    @Contract("null, _ -> null")
+    public ItemStack getItem(@Nullable MMOItemType type, @Nullable String id) {
+        if (type == null || id == null)
             return null;
-        }
 
         // Valid MMOItem?
         MMOItem m = getMMOItem(type, id);
-        if (m == null) {
+        if (m == null)
             return null;
-        }
 
         // Build if found
         return m.newBuilder().build();
@@ -633,7 +630,8 @@ public class MMOItems extends JavaPlugin {
      * @see #getType(NBTItem)
      */
     @Nullable
-    public static Type getType(@Nullable ItemStack stack) {
+    @Contract("null -> null")
+    public static MMOItemType getType(@Nullable ItemStack stack) {
 
         // Get from nbt
         return getType(NBTItem.get(stack));
@@ -644,8 +642,7 @@ public class MMOItems extends JavaPlugin {
      * @return The MMOItems type of this nbt, if it has one
      */
     @Nullable
-    public static Type getType(@Nullable NBTItem nbt) {
-
+    public static MMOItemType getType(@Nullable NBTItem nbt) {
         // That's it
         return plugin.getTypes().get(getTypeName(nbt));
     }
@@ -657,7 +654,6 @@ public class MMOItems extends JavaPlugin {
      */
     @Nullable
     public static String getTypeName(@Nullable ItemStack stack) {
-
         // Get from nbt
         return getTypeName(NBTItem.get(stack));
     }
@@ -667,18 +663,11 @@ public class MMOItems extends JavaPlugin {
      * @return The MMOItems type of this nbt, if it has one
      */
     @Nullable
+    @Contract("null -> null")
     public static String getTypeName(@Nullable NBTItem nbt) {
-
         // Straight up no
-        if (nbt == null) {
+        if (nbt == null || !nbt.hasType())
             return null;
-        }
-
-        // Get from nbt
-        if (!nbt.hasType()) {
-            return null;
-        }
-
         // That's it
         return nbt.getType();
     }
@@ -700,12 +689,11 @@ public class MMOItems extends JavaPlugin {
      * @return The MMOItems ID of this nbt, if it has one
      */
     @Nullable
+    @Contract("null -> null")
     public static String getID(@Nullable NBTItem nbt) {
-
         // Straight up no
-        if (nbt == null) {
+        if (nbt == null)
             return null;
-        }
 
         // That's it
         return nbt.getString("MMOITEMS_ITEM_ID");
@@ -720,16 +708,16 @@ public class MMOItems extends JavaPlugin {
      * @author Gunging
      */
     public static void print(@Nullable Level level, @Nullable String message, @Nullable String prefix, @NotNull String... replaces) {
-        if (message == null) {
+        if (message == null)
             message = "< null >";
-        }
         if (level != null) {
             plugin.getLogger().log(level, FriendlyFeedbackProvider.quickForConsole(FFPMMOItems.get(), message, replaces));
-        } else {
-            FriendlyFeedbackMessage p = new FriendlyFeedbackMessage("", prefix);
-            FriendlyFeedbackMessage r = FriendlyFeedbackProvider.generateMessage(p, message, replaces);
-            getConsole().sendMessage(r.forConsole(FFPMMOItems.get()));
+            return;
         }
+
+        FriendlyFeedbackMessage p = new FriendlyFeedbackMessage("", prefix);
+        FriendlyFeedbackMessage r = FriendlyFeedbackProvider.generateMessage(p, message, replaces);
+        getConsole().sendMessage(r.forConsole(FFPMMOItems.get()));
     }
 
     /**
