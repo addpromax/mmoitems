@@ -1,5 +1,7 @@
 package net.Indyuce.mmoitems.gui.edition;
 
+import io.lumine.mythic.lib.damage.DamageType;
+import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
@@ -22,6 +24,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -64,16 +68,14 @@ public class AbilityEdition extends EditionInventory {
 		abilityItemMeta.setLore(abilityItemLore);
 		abilityItem.setItemMeta(abilityItemMeta);
 
+		TriggerType castMode = null;
 		if (ability != null) {
 			String castModeConfigString = getEditedSection().getString("ability." + configKey + ".mode");
 			String castModeFormat = castModeConfigString == null ? ""
 					: castModeConfigString.toUpperCase().replace(" ", "_").replace("-", "_").replaceAll("[^A-Z0-9_]", "");
-			TriggerType castMode;
 			try {
 				castMode = TriggerType.valueOf(castModeFormat);
-			} catch (RuntimeException exception) {
-				castMode = null;
-			}
+			} catch (RuntimeException ignored) { }
 
 			ItemStack castModeItem = new ItemStack(Material.ARMOR_STAND);
 			ItemMeta castModeItemMeta = castModeItem.getItemMeta();
@@ -96,6 +98,8 @@ public class AbilityEdition extends EditionInventory {
 		if (ability != null) {
 			ConfigurationSection section = getEditedSection().getConfigurationSection("ability." + configKey);
 			for (String modifier : ability.getHandler().getModifiers()) {
+				if (!sensibleModifier(modifier, castMode)) { continue; }
+
 				ItemStack modifierItem = VersionMaterial.GRAY_DYE.toItem();
 				ItemMeta modifierItemMeta = modifierItem.getItemMeta();
 				modifierItemMeta.setDisplayName(ChatColor.GREEN + MMOUtils.caseOnWords(modifier.toLowerCase().replace("-", " ")));
@@ -105,9 +109,32 @@ public class AbilityEdition extends EditionInventory {
 				modifierItemLore.add("");
 
 				try {
+
+					// Current Value Yeah
+					NumericStatFormula heuh = new NumericStatFormula(section.get(modifier));
+					String currentValue = heuh.toString();
+					if (SkillHandler.SKMOD_DAMAGE_TYPE.equals(modifier)) {
+						double dam = heuh.getBase();
+						boolean orMode = dam < 0;
+						if (orMode) { dam *= -1; }
+
+						// Parse display
+						ArrayList<DamageType> whitelist = DamageType.getWhitelist(dam);
+						ArrayList<DamageType> blacklist = DamageType.getBlacklist(dam);
+
+						// I guess append
+						StringBuilder builder = new StringBuilder(orMode ? "OR" : "");
+						for (DamageType white : whitelist) { if (builder.length() > 0) { builder.append(" "); } builder.append(white); }
+						for (DamageType black : blacklist) { if (builder.length() > 0) { builder.append(" "); } builder.append("!").append(black); }
+
+						// Build Input
+						currentValue = builder.toString() + " \u00a78(\u00a79" + heuh.toString() + "\u00a78)";
+					}
+
 					modifierItemLore.add(ChatColor.GRAY + "Current Value: " + ChatColor.GOLD
-							+ (section.contains(modifier) ? new NumericStatFormula(section.get(modifier)).toString()
+							+ (section.contains(modifier) ? currentValue
 									: MODIFIER_FORMAT.format(ability.getDefaultModifier(modifier))));
+
 				} catch (IllegalArgumentException exception) {
 					modifierItemLore.add(ChatColor.GRAY + "Could not read value. Using default");
 				}
@@ -144,6 +171,29 @@ public class AbilityEdition extends EditionInventory {
 		inv.setItem(6, back);
 
 		return inv;
+	}
+
+	/**
+	 * Some modifiers, like Timer or Damage Type Restriction,
+	 * only make sense if used in the triggers where they are
+	 * supported.
+	 *
+	 * @param modifier Modifier in question
+	 * @param trigger Trigger in question
+	 *
+	 * @return If this modifier makes sense for this trigger
+	 */
+	boolean sensibleModifier(@NotNull String modifier, @Nullable TriggerType trigger) {
+
+		// Missing cast mode might as well show all modifiers
+		if (trigger == null) { return true; }
+
+		// These modifiers only work with the specific trigger
+		if (modifier.equals(SkillHandler.SKMOD_DAMAGE_TYPE)) { return trigger.equals(TriggerType.ATTACK); }
+		if (modifier.equals(SkillHandler.SKMOD_TIMER)) { return trigger.equals(TriggerType.TIMER); }
+
+		// Modifier is compatible with any trigger by default
+		return true;
 	}
 
 	@Override

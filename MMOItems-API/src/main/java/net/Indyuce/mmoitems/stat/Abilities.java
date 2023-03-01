@@ -5,8 +5,15 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.SupportedNBTTagValues;
 import io.lumine.mythic.lib.api.util.AltChar;
+import io.lumine.mythic.lib.api.util.ui.FriendlyFeedbackCategory;
+import io.lumine.mythic.lib.api.util.ui.FriendlyFeedbackProvider;
+import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
+import io.lumine.mythic.lib.damage.DamageType;
+import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.util.DamageTypeRestrictionSettings;
+import net.Indyuce.mmoitems.api.util.message.FFPMMOItems;
 import net.Indyuce.mmoitems.util.MMOUtils;
 import net.Indyuce.mmoitems.api.item.build.ItemStackBuilder;
 import net.Indyuce.mmoitems.api.item.mmoitem.ReadMMOItem;
@@ -56,16 +63,24 @@ public class Abilities extends ItemStat<RandomAbilityListData, AbilityListData> 
 		//Modify Lore
 		List<String> abilityLore = new ArrayList<>();
 		boolean splitter = !MMOItems.plugin.getLanguage().abilitySplitter.equals("");
+		DamageTypeRestrictionSettings settings = MMOItems.plugin.getLanguage().damageTypeRestrictionSettings;
 
 		String modifierFormat = ItemStat.translate("ability-modifier"), abilityFormat = ItemStat.translate("ability-format");
 
 		data.getAbilities().forEach(ability -> {
-			abilityLore.add(abilityFormat.replace("{trigger}", MMOItems.plugin.getLanguage().getCastingModeName(ability.getTrigger())).replace("{ability}", ability.getAbility().getName()));
+
+			// Replace name of trigger, as well as name of ability
+			String triggerDisplayName = settings.getTriggerDisplayName(ability.getTrigger(), ability.getModifier(SkillHandler.SKMOD_DAMAGE_TYPE));
+			abilityLore.add(abilityFormat.replace("{trigger}", triggerDisplayName).replace("{ability}", ability.getAbility().getName()));
 
 			for (String modifier : ability.getModifiers()) {
+
+				// Damage Type Modifier does not display in lore
+				if (modifier.equals(SkillHandler.SKMOD_DAMAGE_TYPE)) { continue; }
+
 				item.getLore().registerPlaceholder("ability_" + ability.getAbility().getHandler().getId().toLowerCase() + "_" + modifier,
 						MythicLib.plugin.getMMOConfig().decimal.format(ability.getModifier(modifier)));
-				abilityLore.add(modifierFormat.replace("{modifier}", ability.getAbility().getModifierName(modifier)).replace("{value}",
+				abilityLore.add(modifierFormat.replace("{modifier}", settings.damageColors(ability.getAbility().getModifierName(modifier))).replace("{value}",
 						MythicLib.plugin.getMMOConfig().decimal.format(ability.getModifier(modifier))));
 			}
 
@@ -133,8 +148,65 @@ public class Abilities extends ItemStat<RandomAbilityListData, AbilityListData> 
 					+ ChatColor.GRAY + ".");
 			return;
 		}
+		String number = message;
 
-		new NumericStatFormula(message).fillConfigurationSection(inv.getEditedSection(), "ability." + configKey + "." + edited,
+		// If we are editing the damage types and the provided value is not a number already
+		if (SkillHandler.SKMOD_DAMAGE_TYPE.equals(edited) && !SilentNumbers.IntTryParse(number)) {
+
+			// Might come in handy....
+			FriendlyFeedbackProvider ffp = new FriendlyFeedbackProvider(FFPMMOItems.get());
+			ffp.activatePrefix(true, "Edition");
+			boolean failure = false;
+
+			// Or Mode
+			boolean orMode = message.startsWith("OR ");
+			if (orMode) { message = message.substring("OR ".length()); }
+
+			// Build arrays
+			ArrayList<DamageType> whitelisted = new ArrayList<>();
+			ArrayList<DamageType> blacklisted = new ArrayList<>();
+
+			// Split by spaces
+			String[] typesSplit = message.split(" ");
+			for (String ty : typesSplit) {
+
+				// Crop blacklist
+				boolean blacklist = false;
+				String observed = ty.toUpperCase().replace("-", "_").replace(" ", "_");
+				if (observed.startsWith("!")) { observed = observed.substring(1); blacklist = true; }
+
+				// Identify Damage Type
+				try {
+
+					// Un-parse
+					DamageType damageType = DamageType.valueOf(observed);
+
+					// Add to the lists
+					if (blacklist) { blacklisted.add(damageType); } else { whitelisted.add(damageType); }
+
+					// Mention
+				} catch (IllegalArgumentException ignored) {
+
+					// no
+					failure = true;
+
+					ffp.log(FriendlyFeedbackCategory.ERROR, "Unknown damage type '$r{0}$b' in '$u{1}$b'. ", observed, ty);
+				}
+			}
+
+			// Cancel
+			if (failure) {
+
+				// Errors
+				ffp.sendAllTo(inv.getPlayer());
+				throw new IllegalArgumentException("$bInvalid input! Please specify damage types to require or blacklist, for example: '$eMAGIC WEAPON !SKILL$b' or '$eOR PHYSICAL PROJECTILE MINION !MAGIC$b'. ");
+			}
+
+			// Bake number
+			number = String.valueOf(DamageType.encodeDamageTypeMatch(whitelisted, blacklisted, orMode));
+		}
+
+		new NumericStatFormula(number).fillConfigurationSection(inv.getEditedSection(), "ability." + configKey + "." + edited,
 				FormulaSaveOption.NONE);
 		inv.registerTemplateEdition();
 		inv.getPlayer().sendMessage(MMOItems.plugin.getPrefix() + ChatColor.GOLD + MMOUtils.caseOnWords(edited.replace("-", " ")) + ChatColor.GRAY

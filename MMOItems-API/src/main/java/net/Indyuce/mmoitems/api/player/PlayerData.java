@@ -1,6 +1,7 @@
 package net.Indyuce.mmoitems.api.player;
 
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.crafting.recipes.MythicCraftingManager;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.api.player.MMOPlayerData;
@@ -216,11 +217,18 @@ public class PlayerData {
             final VolatileMMOItem item = equipped.getCached();
 
             // Abilities
-            if (item.hasData(ItemStats.ABILITIES))
+            if (item.hasData(ItemStats.ABILITIES) &&
+
+                    // Do not add this ability if it is offhanded and offhand abilities are disabled
+                    !(equipped.getSlot() == EquipmentSlot.OFF_HAND && MMOItems.plugin.getLanguage().disableOffhandAbilities) &&
+
+                    // Do not add this ability if it is either of the hand slots, and the player is encumbered, and abilities don't bypass encumbering
+                    !((equipped.getSlot() == EquipmentSlot.MAIN_HAND || equipped.getSlot() == EquipmentSlot.OFF_HAND) &&
+                            isEncumbered() && !MMOItems.plugin.getLanguage().abilitiesBypassEncumbering))
+
                 for (AbilityData abilityData : ((AbilityListData) item.getData(ItemStats.ABILITIES)).getAbilities()) {
                     ModifierSource modSource = equipped.getCached().getType().getModifierSource();
-                    mmoData.getPassiveSkillMap().addModifier(new PassiveSkill("MMOItemsItem", abilityData, equipped.getSlot(), modSource));
-                }
+                    mmoData.getPassiveSkillMap().addModifier(new PassiveSkill("MMOItemsItem", abilityData, equipped.getSlot(), modSource));}
 
             // Modifier application rules
             final ModifierSource source = item.getType().getModifierSource();

@@ -7,6 +7,7 @@ import net.Indyuce.mmoitems.api.ConfigFile;
 import net.Indyuce.mmoitems.api.ReforgeOptions;
 import net.Indyuce.mmoitems.api.item.util.ConfigItem;
 import net.Indyuce.mmoitems.api.item.util.ConfigItems;
+import net.Indyuce.mmoitems.api.util.DamageTypeRestrictionSettings;
 import net.Indyuce.mmoitems.api.util.NumericStatFormula;
 import net.Indyuce.mmoitems.api.util.message.Message;
 import net.Indyuce.mmoitems.stat.GemUpgradeScaling;
@@ -36,6 +37,7 @@ public class ConfigManager implements Reloadable {
 
     // cached config files
     private ConfigFile loreFormat, stats, dynLore;
+    private FileConfiguration abilities;
 
     // Language
     private final Map<TriggerType, String> triggerTypeNames = new HashMap<>();
@@ -48,6 +50,8 @@ public class ConfigManager implements Reloadable {
     public NumericStatFormula defaultItemCapacity;
     public ReforgeOptions revisionOptions, gemRevisionOptions, phatLootsOptions;
     public final List<String> opStats = new ArrayList<>();
+    public boolean abilitiesBypassEncumbering, disableOffhandAbilities;
+    public DamageTypeRestrictionSettings damageTypeRestrictionSettings;
 
     public ConfigManager() {
         mkdir("layouts");
@@ -144,7 +148,7 @@ public class ConfigManager implements Reloadable {
 
         // Trigger types
         triggerTypeNames.clear();
-        final FileConfiguration abilities = new ConfigFile("/language", "abilities").getConfig();
+        abilities = new ConfigFile("/language", "abilities").getConfig();
         for (TriggerType type : TriggerType.values())
             triggerTypeNames.put(type, abilities.getString("cast-mode." + type.getLowerCaseId(), type.getName()));
     }
@@ -155,6 +159,7 @@ public class ConfigManager implements Reloadable {
         loreFormat = new ConfigFile("/language", "lore-format");
         stats = new ConfigFile("/language", "stats");
         dynLore = new ConfigFile("/language", "dynamic-lore");
+        abilities = new ConfigFile("/language", "abilities").getConfig();
 
         loadTranslations();
 
@@ -173,6 +178,8 @@ public class ConfigManager implements Reloadable {
         keepSoulboundOnDeath = MMOItems.plugin.getConfig().getBoolean("soulbound.keep-on-death");
         rerollOnItemUpdate = MMOItems.plugin.getConfig().getBoolean("item-revision.reroll-when-updated");
         levelSpread = MMOItems.plugin.getConfig().getDouble("item-level-spread");
+        abilitiesBypassEncumbering = MMOItems.plugin.getConfig().getBoolean("abilities-bypass-encumbering", !MMOItems.plugin.getConfig().getBoolean("two-handed-item-restriction", true));
+        disableOffhandAbilities = MMOItems.plugin.getConfig().getBoolean("disable-abilities-in-offhand", false);
 
         opStatsEnabled = MMOItems.plugin.getConfig().getBoolean("op-item-stats.enabled");
         opStats.clear();
@@ -186,6 +193,8 @@ public class ConfigManager implements Reloadable {
         revisionOptions = keepData != null ? new ReforgeOptions(keepData) : new ReforgeOptions(false, false, false, false, false, false, false, true);
         gemRevisionOptions = gemKeepData != null ? new ReforgeOptions(gemKeepData) : new ReforgeOptions(false, false, false, false, false, false, false, true);
         phatLootsOptions = phatLoots != null ? new ReforgeOptions(phatLoots) : new ReforgeOptions(false, false, false, false, false, false, false, true);
+
+        damageTypeRestrictionSettings = new DamageTypeRestrictionSettings(abilities.getConfigurationSection("damage-type-restriction"));
 
         List<String> exemptedPhatLoots = MMOItems.plugin.getConfig().getStringList("item-revision.disable-phat-loot");
         for (String epl : exemptedPhatLoots)

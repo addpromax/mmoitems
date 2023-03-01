@@ -21,3 +21,42 @@ cast-mode:
   trident-hit: Trident Hit
   damaged-by-entity: Damaged By Entity
   shift-right-click: Shift Right Click
+
+# For the On Attack trigger there exists the
+# Modifier 'Damage Type Restriction' that supports
+# advanced translation logic
+damage-type-restrictions:
+
+  ## -----
+  ## Translate the damage types
+  damage-type-translations:
+    MAGIC: "Magic"
+    PHYSICAL: "Melee"
+    PROJECTILE: "Ranged"
+    WEAPON: "Weapon"
+    SKILL: "Skill"
+    UNARMED: "Unarmed"
+    ON_HIT: "Reaction"
+    MINION: "Minion"
+    DOT: "Lingering"
+
+  ## -----
+  # Translate the types of attack
+  attack-type-translations:
+    WEAPON: "Attack"
+    SKILL: "Ability Hit"
+    NEITHER: "Damage"
+    BOTH: "Ability-Assisted Attack"
+
+    ## -----
+    ## Change the color of scalings
+    # damage-type-colors:
+    # MAGIC: "&9"
+    # PHYSICAL: "&8"
+    # WEAPON: "&7"
+    # SKILL: "&f"
+    # PROJECTILE: "&a"
+    # UNARMED: "&e"
+    # ON_HIT: "&0"
+    # MINION: "&d"
+    # DOT: "&3"
