@@ -3,6 +3,7 @@ package net.Indyuce.mmoitems.api.edition.input;
 import org.bukkit.entity.Player;
 
 import net.Indyuce.mmoitems.api.edition.Edition;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class PlayerInputHandler {
 
@@ -10,14 +11,15 @@ public abstract class PlayerInputHandler {
 	 * Saves the last inventory opened, the item data, and the last opened page;
 	 * allows for a much easier access to this data
 	 */
-	private final Edition edition;
+	@NotNull private final Edition edition;
+	@NotNull public Edition getEdition() { return edition; }
 
 	/**
 	 * Abstract class which lists all possible ways to retrieve player input
 	 *
 	 * @param edition The edition object
 	 */
-	public PlayerInputHandler(Edition edition) {
+	public PlayerInputHandler(@NotNull Edition edition) {
 		this.edition = edition;
 	}
 

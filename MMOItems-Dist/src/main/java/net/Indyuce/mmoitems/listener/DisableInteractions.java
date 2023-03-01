@@ -6,6 +6,7 @@ import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.interaction.util.DurabilityItem;
 import org.bukkit.Keyed;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -110,6 +111,9 @@ public class DisableInteractions implements Listener {
     @EventHandler
     public void entityInteractions(PlayerInteractEntityEvent event) {
         if (event.getRightClicked() instanceof ArmorStand)
+            return;
+
+        if (event.getRightClicked() instanceof ItemFrame)
             return;
 
         NBTItem item = NBTItem.get(event.getHand() == EquipmentSlot.OFF_HAND ? event.getPlayer().getInventory().getItemInOffHand()
