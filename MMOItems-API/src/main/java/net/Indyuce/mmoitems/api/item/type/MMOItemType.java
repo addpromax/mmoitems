@@ -43,11 +43,11 @@ public class MMOItemType {
     private final String loreFormat;
     private final ItemStack item;
     private final UnidentifiedItem unidentifiedTemplate;
-    private final List<ItemStat<?, ?>> stats;
+    private final Map<ItemStat<?, ?>, Double> stats;
     private final Map<TriggerType, Script> scripts;
 
 
-    protected MMOItemType(String id, String name, Type type, ModifierSource modifierSource, boolean weapon, String loreFormat, ItemStack item, Map<TriggerType, Script> scripts, List<ItemStat<?, ?>> stats) {
+    protected MMOItemType(String id, String name, Type type, ModifierSource modifierSource, boolean weapon, String loreFormat, ItemStack item, Map<TriggerType, Script> scripts, Map<ItemStat<?, ?>, Double> stats) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -92,7 +92,15 @@ public class MMOItemType {
         return unidentifiedTemplate;
     }
 
-    public List<ItemStat<?, ?>> getStats() {
+    public boolean hasStat(ItemStat<?, ?> stat) {
+        return stats.containsKey(stat);
+    }
+
+    public double getStat(ItemStat<?, ?> stat) {
+        return stats.getOrDefault(stat, 0.0);
+    }
+
+    public Map<ItemStat<?, ?>, Double> getStats() {
         return stats;
     }
 
@@ -204,6 +212,8 @@ public class MMOItemType {
                 .filter(type1 -> Objects.equals(section.getString("type").toLowerCase(), type1.name().toLowerCase()))
                 .findFirst()
                 .orElse(Type.NONE);
+
+        // Scripts
         final Map<TriggerType, Script> scripts = new HashMap<>();
         ConfigurationSection scriptSection = section.getConfigurationSection("scripts");
         if (scriptSection != null)
@@ -211,12 +221,24 @@ public class MMOItemType {
                     .forEach(key -> TriggerType.values()
                             .stream()
                             .filter(triggerType -> triggerType.name().equalsIgnoreCase(key))
+                            .filter(type1 -> scriptSection.isString(key))
                             .findFirst()
                             .ifPresent(triggerType -> scripts.put(triggerType, MythicLib.plugin.getSkills().getScriptOrThrow(scriptSection.getString(key)))));
 
 
-        // TODO: Load the stats
-        final List<ItemStat<?, ?>> stats = new ArrayList<>();
+        // Stats
+        final Map<ItemStat<?, ?>, Double> stats = new HashMap<>();
+        ConfigurationSection statSection = section.getConfigurationSection("stats");
+        if (statSection != null)
+            statSection.getKeys(true)
+                    .forEach(key -> {
+                        String format = key.toUpperCase().replace("-", "_").replace(" ", "_");
+                        ItemStat<?, ?> stat = MMOItems.plugin.getStats().get(format);
+                        Validate.notNull(stat, String.format("Could not find stat called '%s'", format));
+                        if (!statSection.isDouble(key))
+                            throw new IllegalArgumentException(String.format("Stat value must be a double (%s) in item-types.yml", format));
+                        stats.put(stat, statSection.getDouble(key));
+                    });
 
         MMOItemType type = new MMOItemType(id, name, superType, modifierSource, weapon, loreFormat, item, scripts, stats);
         type.getUnidentifiedTemplate().update(section.getConfigurationSection("unident-item"));
