@@ -2,7 +2,6 @@ package net.Indyuce.mmoitems.api.interaction;
 
 import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmoitems.ItemStats;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.event.item.ApplyGemStoneEvent;
 import net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
@@ -64,7 +63,7 @@ public class GemStone extends UseItem {
          */
         String appliableTypes = getNBTItem().getString(ItemStats.ITEM_TYPE_RESTRICTION.getNBTPath());
         if (!appliableTypes.equals("") && (!targetType.isWeapon() || !appliableTypes.contains("WEAPON"))
-                && !appliableTypes.contains(targetType.getItemSet().name()) && !appliableTypes.contains(targetType.getId()))
+                && !appliableTypes.contains(targetType.getType().name()) && !appliableTypes.contains(targetType.getId()))
             return new ApplyResult(ResultType.NONE);
 
         // Check for success rate

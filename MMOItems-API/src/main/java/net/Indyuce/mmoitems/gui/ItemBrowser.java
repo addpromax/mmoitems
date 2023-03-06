@@ -8,7 +8,6 @@ import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
 import io.lumine.mythic.lib.util.AdventureUtils;
 import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.edition.NewItemEdition;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
 import net.Indyuce.mmoitems.api.item.type.MMOItemType;
@@ -177,7 +176,7 @@ public class ItemBrowser extends PluginInventory {
         previousMeta.setDisplayName(ChatColor.GREEN + "Previous Page");
         previous.setItemMeta(previousMeta);
 
-        if (type == Type.BLOCK) {
+        if (type.getType() == MMOItemType.Type.BLOCK) {
             ItemStack downloadPack = new ItemStack(Material.HOPPER);
             ItemMeta downloadMeta = downloadPack.getItemMeta();
             downloadMeta.setDisplayName(ChatColor.GREEN + "Download Default Resourcepack");

@@ -9,7 +9,6 @@ import io.lumine.mythic.lib.comp.interaction.InteractionType;
 import io.lumine.mythic.lib.damage.MeleeAttackMetadata;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.Type;
-import net.Indyuce.mmoitems.api.TypeSet;
 import net.Indyuce.mmoitems.api.event.item.SpecialWeaponAttackEvent;
 import net.Indyuce.mmoitems.api.interaction.*;
 import net.Indyuce.mmoitems.api.interaction.weapon.Gauntlet;
@@ -109,7 +108,6 @@ public class ItemUse implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void meleeAttacks(PlayerAttackEvent event) {
-
         // Checks if it's a melee attack
         if (!(event.getAttack() instanceof MeleeAttackMetadata))
             return;
@@ -123,24 +121,24 @@ public class ItemUse implements Listener {
         ItemStack weaponUsed = player.getInventory().getItem(((MeleeAttackMetadata) event.getAttack()).getHand().toBukkit());
         NBTItem item = MythicLib.plugin.getVersion().getWrapper().getNBTItem(weaponUsed);
 
-        if (item.hasType() && Type.get(item.getType()) != Type.BLOCK) {
-            Weapon weapon = new Weapon(playerData, item);
+        if (!item.hasType()
+                || MMOItemType.get(item.getType()) == null
+                || MMOItemType.get(item.getType()).getType() == MMOItemType.Type.BLOCK)
+            return;
+        Weapon weapon = new Weapon(playerData, item);
 
-            if (weapon.getMMOItem().getType().getItemSet() == TypeSet.RANGE) {
-                event.setCancelled(true);
-                return;
-            }
-
-            if (!weapon.checkItemRequirements()) {
-                event.setCancelled(true);
-                return;
-            }
-
-            if (!weapon.handleTargetedAttack(event.getAttack(), event.getEntity())) {
-                event.setCancelled(true);
-                return;
-            }
+        if (weapon.getMMOItem().getType().getType() == MMOItemType.Type.RANGE) {
+            event.setCancelled(true);
+            return;
         }
+
+        if (!weapon.checkItemRequirements()) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (!weapon.handleTargetedAttack(event.getAttack(), event.getEntity()))
+            event.setCancelled(true);
     }
 
     /**

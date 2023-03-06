@@ -215,7 +215,12 @@ public abstract class ItemStat<R extends RandomStatData<S>, S extends StatData> 
     public boolean isCompatible(MMOItemType type) {
         String lower = type.getId().toLowerCase();
         return !compatibleTypes.contains("!" + lower) && (compatibleTypes.contains("all") || compatibleTypes.contains(lower)
-                || compatibleTypes.contains(type.getItemSet().getName().toLowerCase()));
+                || compatibleTypes.contains(type.getType().name().toLowerCase()));
+    }
+
+    public boolean isCompatible(MMOItemType.Type type) {
+        String lower = type.name().toLowerCase();
+        return !compatibleTypes.contains("!" + lower) && (compatibleTypes.contains("all") || compatibleTypes.contains(lower));
     }
 
     public boolean hasValidMaterial(ItemStack item) {

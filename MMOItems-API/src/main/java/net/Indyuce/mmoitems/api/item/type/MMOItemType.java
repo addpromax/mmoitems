@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,6 +31,7 @@ public class MMOItemType {
 
     private final String id;
     private final String name;
+    private final Type type;
     private final ModifierSource modifierSource;
     private final boolean weapon;
     private final String loreFormat;
@@ -39,9 +41,10 @@ public class MMOItemType {
     private final @org.jetbrains.annotations.Nullable Script script;
 
 
-    protected MMOItemType(String id, String name, ModifierSource modifierSource, boolean weapon, String loreFormat, ItemStack item, @org.jetbrains.annotations.Nullable Script script, List<ItemStat<?, ?>> stats) {
+    protected MMOItemType(String id, String name, Type type, ModifierSource modifierSource, boolean weapon, String loreFormat, ItemStack item, @org.jetbrains.annotations.Nullable Script script, List<ItemStat<?, ?>> stats) {
         this.id = id;
         this.name = name;
+        this.type = type;
         this.modifierSource = modifierSource;
         this.weapon = weapon;
         this.loreFormat = loreFormat;
@@ -71,6 +74,9 @@ public class MMOItemType {
         return loreFormat;
     }
 
+    public Type getType() {
+        return type;
+    }
 
     public ItemStack getItem() {
         return item;
@@ -125,6 +131,7 @@ public class MMOItemType {
                 ", modifierSource=" + modifierSource +
                 ", weapon=" + weapon +
                 ", loreFormat='" + loreFormat + '\'' +
+                ", type=" + type +
                 '}';
     }
 
@@ -173,13 +180,25 @@ public class MMOItemType {
         final String loreFormat = section.getString("lore-format");
         final ItemStack item = read(section.getString("display", Material.STONE.toString()));
         final Script script = section.isString("script") ? MythicLib.plugin.getSkills().getScriptOrThrow(section.getString("script")) : null;
+        final Type superType = Arrays.stream(Type.values())
+                .filter(type1 -> Objects.equals(section.getString("type").toLowerCase(), type1.name().toLowerCase()))
+                .findFirst()
+                .orElse(Type.NONE);
 
 
         // TODO: Load the stats
         final List<ItemStat<?, ?>> stats = new ArrayList<>();
 
-        MMOItemType type = new MMOItemType(id, name, modifierSource, weapon, loreFormat, item, script, stats);
+        MMOItemType type = new MMOItemType(id, name, superType, modifierSource, weapon, loreFormat, item, script, stats);
         type.getUnidentifiedTemplate().update(section.getConfigurationSection("unident-item"));
         return type;
+    }
+
+    public enum Type {
+        GEM_STONE,
+        RANGE,
+        BLOCK,
+        CONSUMABLE,
+        NONE
     }
 }

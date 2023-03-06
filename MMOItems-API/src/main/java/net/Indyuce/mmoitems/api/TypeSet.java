@@ -6,6 +6,7 @@ import io.lumine.mythic.lib.damage.AttackMetadata;
 import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.version.VersionSound;
 import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.util.MMOUtils;
 import net.Indyuce.mmoitems.api.interaction.weapon.Weapon;
 import net.Indyuce.mmoitems.api.player.PlayerData;
@@ -20,6 +21,11 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.Random;
 
+/**
+ * @deprecated This class is deprecated and will be removed in the next major
+ *            update. Use {@link MMOItemType} instead.
+ * @see MMOItemType
+ */
 public enum TypeSet {
 
     /**

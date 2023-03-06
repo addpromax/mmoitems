@@ -6,11 +6,11 @@ import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.util.AdventureUtils;
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.event.GenerateLoreEvent;
 import net.Indyuce.mmoitems.api.event.ItemBuildEvent;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.stat.DisplayName;
 import net.Indyuce.mmoitems.stat.Enchants;
 import net.Indyuce.mmoitems.stat.data.MaterialData;
@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class ItemStackBuilder {
     @NotNull
@@ -195,7 +196,7 @@ public class ItemStackBuilder {
             }
 
         // Display gem stone lore hint thing
-        if (builtMMOItem.getType() == Type.GEM_STONE)
+        if (builtMMOItem.getType().getType() == MMOItemType.Type.GEM_STONE)
             lore.insert("gem-stone-lore", ItemStat.translate("gem-stone-lore"));
 
         // Display item type
@@ -218,7 +219,7 @@ public class ItemStackBuilder {
         Bukkit.getPluginManager().callEvent(event);
         AdventureUtils.setLore(meta, event.getParsedLore().stream()
                 .map(s -> ChatColor.WHITE + s)
-                .toList());
+                .collect(Collectors.toList()));
         if (meta.hasDisplayName())
             AdventureUtils.setDisplayName(meta, ChatColor.WHITE + meta.getDisplayName());
 

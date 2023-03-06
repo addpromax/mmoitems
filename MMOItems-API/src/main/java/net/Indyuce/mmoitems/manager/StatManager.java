@@ -5,7 +5,7 @@ import io.lumine.mythic.lib.element.Element;
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ConfigFile;
-import net.Indyuce.mmoitems.api.Type;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.stat.type.*;
 import net.Indyuce.mmoitems.util.ElementStatType;
 import org.apache.commons.lang3.Validate;
@@ -172,7 +172,7 @@ public class StatManager {
 
         stats.put(stat.getId(), stat);
 
-        if (stat instanceof DoubleStat && !(stat instanceof GemStoneStat) && stat.isCompatible(Type.GEM_STONE))
+        if (stat instanceof DoubleStat && !(stat instanceof GemStoneStat) && stat.isCompatible(MMOItemType.Type.GEM_STONE))
             numeric.add((DoubleStat) stat);
 
         if (stat instanceof ItemRestriction)

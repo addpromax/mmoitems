@@ -2,10 +2,10 @@ package net.Indyuce.mmoitems.manager;
 
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.block.CustomBlock;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
+import net.Indyuce.mmoitems.api.item.type.MMOItemType;
 import net.Indyuce.mmoitems.api.util.MushroomState;
 import net.Indyuce.mmoitems.stat.data.DoubleData;
 import org.bukkit.Material;
@@ -13,13 +13,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.MultipleFacing;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 public class BlockManager implements Reloadable {
@@ -109,7 +103,7 @@ public class BlockManager implements Reloadable {
 		customBlocks.clear();
 		mushroomStateValue.clear();
 
-		for (MMOItemTemplate template : MMOItems.plugin.getTemplates().getTemplates(Type.BLOCK)) {
+		for (MMOItemTemplate template : MMOItems.plugin.getTemplates().getTemplates(MMOItemType.Type.BLOCK)) {
 			MMOItem mmoitem = template.newBuilder(0, null).build();
 			int id = mmoitem.hasData(ItemStats.BLOCK_ID) ? (int) ((DoubleData) mmoitem.getData(ItemStats.BLOCK_ID)).getValue() : 0;
 			if (id > 0 && id < 161 && id != 54)

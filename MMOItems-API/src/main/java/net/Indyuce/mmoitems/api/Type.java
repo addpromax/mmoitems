@@ -253,7 +253,8 @@ public class Type {
      */
     @Deprecated
     public boolean canHave(ItemStat stat) {
-        return stat.isCompatible(this);
+        // return stat.isCompatible(this);
+        return false;
     }
 
     private ItemStack read(String str) {
