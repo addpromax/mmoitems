@@ -110,8 +110,8 @@ public class Weapon extends UseItem {
             return false;
 
         // Handle item set attack effects
-        if (getMMOItem().getType().hasAttackEffect() && !getNBTItem().getBoolean("MMOITEMS_DISABLE_ATTACK_PASSIVE"))
-            getMMOItem().getType().applyAttackEffect(attackMeta, playerData, target, this);
+        if (getMMOItem().getType().hasScript() && !getNBTItem().getBoolean("MMOITEMS_DISABLE_ATTACK_PASSIVE"))
+            getMMOItem().getType().applyScript(attackMeta, playerData, target, this);
 
         return true;
     }

@@ -2,24 +2,30 @@ package net.Indyuce.mmoitems.api.item.type;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.item.NBTItem;
+import io.lumine.mythic.lib.damage.AttackMetadata;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
 import io.lumine.mythic.lib.script.Script;
+import io.lumine.mythic.lib.skill.SimpleSkill;
+import io.lumine.mythic.lib.skill.SkillMetadata;
+import io.lumine.mythic.lib.skill.handler.MythicLibSkillHandler;
+import io.lumine.mythic.lib.skill.result.SkillResult;
+import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ConfigFile;
+import net.Indyuce.mmoitems.api.interaction.weapon.Weapon;
 import net.Indyuce.mmoitems.api.item.util.identify.UnidentifiedItem;
+import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.stat.type.ItemStat;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * mmoitems
@@ -38,10 +44,10 @@ public class MMOItemType {
     private final ItemStack item;
     private final UnidentifiedItem unidentifiedTemplate;
     private final List<ItemStat<?, ?>> stats;
-    private final @org.jetbrains.annotations.Nullable Script script;
+    private final Map<TriggerType, Script> scripts;
 
 
-    protected MMOItemType(String id, String name, Type type, ModifierSource modifierSource, boolean weapon, String loreFormat, ItemStack item, @org.jetbrains.annotations.Nullable Script script, List<ItemStat<?, ?>> stats) {
+    protected MMOItemType(String id, String name, Type type, ModifierSource modifierSource, boolean weapon, String loreFormat, ItemStack item, Map<TriggerType, Script> scripts, List<ItemStat<?, ?>> stats) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -50,7 +56,7 @@ public class MMOItemType {
         this.loreFormat = loreFormat;
         this.item = item;
         this.unidentifiedTemplate = new UnidentifiedItem(this);
-        this.script = script;
+        this.scripts = scripts;
         this.stats = stats;
     }
 
@@ -98,8 +104,23 @@ public class MMOItemType {
         return new ConfigFile("/item", getId().toLowerCase());
     }
 
-    public @org.jetbrains.annotations.Nullable Script getScript() {
-        return script;
+    public Map<TriggerType, Script> getScripts() {
+        return this.scripts;
+    }
+
+    public boolean hasScript(TriggerType type) {
+        return this.scripts.containsKey(type);
+    }
+
+    public Optional<Script> getScript(TriggerType type) {
+        return Optional.ofNullable(this.scripts.get(type));
+    }
+
+    public @Nullable SkillResult applyScript(TriggerType type, AttackMetadata attackMetadata, PlayerData playerData, LivingEntity target, Weapon weapon) {
+        return getScript(type)
+                .map(script -> new SimpleSkill(type, new MythicLibSkillHandler(script)))
+                .map(simpleSkill -> simpleSkill.cast(new SkillMetadata(simpleSkill, attackMetadata, playerData.getPlayer().getLocation(), target.getLocation(), target)))
+                .orElse(null);
     }
 
     public static ItemStack read(String str) {
@@ -179,17 +200,25 @@ public class MMOItemType {
         final boolean weapon = section.getBoolean("weapon");
         final String loreFormat = section.getString("lore-format");
         final ItemStack item = read(section.getString("display", Material.STONE.toString()));
-        final Script script = section.isString("script") ? MythicLib.plugin.getSkills().getScriptOrThrow(section.getString("script")) : null;
         final Type superType = Arrays.stream(Type.values())
                 .filter(type1 -> Objects.equals(section.getString("type").toLowerCase(), type1.name().toLowerCase()))
                 .findFirst()
                 .orElse(Type.NONE);
+        final Map<TriggerType, Script> scripts = new HashMap<>();
+        ConfigurationSection scriptSection = section.getConfigurationSection("scripts");
+        if (scriptSection != null)
+            scriptSection.getKeys(true)
+                    .forEach(key -> TriggerType.values()
+                            .stream()
+                            .filter(triggerType -> triggerType.name().equalsIgnoreCase(key))
+                            .findFirst()
+                            .ifPresent(triggerType -> scripts.put(triggerType, MythicLib.plugin.getSkills().getScriptOrThrow(scriptSection.getString(key)))));
 
 
         // TODO: Load the stats
         final List<ItemStat<?, ?>> stats = new ArrayList<>();
 
-        MMOItemType type = new MMOItemType(id, name, superType, modifierSource, weapon, loreFormat, item, script, stats);
+        MMOItemType type = new MMOItemType(id, name, superType, modifierSource, weapon, loreFormat, item, scripts, stats);
         type.getUnidentifiedTemplate().update(section.getConfigurationSection("unident-item"));
         return type;
     }
