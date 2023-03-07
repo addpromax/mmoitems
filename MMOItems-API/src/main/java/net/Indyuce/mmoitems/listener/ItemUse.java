@@ -127,17 +127,9 @@ public class ItemUse implements Listener {
             return;
         Weapon weapon = new Weapon(playerData, item);
 
-        if (weapon.getMMOItem().getType().getType() == MMOItemType.Type.RANGE) {
-            event.setCancelled(true);
-            return;
-        }
-
-        if (!weapon.checkItemRequirements()) {
-            event.setCancelled(true);
-            return;
-        }
-
-        if (!weapon.handleTargetedAttack(event.getAttack(), event.getEntity()))
+        if (weapon.getMMOItem().getType().getType() == MMOItemType.Type.RANGE
+                || !weapon.checkItemRequirements()
+                || !weapon.checkAndApplyWeaponCosts())
             event.setCancelled(true);
     }
 

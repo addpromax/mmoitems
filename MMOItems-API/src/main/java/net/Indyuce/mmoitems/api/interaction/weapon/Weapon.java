@@ -12,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.Nullable;
 
@@ -103,16 +104,9 @@ public class Weapon extends UseItem {
      * @param target     The attack target
      * @return If the attack is successful, or if it was canceled otherwise
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public boolean handleTargetedAttack(AttackMetadata attackMeta, LivingEntity target) {
-
-        // Handle weapon mana and stamina costs ONLY
-        if (!checkAndApplyWeaponCosts())
-            return false;
-
-        // Handle item set attack effects
-        if (getMMOItem().getType().hasScript() && !getNBTItem().getBoolean("MMOITEMS_DISABLE_ATTACK_PASSIVE"))
-            getMMOItem().getType().applyScript(attackMeta, playerData, target, this);
-
         return true;
     }
 

@@ -208,8 +208,11 @@ public class MMOItemType {
         final boolean weapon = section.getBoolean("weapon");
         final String loreFormat = section.getString("lore-format");
         final ItemStack item = read(section.getString("display", Material.STONE.toString()));
+
+        // Type
+        final String typeName = section.getString("type", "NONE");
         final Type superType = Arrays.stream(Type.values())
-                .filter(type1 -> Objects.equals(section.getString("type").toLowerCase(), type1.name().toLowerCase()))
+                .filter(type1 -> typeName.equalsIgnoreCase(type1.name()))
                 .findFirst()
                 .orElse(Type.NONE);
 
@@ -224,7 +227,6 @@ public class MMOItemType {
                             .filter(type1 -> scriptSection.isString(key))
                             .findFirst()
                             .ifPresent(triggerType -> scripts.put(triggerType, MythicLib.plugin.getSkills().getScriptOrThrow(scriptSection.getString(key)))));
-
 
         // Stats
         final Map<ItemStat<?, ?>, Double> stats = new HashMap<>();
@@ -242,6 +244,7 @@ public class MMOItemType {
 
         MMOItemType type = new MMOItemType(id, name, superType, modifierSource, weapon, loreFormat, item, scripts, stats);
         type.getUnidentifiedTemplate().update(section.getConfigurationSection("unident-item"));
+
         return type;
     }
 
