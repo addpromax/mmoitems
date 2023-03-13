@@ -42,13 +42,10 @@ public class TypeManager implements Reloadable {
                 .filter(Objects::nonNull)
                 .map(MMOItemType::load)
                 .peek(this.types::add)
-                .peek(mmoItemType -> mmoItemType.getStats().clear())
-                .forEach(mmoItemType -> MMOItems.plugin.getStats()
-                        .getAll()
-                        .forEach(stat -> mmoItemType.getStats().add(stat)));
+                .forEach(mmoItemType -> mmoItemType.getStats().clear());
 
         // DEBUG
-        MMOItems.log("Loaded " + this.types.size() + " item types.");
+        MMOItems.log(String.format("Loaded %d item types.", this.types.size()));
     }
 
     public void register(MMOItemType type) {

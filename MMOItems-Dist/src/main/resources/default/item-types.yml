@@ -22,7 +22,14 @@ SWORD:
     weapon: true
     modifier: "MELEE_WEAPON"
     lore-format: ""
-    category: "SPLASHING"
+
+    # Available types:
+    # - GEM_STONE
+    # - RANGE
+    # - BLOCK
+    # - CONSUMABLE
+    # - NONE
+    category: "NONE"
     
     # Template of an unidentified item.
     unident-item:

@@ -8,6 +8,9 @@ import io.lumine.mythic.lib.damage.AttackMetadata;
 import io.lumine.mythic.lib.player.PlayerMetadata;
 import io.lumine.mythic.lib.player.modifier.ModifierSource;
 import io.lumine.mythic.lib.player.skill.PassiveSkill;
+import io.lumine.mythic.lib.player.skill.PassiveSkillMap;
+import io.lumine.mythic.lib.skill.SimpleSkill;
+import io.lumine.mythic.lib.skill.handler.MythicLibSkillHandler;
 import io.lumine.mythic.lib.skill.trigger.TriggerMetadata;
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
@@ -215,6 +218,15 @@ public class PlayerData {
         for (EquippedItem equipped : inventory.getEquipped()) {
             final VolatileMMOItem item = equipped.getCached();
 
+            // MMOItemType
+            PassiveSkillMap skillMap = mmoData.getPassiveSkillMap();
+            item.getType()
+                    .getScripts()
+                    .entrySet()
+                    .stream()
+                    .map(e -> new SimpleSkill(e.getKey(), new MythicLibSkillHandler(e.getValue())))
+                    .forEach(simpleSkill -> skillMap.addModifier(new PassiveSkill("MMOItemsType", simpleSkill, equipped.getSlot(), item.getType().getModifierSource())));
+
             // Abilities
             if (item.hasData(ItemStats.ABILITIES))
                 for (AbilityData abilityData : ((AbilityListData) item.getData(ItemStats.ABILITIES)).getAbilities()) {
@@ -260,7 +272,7 @@ public class PlayerData {
         // Calculate the player's item set
         final Map<ItemSet, Integer> itemSetCount = new HashMap<>();
         for (EquippedItem equipped : inventory.getEquipped()) {
-            final String tag =  equipped.getCached().getNBT().getString("MMOITEMS_ITEM_SET");
+            final String tag = equipped.getCached().getNBT().getString("MMOITEMS_ITEM_SET");
             final @Nullable ItemSet itemSet = MMOItems.plugin.getSets().get(tag);
             if (itemSet == null)
                 continue;

@@ -204,13 +204,13 @@ public class MMOItemType {
     public static MMOItemType load(@NotNull ConfigurationSection section) {
         final String id = section.getName();
         final String name = section.getString("name");
-        final ModifierSource modifierSource = ModifierSource.valueOf(section.getString("modifier-source"));
+        final ModifierSource modifierSource = ModifierSource.valueOf(section.getString("modifier"));
         final boolean weapon = section.getBoolean("weapon");
         final String loreFormat = section.getString("lore-format");
         final ItemStack item = read(section.getString("display", Material.STONE.toString()));
 
         // Type
-        final String typeName = section.getString("type", "NONE");
+        final String typeName = section.getString("category", "NONE");
         final Type superType = Arrays.stream(Type.values())
                 .filter(type1 -> typeName.equalsIgnoreCase(type1.name()))
                 .findFirst()
