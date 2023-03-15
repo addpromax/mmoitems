@@ -200,7 +200,7 @@ public class StatManager {
     }
 
     private void registerCustomStat(@NotNull ConfigurationSection section) {
-        final String name = section.getString("name");
+        String name = section.getString("name");
         final String type = section.getString("type");
 
         Validate.notNull(section, "Cannot register a custom stat from a null section");
@@ -233,6 +233,9 @@ public class StatManager {
             lore = section.getStringList("lore").toArray(new String[]{});
         else if (section.isString("lore"))
             lore = new String[]{section.getString("lore")};
+
+        // Format name
+        name = name.replace(" ", "_").replace("-", "_").toUpperCase();
 
         // Create a new stat instance
         try {
