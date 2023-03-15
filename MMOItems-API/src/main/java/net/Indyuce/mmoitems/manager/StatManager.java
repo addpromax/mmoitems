@@ -240,7 +240,7 @@ public class StatManager {
         // Create a new stat instance
         try {
             ItemStat<?, ?> stat = statClass.getConstructor(String.class, Material.class, String.class, String[].class, String[].class, Material[].class)
-                    .newInstance(statId, Material.PAPER, name, lore, new String[]{"!miscellaneous", "!block", "all"}, new Material[0]);
+                    .newInstance(statId, Material.PAPER, name, lore, new String[]{"all"}, new Material[0]);
             register(stat);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                  NoSuchMethodException e) {
