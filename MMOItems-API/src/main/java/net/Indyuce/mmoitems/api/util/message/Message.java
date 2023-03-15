@@ -17,10 +17,10 @@ public enum Message {
     NOT_ENOUGH_PERMS_COMMAND("You don't have enough permissions."),
 
     // Item restrictions
-    NOT_ENOUGH_LEVELS("You don't have enough levels to use this item!", "cant-use-item"),
+    NOT_ENOUGH_LEVELS("You don't have enough levels to use this item!", "not-enough-levels"),
     SOULBOUND_RESTRICTION("This item is linked to another player, you can't use it!", "cant-use-item"),
     NOT_ENOUGH_PERMS("You don't have enough permissions to use this.", "cant-use-item"),
-    WRONG_CLASS("You don't have the right class!", "cant-use-item"),
+    WRONG_CLASS("You don't have the right class!", "wrong-class"),
     NOT_ENOUGH_MANA("You don't have enough mana!", "not-enough-mana"),
     NOT_ENOUGH_STAMINA("You don't have enough stamina!", "not-enough-stamina"),
     NOT_ENOUGH_ATTRIBUTE("You don't have enough #attribute#!", "cant-use-item"),
