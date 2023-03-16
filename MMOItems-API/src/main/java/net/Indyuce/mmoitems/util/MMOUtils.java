@@ -69,8 +69,8 @@ public class MMOUtils {
      * - for item upgrading
      * - item repairing
      *
-     * @param ref1      First reference
-     * @param ref2      Second reference
+     * @param ref1 First reference
+     * @param ref2 Second reference
      * @return If items can interact
      */
     public static boolean checkReference(@Nullable String ref1, @Nullable String ref2) {
@@ -78,7 +78,7 @@ public class MMOUtils {
             return ref2 == null || ref2.equals(UNIVERSAL_REFERENCE);
         if (ref2 == null)
             return ref1 == null || ref1.equals(UNIVERSAL_REFERENCE);
-        return ref1.equals(UNIVERSAL_REFERENCE) || ref2.equals(UNIVERSAL_REFERENCE) || ref1.equals(ref2);
+        return !(ref1.isEmpty() && ref2.isEmpty()) && (ref1.equals(UNIVERSAL_REFERENCE) || ref2.equals(UNIVERSAL_REFERENCE) || ref1.equals(ref2));
     }
 
     /**
@@ -285,7 +285,7 @@ public class MMOUtils {
      *
      * @param type Potion effect type
      * @return The duration that MMOItems should be using to give player
-     *         "permanent" potion effects, depending on the potion effect type
+     * "permanent" potion effects, depending on the potion effect type
      */
     public static int getEffectDuration(PotionEffectType type) {
         return type.equals(PotionEffectType.NIGHT_VISION) || type.equals(PotionEffectType.CONFUSION) ? 260 : type.equals(PotionEffectType.BLINDNESS) ? 140 : 80;
@@ -324,7 +324,7 @@ public class MMOUtils {
      * @param item The item to check
      * @param lore Whether or not MI should check for an item lore
      * @return If the item is not null, has an itemMeta and has a display name.
-     *         If 'lore' is true, also checks if the itemMeta has a lore.
+     * If 'lore' is true, also checks if the itemMeta has a lore.
      */
     public static boolean isMetaItem(ItemStack item, boolean lore) {
         return item != null && item.getType() != Material.AIR && item.getItemMeta() != null && item.getItemMeta().getDisplayName() != null && (!lore || item.getItemMeta().getLore() != null);
@@ -458,10 +458,10 @@ public class MMOUtils {
     /**
      * @param loc Where we are looking for nearby entities
      * @return List of all entities surrounding a location. This method loops
-     *         through the 9 surrounding chunks and collect all entities from
-     *         them. This list can be cached and used multiple times in the same
-     *         tick for projectile based spells which need to run entity
-     *         checkups
+     * through the 9 surrounding chunks and collect all entities from
+     * them. This list can be cached and used multiple times in the same
+     * tick for projectile based spells which need to run entity
+     * checkups
      */
     public static List<Entity> getNearbyChunkEntities(Location loc) {
         List<Entity> entities = new ArrayList<>();
