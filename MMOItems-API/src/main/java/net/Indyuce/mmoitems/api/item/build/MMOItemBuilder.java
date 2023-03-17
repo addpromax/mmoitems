@@ -77,12 +77,12 @@ public class MMOItemBuilder {
                 UUID modUUID = UUID.randomUUID();
 
                 capacity -= modifier.getWeight();
-                if (modifier.hasNameModifier()) {
+                if (modifier.hasNameModifier())
                     addModifier(modifier.getNameModifier(), modUUID);
-                }
 
                 for (ItemStat stat : modifier.getItemData().keySet())
-                    addModifierData(stat, modifier.getItemData().get(stat).randomize(this), modUUID);
+                    applyData(stat, modifier.getItemData().get(stat).randomize(this));
+                    //addModifierData(stat, modifier.getItemData().get(stat).randomize(this), modUUID);
             }
     }
 
@@ -102,14 +102,11 @@ public class MMOItemBuilder {
      * @return Built MMOItem instance
      */
     public MMOItem build() {
-
         if (!nameModifiers.isEmpty()) {
-
             // Get name data
             StatHistory hist = StatHistory.from(mmoitem, ItemStats.NAME);
-            if (!mmoitem.hasData(ItemStats.NAME)) {
+            if (!mmoitem.hasData(ItemStats.NAME))
                 mmoitem.setData(ItemStats.NAME, new NameData("Item"));
-            }
 
             for (UUID obs : nameModifiers.keySet()) {
 
@@ -144,25 +141,23 @@ public class MMOItemBuilder {
      * @param data StatData to apply
      */
     public void applyData(ItemStat stat, StatData data) {
-
         // Is the data mergeable? Apply as External SH
-        if (mmoitem.hasData(stat) && data instanceof Mergeable) {
-
+        if (mmoitem.hasData(stat) && data instanceof Mergeable)
             ((Mergeable) mmoitem.getData(stat)).merge(data);
-
-        } else {
-
+        else
             // Set, there is no more.
             mmoitem.setData(stat, data);
-        }
     }
 
     /**
      * Registers the modifier onto the item
+     * <p>
+     * This method is deprecated because {@link #applyData(ItemStat, StatData)} is working way better
      *
      * @param stat Stat owning the data
      * @param data StatData to apply
      */
+    @Deprecated
     public void addModifierData(@NotNull ItemStat stat, @NotNull StatData data, @NotNull UUID uuid) {
         if (stat.getClearStatData() instanceof Mergeable)
             StatHistory.from(mmoitem, stat).registerModifierBonus(uuid, data);
@@ -179,7 +174,6 @@ public class MMOItemBuilder {
      * @param mod      UUID of storage into the Stat History of name
      */
     public void addModifier(@NotNull NameModifier modifier, @NotNull UUID mod) {
-
         // Might overwrite a modifier yes
         ArrayList<UUID> removedObs = new ArrayList<>();
         for (UUID cUID : nameModifiers.keySet()) {
@@ -214,7 +208,7 @@ public class MMOItemBuilder {
     /**
      * @param template The template to list modifiers from
      * @return A sorted (or unsorted depending on the template options) list of
-     *         modifiers that can be later rolled and applied to the builder
+     * modifiers that can be later rolled and applied to the builder
      */
     @NotNull
     public static Collection<TemplateModifier> rollModifiers(@NotNull MMOItemTemplate template) {
