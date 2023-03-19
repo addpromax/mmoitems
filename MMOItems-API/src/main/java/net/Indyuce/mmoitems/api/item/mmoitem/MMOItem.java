@@ -10,7 +10,6 @@ import net.Indyuce.mmoitems.api.UpgradeTemplate;
 import net.Indyuce.mmoitems.api.item.ItemReference;
 import net.Indyuce.mmoitems.api.item.build.ItemStackBuilder;
 import net.Indyuce.mmoitems.api.util.MMOItemReforger;
-import net.Indyuce.mmoitems.stat.Enchants;
 import net.Indyuce.mmoitems.stat.data.*;
 import net.Indyuce.mmoitems.stat.data.type.Mergeable;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
@@ -187,16 +186,14 @@ public class MMOItem implements ItemReference {
 		 * Enchantment data must never be clear and lack history. This is
 		 * the basis for when an item is 'old'
 		 */
-		if (stat instanceof Enchants) { return mergeableStatHistory.getOrDefault(stat, StatHistory.from(this, stat, true)); }
+		//if (stat instanceof Enchants) { return mergeableStatHistory.getOrDefault(stat, StatHistory.from(this, stat, true)); }
 
 		/*
 		 * Normal stat, just fetch.
 		 */
 		try {
-
 			// Well that REALLY should work
 			return mergeableStatHistory.get(stat);
-
 		} catch (ClassCastException ignored) {
 			return null;
 		}
