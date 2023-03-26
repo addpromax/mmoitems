@@ -5,6 +5,7 @@ import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.api.util.SmartGive;
 import io.lumine.mythic.lib.comp.flags.CustomFlag;
+import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.Type;
@@ -19,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 public class Consumable extends UseItem {
@@ -73,6 +75,22 @@ public class Consumable extends UseItem {
         for (PlayerConsumable sc : MMOItems.plugin.getStats().getPlayerConsumables())
             sc.onConsume(mmoitem, player, vanillaEeating);
 
+        // Remove empty bottle if needed
+        if (nbtItem.getBoolean(ItemStats.REMOVE_ON_CRAFT.getNBTPath())) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    ItemStack item = player.getInventory().getItemInMainHand();
+                    if (!item.getType().equals(Material.GLASS_BOTTLE))
+                        return;
+                    if (item.getAmount() > 1)
+                        item.setAmount(item.getAmount() - 1);
+                    else
+                        player.getInventory().setItemInMainHand(null);
+                }
+            }.runTaskLater(MMOItems.plugin, 1L);
+        }
+
         /**
          * If the item does not have a maximum amount of uses, this will always
          * return 0 and that portion will just skip.
@@ -117,7 +135,7 @@ public class Consumable extends UseItem {
 
     /**
      * @return If an item should be eaten not when right clicked, but after
-     *         the eating animation. This does check if the item is actually edible
+     * the eating animation. This does check if the item is actually edible
      */
     public boolean hasVanillaEating() {
         return (getItem().getType().isEdible() || getItem().getType() == Material.POTION || getItem().getType() == Material.MILK_BUCKET)
