@@ -9,6 +9,7 @@ import net.Indyuce.mmoitems.api.event.BouncingCrackBlockBreakEvent;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
@@ -38,7 +39,16 @@ public class Tool extends UseItem {
             Map<Material, Material> oreDrops = MythicLib.plugin.getVersion().getWrapper().getOreDrops();
             Material drop = oreDrops.get(block.getType());
             if (drop != null) {
-                UtilityMethods.dropItemNaturally(block.getLocation(), new ItemStack(drop));
+                ItemStack dropItem = new ItemStack(drop);
+                // If the item has fortune, increase the amount
+                getItem().getEnchantments()
+                        .entrySet()
+                        .stream()
+                        .filter(e -> e.getKey().equals(Enchantment.LOOT_BONUS_BLOCKS))
+                        .map(Map.Entry::getValue)
+                        .findFirst()
+                        .ifPresent(e -> dropItem.setAmount(dropItem.getAmount() + (int) (Math.random() * (e + 1))));
+                UtilityMethods.dropItemNaturally(block.getLocation(), dropItem);
                 block.getWorld().spawnParticle(Particle.CLOUD, block.getLocation().add(.5, .5, .5), 0);
                 block.setType(Material.AIR);
                 cancel = true;
