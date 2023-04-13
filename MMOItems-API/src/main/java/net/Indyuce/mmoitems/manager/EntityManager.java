@@ -10,10 +10,7 @@ import net.Indyuce.mmoitems.api.interaction.projectile.EntityData;
 import net.Indyuce.mmoitems.api.interaction.projectile.ProjectileData;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -62,8 +59,8 @@ public class EntityManager implements Listener {
          * arrow particles. Currently projectiles are only arrows so there is no
          * problem with other projectiles like snowballs etc.
          */
-        if (entity instanceof Arrow && sourceItem.hasTag("MMOITEMS_ARROW_PARTICLES"))
-            new ArrowParticles((Arrow) entity, sourceItem);
+        if (entity instanceof AbstractArrow && sourceItem.hasTag("MMOITEMS_ARROW_PARTICLES"))
+            new ArrowParticles((AbstractArrow) entity, sourceItem);
 
         projectiles.put(entity.getEntityId(), projectileData);
     }
@@ -109,7 +106,7 @@ public class EntityManager implements Listener {
             return;
 
         final Projectile projectile = (Projectile) event.getDamager();
-        final ProjectileData data = projectiles.get(projectile.getEntityId());
+        final ProjectileData data = getProjectileData(projectile);
         if (data == null)
             return;
 
@@ -130,7 +127,7 @@ public class EntityManager implements Listener {
             return;
 
         final ProjectileAttackMetadata projAttack = (ProjectileAttackMetadata) event.getAttack();
-        final ProjectileData data = projectiles.get(projAttack.getProjectile().getEntityId());
+        final ProjectileData data = getProjectileData(projAttack.getProjectile());
         if (data == null)
             return;
 
