@@ -66,7 +66,7 @@ public class PlayerListener implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGH)
     public void onDeathForSoulbound(PlayerDeathEvent event) {
-        if (event.getKeepInventory() || !MMOItems.plugin.getLanguage().keepSoulboundOnDeath)
+        if (event.getKeepInventory() )
             return;
 
         Player player = event.getEntity();
@@ -90,7 +90,7 @@ public class PlayerListener implements Listener {
              * using a JsonParser followed by map checkups in the SoulboundData
              * constructor
              */
-            else if (nbt.hasTag("MMOITEMS_SOULBOUND") && nbt.getString("MMOITEMS_SOULBOUND").contains(player.getUniqueId().toString())) {
+            else if (MMOItems.plugin.getLanguage().keepSoulboundOnDeath && nbt.hasTag("MMOITEMS_SOULBOUND") && nbt.getString("MMOITEMS_SOULBOUND").contains(player.getUniqueId().toString())) {
                 iterator.remove();
                 soulboundInfo.add(item);
             }
