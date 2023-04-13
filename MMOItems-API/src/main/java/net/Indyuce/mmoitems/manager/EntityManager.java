@@ -106,6 +106,9 @@ public class EntityManager implements Listener {
             return;
 
         final Projectile projectile = (Projectile) event.getDamager();
+        if (!isCustomProjectile(projectile)){
+            return;
+        }
         final ProjectileData data = projectiles.get(projectile.getEntityId());
         if (data == null)
             return;
@@ -127,6 +130,9 @@ public class EntityManager implements Listener {
             return;
 
         final ProjectileAttackMetadata projAttack = (ProjectileAttackMetadata) event.getAttack();
+        if (!isCustomProjectile(projAttack.getProjectile())){
+            return;
+        }
         final ProjectileData data = projectiles.get(projAttack.getProjectile().getEntityId());
         if (data == null)
             return;
