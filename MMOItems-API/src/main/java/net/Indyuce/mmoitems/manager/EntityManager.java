@@ -102,11 +102,11 @@ public class EntityManager implements Listener {
      */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void customBowDamage(EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof Projectile) || !(event.getEntity() instanceof LivingEntity) || event.getEntity().hasMetadata("NPC"))
+        if (!(event.getDamager() instanceof Projectile) || !(event.getDamager() instanceof AbstractArrow) || !(event.getEntity() instanceof LivingEntity) || event.getEntity().hasMetadata("NPC"))
             return;
 
         final Projectile projectile = (Projectile) event.getDamager();
-        final ProjectileData data = getProjectileData(projectile);
+        final ProjectileData data = projectiles.get(projectile.getEntityId());
         if (data == null)
             return;
 
@@ -114,7 +114,7 @@ public class EntityManager implements Listener {
         double baseDamage = data.getDamage();
 
         // Apply power vanilla enchant
-        if (projectile instanceof Arrow && data.getSourceItem().getItem().hasItemMeta()
+        if (projectile instanceof AbstractArrow && data.getSourceItem().getItem().hasItemMeta()
                 && data.getSourceItem().getItem().getItemMeta().getEnchants().containsKey(Enchantment.ARROW_DAMAGE))
             baseDamage *= 1.25 + (.25 * data.getSourceItem().getItem().getItemMeta().getEnchantLevel(Enchantment.ARROW_DAMAGE));
 
@@ -127,7 +127,7 @@ public class EntityManager implements Listener {
             return;
 
         final ProjectileAttackMetadata projAttack = (ProjectileAttackMetadata) event.getAttack();
-        final ProjectileData data = getProjectileData(projAttack.getProjectile());
+        final ProjectileData data = projectiles.get(projAttack.getProjectile().getEntityId());
         if (data == null)
             return;
 
