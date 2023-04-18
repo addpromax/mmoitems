@@ -25,7 +25,7 @@ public class RequiredAttribute extends DoubleStat implements ItemRestriction, Ge
     @Override
     public boolean canUse(RPGPlayer player, NBTItem item, boolean message) {
         MMOCoreRPGPlayer mmocore = (MMOCoreRPGPlayer) player;
-        if (mmocore.getData().getAttributes().getAttribute(attribute) < item.getStat(getId())) {
+        if (mmocore.getData().getAttributes().getAttribute(attribute) < item.getStat(getId())  && item.getStat(getId()) > 0) {
             if (message) {
                 Message.NOT_ENOUGH_ATTRIBUTE.format(ChatColor.RED, "#attribute#", attribute.getName()).send(player.getPlayer());
                 player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1.5f);
