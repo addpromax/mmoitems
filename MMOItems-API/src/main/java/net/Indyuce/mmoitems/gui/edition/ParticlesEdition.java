@@ -101,7 +101,7 @@ public class ParticlesEdition extends EditionInventory {
 
 				inv.setItem(slots[n++], modifierItem);
 			}
-		}
+
 
 		if (ParticleData.isColorable(particle)) {
 			int red = getEditedSection().getInt("item-particles.color.red");
@@ -137,7 +137,7 @@ public class ParticlesEdition extends EditionInventory {
 		addEditionInventoryItems(inv, true);
 		inv.setItem(21, particleTypeItem);
 		inv.setItem(23, particleItem);
-
+		}
 		return inv;
 	}
 
