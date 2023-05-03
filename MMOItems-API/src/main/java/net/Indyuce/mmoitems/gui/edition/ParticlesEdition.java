@@ -101,42 +101,42 @@ public class ParticlesEdition extends EditionInventory {
 
 				inv.setItem(slots[n++], modifierItem);
 			}
-
-
-		if (ParticleData.isColorable(particle)) {
-			int red = getEditedSection().getInt("item-particles.color.red");
-			int green = getEditedSection().getInt("item-particles.color.green");
-			int blue = getEditedSection().getInt("item-particles.color.blue");
-
-			ItemStack colorItem = VersionMaterial.RED_DYE.toItem();
-			ItemMeta colorItemMeta = colorItem.getItemMeta();
-			colorItemMeta.setDisplayName(ChatColor.GREEN + "Particle Color");
-			List<String> colorItemLore = new ArrayList<>();
-			colorItemLore.add(ChatColor.GRAY + "The RGB color of your particle.");
-			colorItemLore.add("");
-			colorItemLore.add(ChatColor.GRAY + "Current Value (R-G-B):");
-			colorItemLore.add("" + ChatColor.RED + ChatColor.BOLD + red + ChatColor.GRAY + " - " + ChatColor.GREEN + ChatColor.BOLD + green
-					+ ChatColor.GRAY + " - " + ChatColor.BLUE + ChatColor.BOLD + blue);
-			colorItemLore.add("");
-			colorItemLore.add(ChatColor.YELLOW + AltChar.listDash + " Click to change this value.");
-			colorItemLore.add(ChatColor.YELLOW + AltChar.listDash + " Right click to change this value.");
-			colorItemMeta.setLore(colorItemLore);
-			colorItem.setItemMeta(colorItemMeta);
-
-			inv.setItem(25, colorItem);
 		}
+		if (particle != null ) {
+			if (ParticleData.isColorable(particle)) {
+				int red = getEditedSection().getInt("item-particles.color.red");
+				int green = getEditedSection().getInt("item-particles.color.green");
+				int blue = getEditedSection().getInt("item-particles.color.blue");
 
-		ItemStack glass = VersionMaterial.GRAY_STAINED_GLASS_PANE.toItem();
-		ItemMeta glassMeta = glass.getItemMeta();
-		glassMeta.setDisplayName(ChatColor.RED + "- No Modifier -");
-		glass.setItemMeta(glassMeta);
+				ItemStack colorItem = VersionMaterial.RED_DYE.toItem();
+				ItemMeta colorItemMeta = colorItem.getItemMeta();
+				colorItemMeta.setDisplayName(ChatColor.GREEN + "Particle Color");
+				List<String> colorItemLore = new ArrayList<>();
+				colorItemLore.add(ChatColor.GRAY + "The RGB color of your particle.");
+				colorItemLore.add("");
+				colorItemLore.add(ChatColor.GRAY + "Current Value (R-G-B):");
+				colorItemLore.add("" + ChatColor.RED + ChatColor.BOLD + red + ChatColor.GRAY + " - " + ChatColor.GREEN + ChatColor.BOLD + green
+						+ ChatColor.GRAY + " - " + ChatColor.BLUE + ChatColor.BOLD + blue);
+				colorItemLore.add("");
+				colorItemLore.add(ChatColor.YELLOW + AltChar.listDash + " Click to change this value.");
+				colorItemLore.add(ChatColor.YELLOW + AltChar.listDash + " Right click to change this value.");
+				colorItemMeta.setLore(colorItemLore);
+				colorItem.setItemMeta(colorItemMeta);
 
-		while (n < slots.length)
-			inv.setItem(slots[n++], glass);
+				inv.setItem(25, colorItem);
+			}
 
-		addEditionInventoryItems(inv, true);
-		inv.setItem(21, particleTypeItem);
-		inv.setItem(23, particleItem);
+			ItemStack glass = VersionMaterial.GRAY_STAINED_GLASS_PANE.toItem();
+			ItemMeta glassMeta = glass.getItemMeta();
+			glassMeta.setDisplayName(ChatColor.RED + "- No Modifier -");
+			glass.setItemMeta(glassMeta);
+
+			while (n < slots.length)
+				inv.setItem(slots[n++], glass);
+
+			addEditionInventoryItems(inv, true);
+			inv.setItem(21, particleTypeItem);
+			inv.setItem(23, particleItem);
 		}
 		return inv;
 	}
