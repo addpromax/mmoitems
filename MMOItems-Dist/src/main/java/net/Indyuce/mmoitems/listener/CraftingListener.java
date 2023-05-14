@@ -2,7 +2,6 @@ package net.Indyuce.mmoitems.listener;
 
 import io.lumine.mythic.lib.api.crafting.event.MythicCraftItemEvent;
 import io.lumine.mythic.lib.api.item.NBTItem;
-import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.event.CraftMMOItemEvent;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.bukkit.Bukkit;
@@ -23,19 +22,19 @@ public class CraftingListener implements Listener {
             result = firstResult;
         }
         if (result == null){
-            MMOItems.log("No Result Item!");
+            return;
+        }
+        if (!NBTItem.get(result).hasType()){
             return;
         }
 
 
 
-        if (NBTItem.get(result).hasType()){
-            CraftMMOItemEvent e = new CraftMMOItemEvent(PlayerData.get(((Player) event.getTrigger().getWhoClicked())), result);
-            Bukkit.getPluginManager().callEvent(e);
+        CraftMMOItemEvent e = new CraftMMOItemEvent(PlayerData.get(((Player) event.getTrigger().getWhoClicked())), result);
+        Bukkit.getPluginManager().callEvent(e);
 
-            event.setCancelled(e.isCancelled());
-            return;
-        }
+        event.setCancelled(e.isCancelled());
+
     }
 
 //    @EventHandler(priority = EventPriority.HIGHEST,ignoreCancelled = true)
