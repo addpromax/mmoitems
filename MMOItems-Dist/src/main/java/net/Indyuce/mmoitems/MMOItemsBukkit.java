@@ -15,6 +15,7 @@ public class MMOItemsBukkit {
      */
     public MMOItemsBukkit(MMOItems plugin) {
 
+        Bukkit.getPluginManager().registerEvents(new CraftingListener(),plugin);
         Bukkit.getPluginManager().registerEvents(new ItemUse(), plugin);
         Bukkit.getPluginManager().registerEvents(new ItemListener(), plugin);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), plugin);
