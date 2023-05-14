@@ -8,7 +8,6 @@ import org.bukkit.Keyed;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -65,6 +64,12 @@ public class DisableInteractions implements Listener {
         if (inv == null || inv.getType() != InventoryType.SMITHING || event.getSlotType() != SlotType.RESULT)
             return;
 
+        ItemStack currentItem = event.getCurrentItem();
+        if (currentItem != null){
+            String craftingPerm = NBTItem.get(event.getCurrentItem()).getString("MMOITEMS_CRAFT_PERMISSION");
+            if (!craftingPerm.isEmpty() && !event.getWhoClicked().hasPermission(craftingPerm))
+                event.setCancelled(true);
+        }
         if (isDisabled(NBTItem.get(inv.getItem(0)), "smith") || isDisabled(NBTItem.get(inv.getItem(1)), "smith"))
             event.setCancelled(true);
     }
