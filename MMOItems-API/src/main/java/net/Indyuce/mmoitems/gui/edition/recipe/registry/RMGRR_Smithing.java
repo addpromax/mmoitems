@@ -8,6 +8,7 @@ import io.lumine.mythic.lib.api.crafting.recipes.ShapelessRecipe;
 import io.lumine.mythic.lib.api.crafting.uimanager.ProvidedUIFilter;
 import io.lumine.mythic.lib.api.util.Ref;
 import io.lumine.mythic.lib.api.util.ui.FriendlyFeedbackProvider;
+fiimport net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.api.crafting.recipe.CustomSmithingRecipe;
 import net.Indyuce.mmoitems.api.crafting.recipe.SmithingCombinationType;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
@@ -17,6 +18,8 @@ import net.Indyuce.mmoitems.gui.edition.recipe.interpreter.RMGRI_Smithing;
 import net.Indyuce.mmoitems.gui.edition.recipe.rba.*;
 import net.Indyuce.mmoitems.gui.edition.recipe.gui.RMG_Smithing;
 import net.Indyuce.mmoitems.gui.edition.recipe.gui.RecipeMakerGUI;
+import net.Indyuce.mmoitems.stat.data.StringData;
+import net.Indyuce.mmoitems.stat.data.random.RandomStatData;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -96,6 +99,15 @@ public class RMGRR_Smithing implements RecipeRegistry {
         // That's our blueprint :)
         MythicRecipeBlueprint ret = new MythicRecipeBlueprint(inputItem, outputRecipe, nk);
         ret.addSideCheck("ingot", inputIngot);
+
+        RandomStatData perm = template.getBaseItemData().get(ItemStats.CRAFT_PERMISSION);
+        if (perm instanceof StringData) {
+
+            // Ah yes
+            String permission = ((StringData) perm).getString();
+
+            // Finally
+            if (permission != null) { ret.addRequiredPermission(permission); } }
 
         // Enable it
         ret.deploy(MythicRecipeStation.SMITHING, namespace);

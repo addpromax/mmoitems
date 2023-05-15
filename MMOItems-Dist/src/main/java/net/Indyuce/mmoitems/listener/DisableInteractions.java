@@ -55,21 +55,17 @@ public class DisableInteractions implements Listener {
             event.setCancelled(true);
     }
 
+
     @EventHandler
     public void smithingTableInteractions(InventoryClickEvent event) {
         if (MythicLib.plugin.getVersion().isBelowOrEqual(1, 15))
             return;
 
         Inventory inv = event.getClickedInventory();
+
         if (inv == null || inv.getType() != InventoryType.SMITHING || event.getSlotType() != SlotType.RESULT)
             return;
 
-        ItemStack currentItem = event.getCurrentItem();
-        if (currentItem != null){
-            String craftingPerm = NBTItem.get(event.getCurrentItem()).getString("MMOITEMS_CRAFT_PERMISSION");
-            if (!craftingPerm.isEmpty() && !event.getWhoClicked().hasPermission(craftingPerm))
-                event.setCancelled(true);
-        }
         if (isDisabled(NBTItem.get(inv.getItem(0)), "smith") || isDisabled(NBTItem.get(inv.getItem(1)), "smith"))
             event.setCancelled(true);
     }
