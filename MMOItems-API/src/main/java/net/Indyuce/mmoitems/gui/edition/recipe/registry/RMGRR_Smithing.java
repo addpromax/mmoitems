@@ -8,7 +8,7 @@ import io.lumine.mythic.lib.api.crafting.recipes.ShapelessRecipe;
 import io.lumine.mythic.lib.api.crafting.uimanager.ProvidedUIFilter;
 import io.lumine.mythic.lib.api.util.Ref;
 import io.lumine.mythic.lib.api.util.ui.FriendlyFeedbackProvider;
-fiimport net.Indyuce.mmoitems.ItemStats;
+import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.api.crafting.recipe.CustomSmithingRecipe;
 import net.Indyuce.mmoitems.api.crafting.recipe.SmithingCombinationType;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
