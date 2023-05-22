@@ -6,6 +6,7 @@ import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.build.ItemStackBuilder;
 import net.Indyuce.mmoitems.api.item.mmoitem.ReadMMOItem;
 import net.Indyuce.mmoitems.gui.edition.EditionInventory;
+import net.Indyuce.mmoitems.stat.StatsCategory;
 import net.Indyuce.mmoitems.stat.data.random.RandomStatData;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
 import org.bukkit.Material;
@@ -21,6 +22,7 @@ public abstract class ItemStat<R extends RandomStatData<S>, S extends StatData> 
     private final String id, name, configPath, nbtPath;
     @NotNull
     private final Material material;
+    private final StatsCategory category;
 
     private final String[] lore;
     private final List<String> compatibleTypes;
@@ -32,11 +34,17 @@ public abstract class ItemStat<R extends RandomStatData<S>, S extends StatData> 
      */
     private boolean enabled = true;
 
+    public ItemStat(@NotNull String id, @NotNull Material material, @NotNull String name, String[] lore, String[] types, Material... materials) {
+        this(id, StatsCategory.NONE, material, name, lore, types, materials);
+    }
+
     /**
      * Initializes an item stat
      *
      * @param id        The item stat ID, used internally. Also determines the
      *                  lower case path for config files
+     * @param category  The category of the stats, mainly used to display the item
+     *                  stat in an edition sub gui.
      * @param material  The material used to display the stat in the item
      *                  edition GUI
      * @param name      The stat name which has a translation in the language
@@ -47,8 +55,9 @@ public abstract class ItemStat<R extends RandomStatData<S>, S extends StatData> 
      * @param materials Materials compatible with the item stat (eg Shield
      *                  Pattern), any if empty
      */
-    public ItemStat(@NotNull String id, @NotNull Material material, @NotNull String name, String[] lore, String[] types, Material... materials) {
+    public ItemStat(@NotNull String id, @NotNull StatsCategory category, @NotNull Material material, @NotNull String name, String[] lore, String[] types, Material... materials) {
         this.id = id;
+        this.category = category;
         this.material = material;
         this.lore = lore == null ? new String[0] : lore;
         this.compatibleTypes = types == null ? new ArrayList<>() : Arrays.asList(types);
@@ -166,7 +175,7 @@ public abstract class ItemStat<R extends RandomStatData<S>, S extends StatData> 
     /**
      * @return The stat ID
      * @deprecated Use getId() instead. Type is no longer an util since they can
-     *         now be registered from external plugins
+     * now be registered from external plugins
      */
     @Deprecated
     @NotNull
@@ -184,8 +193,8 @@ public abstract class ItemStat<R extends RandomStatData<S>, S extends StatData> 
 
     /**
      * @return The NBT path used by the stat to save data in an item's NBTTags.
-     *         The format is 'MMOITEMS_' followed by the stat name in capital
-     *         letters only using _
+     * The format is 'MMOITEMS_' followed by the stat name in capital
+     * letters only using _
      */
     @NotNull
     public String getNBTPath() {
@@ -271,4 +280,12 @@ public abstract class ItemStat<R extends RandomStatData<S>, S extends StatData> 
      */
     @NotNull
     public abstract S getClearStatData();
+
+    /**
+     * @return The stat's category
+     */
+    @NotNull
+    public StatsCategory getCategory() {
+        return category;
+    }
 }

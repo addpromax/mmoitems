@@ -50,6 +50,7 @@ public class Elements extends ItemStat<RandomElementListData, ElementListData> i
         if (event.getAction() == InventoryAction.PICKUP_ALL)
             new ElementsEdition(inv.getPlayer(), inv.getEdited()).open(inv.getPage());
 
+
         if (event.getAction() == InventoryAction.PICKUP_HALF)
             if (inv.getEditedSection().contains("element")) {
                 inv.getEditedSection().set("element", null);
