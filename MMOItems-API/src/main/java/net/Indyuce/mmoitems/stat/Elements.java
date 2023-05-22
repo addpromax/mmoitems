@@ -6,7 +6,6 @@ import io.lumine.mythic.lib.api.util.AltChar;
 import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
 import io.lumine.mythic.lib.element.Element;
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.util.MMOUtils;
 import net.Indyuce.mmoitems.api.item.build.ItemStackBuilder;
 import net.Indyuce.mmoitems.api.item.mmoitem.ReadMMOItem;
 import net.Indyuce.mmoitems.api.util.NumericStatFormula;
@@ -19,6 +18,7 @@ import net.Indyuce.mmoitems.stat.type.DoubleStat;
 import net.Indyuce.mmoitems.stat.type.ItemStat;
 import net.Indyuce.mmoitems.stat.type.Previewable;
 import net.Indyuce.mmoitems.util.ElementStatType;
+import net.Indyuce.mmoitems.util.MMOUtils;
 import net.Indyuce.mmoitems.util.Pair;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class Elements extends ItemStat<RandomElementListData, ElementListData> implements Previewable<RandomElementListData, ElementListData> {
+
     public Elements() {
         super("ELEMENT", Material.SLIME_BALL, "Elements", new String[]{"The elements of your item."},
                 new String[]{"slashing", "piercing", "blunt", "catalyst", "range", "tool", "armor", "gem_stone"});
