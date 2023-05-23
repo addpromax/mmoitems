@@ -48,8 +48,22 @@ public class DoubleStat extends ItemStat<NumericStatFormula, DoubleData> impleme
         this(id, mat, name, lore, new String[]{"!miscellaneous", "!block", "all"}, true);
     }
 
+    public DoubleStat(String id, StatsCategory category, Material mat, String name, String[] lore) {
+        this(id, category, mat, name, lore, new String[]{"!miscellaneous", "!block", "all"}, true);
+    }
+
     public DoubleStat(String id, Material mat, String name, String[] lore, String[] types, Material... materials) {
         this(id, mat, name, lore, types, true, materials);
+    }
+
+    public DoubleStat(String id, StatsCategory category, Material mat, String name, String[] lore, String[] types, Material... materials) {
+        this(id, category, mat, name, lore, types, true, materials);
+    }
+
+    public DoubleStat(String id, StatsCategory category, Material mat, String name, String[] lore, String[] types, boolean moreIsBetter, Material... materials) {
+        super(id, category, mat, name, lore, types, materials);
+
+        this.moreIsBetter = moreIsBetter;
     }
 
     public DoubleStat(String id, Material mat, String name, String[] lore, String[] types, boolean moreIsBetter, Material... materials) {
@@ -245,7 +259,7 @@ public class DoubleStat extends ItemStat<NumericStatFormula, DoubleData> impleme
         ret.add(new ItemTag(getNBTPath(), data.getValue()));
 
         // Add category tag
-        if (!this.getCategory().equals(StatsCategory.NONE))
+        if (this.hasDefinedCategory())
             ret.add(new ItemTag(StatsCategory.NBT_PATH, this.getCategory().name()));
 
         // Return thay
@@ -261,9 +275,9 @@ public class DoubleStat extends ItemStat<NumericStatFormula, DoubleData> impleme
         if (mmoitem.getNBT().hasTag(getNBTPath()))
             relevantTags.add(ItemTag.getTagAtPath(getNBTPath(), mmoitem.getNBT(), SupportedNBTTagValues.DOUBLE));
 
-		// Add category tag
-		if (!this.getCategory().equals(StatsCategory.NONE))
-			relevantTags.add(ItemTag.getTagAtPath(StatsCategory.NBT_PATH, mmoitem.getNBT(), SupportedNBTTagValues.STRING));
+        // Add category tag
+        if (this.hasDefinedCategory())
+            relevantTags.add(ItemTag.getTagAtPath(StatsCategory.NBT_PATH, mmoitem.getNBT(), SupportedNBTTagValues.STRING));
 
         // Use that
         DoubleData bakedData = getLoadedNBT(relevantTags);
@@ -360,9 +374,11 @@ public class DoubleStat extends ItemStat<NumericStatFormula, DoubleData> impleme
             if (data.getSpread() > 0)
                 lore.add(ChatColor.GRAY + "Spread: " + ChatColor.GREEN + DECIMAL_FORMAT.format(data.getSpread() * 100) + "%" + ChatColor.GRAY + " (Max: "
                         + ChatColor.GREEN + DECIMAL_FORMAT.format(data.getMaxSpread() * 100) + "%" + ChatColor.GRAY + ")");
-
         } else
             lore.add(ChatColor.GRAY + "Current Value: " + ChatColor.GREEN + "---");
+
+        if (this.hasDefinedCategory())
+            lore.add(ChatColor.GRAY + "Category: " + ChatColor.GREEN + this.getCategory().fancyName());
 
         lore.add("");
         lore.add(ChatColor.YELLOW + AltChar.listDash + " Left click to change this value.");

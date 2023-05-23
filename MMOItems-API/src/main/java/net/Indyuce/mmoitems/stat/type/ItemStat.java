@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public abstract class ItemStat<R extends RandomStatData<S>, S extends StatData> {
+
     @NotNull
     private final String id, name, configPath, nbtPath;
     @NotNull
@@ -287,5 +288,9 @@ public abstract class ItemStat<R extends RandomStatData<S>, S extends StatData> 
     @NotNull
     public StatsCategory getCategory() {
         return category;
+    }
+
+    public boolean hasDefinedCategory() {
+        return category != null && category != StatsCategory.NONE;
     }
 }

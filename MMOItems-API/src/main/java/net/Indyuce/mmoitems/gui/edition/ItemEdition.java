@@ -22,6 +22,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ItemEdition extends EditionInventory {
     private static final int[] slots = {19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43};
@@ -50,7 +51,7 @@ public class ItemEdition extends EditionInventory {
             ItemMeta meta = item.getItemMeta();
             meta.addItemFlags(ItemFlag.values());
             meta.setDisplayName(ChatColor.GREEN + stat.getName());
-            List<String> lore = MythicLib.plugin.parseColors(Arrays.stream(stat.getLore()).map(s -> ChatColor.GRAY + s).toList());
+            List<String> lore = MythicLib.plugin.parseColors(Arrays.stream(stat.getLore()).map(s -> ChatColor.GRAY + s).collect(Collectors.toList()));
             lore.add("");
 
             stat.whenDisplayed(lore, getEventualStatData(stat));

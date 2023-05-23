@@ -154,9 +154,9 @@ public abstract class EditionInventory extends PluginInventory {
         getMeta.addItemFlags(ItemFlag.values());
         getMeta.setDisplayName(ChatColor.GREEN + AltChar.fourEdgedClub + " Get the Item! " + AltChar.fourEdgedClub);
         List<String> getLore = new ArrayList<>();
-        getLore.add(ChatColor.GRAY + "");
+        getLore.add(String.valueOf(ChatColor.GRAY));
         getLore.add(ChatColor.GRAY + "You may also use /mi give " + template.getType().getId() + " " + template.getId());
-        getLore.add(ChatColor.GRAY + "");
+        getLore.add(String.valueOf(ChatColor.GRAY));
         getLore.add(ChatColor.YELLOW + AltChar.smallListDash + " Left click to get the item.");
         getLore.add(ChatColor.YELLOW + AltChar.smallListDash + " Right click to reroll its stats.");
         getMeta.setLore(getLore);

@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class RestoreSaturation extends DoubleStat implements PlayerConsumable {
     public RestoreSaturation() {
-        super("RESTORE_SATURATION", Material.GOLDEN_CARROT, "Saturation Restoration", new String[]{"Saturation given when consumed."}, new String[]{"consumable"});
+        super("RESTORE_SATURATION", StatsCategory.RESTORE, Material.GOLDEN_CARROT, "Saturation Restoration", new String[]{"Saturation given when consumed."}, new String[]{"consumable"});
     }
 
     @Override
