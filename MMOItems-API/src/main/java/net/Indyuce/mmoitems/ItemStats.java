@@ -151,7 +151,6 @@ public class ItemStats {
             PICKAXE_POWER = new PickaxePower(),
             CUSTOM_SOUNDS = new CustomSounds(),
             ELEMENTS_CATEGORY = new ItemStatCategory(StatsCategory.ELEMENTS, Material.SLIME_BALL, "The elements of your item."),
-            //ELEMENTS = new Elements(),
             COMMANDS = new Commands(),
             STAFF_SPIRIT = new StaffSpiritStat(),
             LUTE_ATTACK_SOUND = new LuteAttackSoundStat(),

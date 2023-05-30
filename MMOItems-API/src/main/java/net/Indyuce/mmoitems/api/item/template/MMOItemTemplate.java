@@ -65,7 +65,6 @@ public class MMOItemTemplate extends PostLoadObject implements ItemReference {
 
 	@Override
 	protected void whenPostLoaded(ConfigurationSection config) {
-
 		FriendlyFeedbackProvider ffp = new FriendlyFeedbackProvider(FFPMMOItems.get());
 		ffp.activatePrefix(true, getType().getId() + " " + getId());
 

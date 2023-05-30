@@ -255,7 +255,7 @@ public class DoubleStat extends ItemStat<NumericStatFormula, DoubleData> impleme
         // Create Fresh
         ArrayList<ItemTag> ret = new ArrayList<>();
 
-        // Add sole tag
+        // Add sole taggetNBT
         ret.add(new ItemTag(getNBTPath(), data.getValue()));
 
         // Add category tag
