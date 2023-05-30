@@ -8,7 +8,6 @@ import net.Indyuce.mmoitems.gui.edition.CategoryEdition;
 import net.Indyuce.mmoitems.gui.edition.EditionInventory;
 import net.Indyuce.mmoitems.stat.data.StringData;
 import net.Indyuce.mmoitems.stat.data.random.RandomStatData;
-import net.Indyuce.mmoitems.stat.type.InternalStat;
 import net.Indyuce.mmoitems.stat.type.ItemStat;
 import net.Indyuce.mmoitems.stat.type.Previewable;
 import org.bukkit.ChatColor;
@@ -30,9 +29,10 @@ import java.util.Optional;
  */
 public class ItemStatCategory extends ItemStat<RandomStatData<StringData>, StringData> implements Previewable<RandomStatData<StringData>, StringData> {
 
-    public ItemStatCategory(@NotNull StatsCategory category, @NotNull Material material) {
-        super(String.format("CATEGORY_%s", category.name()), category, material, category.fancyName(), new String[]{"This is a category"},
-                new String[]{"all"});
+    private final StatsCategory targetCategory;
+    public ItemStatCategory(@NotNull StatsCategory category, @NotNull Material material, String... lore) {
+        super(String.format("CATEGORY_%s", category.name()), StatsCategory.NONE, material, category.fancyName(), lore, new String[]{"all"});
+        this.targetCategory = category;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ItemStatCategory extends ItemStat<RandomStatData<StringData>, Strin
     @Override
     public void whenClicked(@NotNull EditionInventory inv, @NotNull InventoryClickEvent event) {
         if (event.getAction() == InventoryAction.PICKUP_ALL)
-            new CategoryEdition(inv.getPlayer(), inv.getEdited(), this.getCategory()).open(inv.getPage());
+            new CategoryEdition(inv.getPlayer(), inv.getEdited(), this.targetCategory).open(inv.getPage());
     }
 
     @Override

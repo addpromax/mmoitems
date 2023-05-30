@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
 public class DoubleStat extends ItemStat<NumericStatFormula, DoubleData> implements Upgradable, Previewable<NumericStatFormula, DoubleData> {
     private final boolean moreIsBetter;
 
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.####");
+    protected static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.####");
 
     public DoubleStat(String id, Material mat, String name, String[] lore) {
         this(id, mat, name, lore, new String[]{"!miscellaneous", "!block", "all"}, true);

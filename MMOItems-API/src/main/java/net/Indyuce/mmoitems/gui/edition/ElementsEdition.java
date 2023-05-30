@@ -20,9 +20,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
 
+@Deprecated
+@ApiStatus.ScheduledForRemoval
 public class ElementsEdition extends EditionInventory {
     private final List<Element> elements = new ArrayList<>();
     private final int maxPage;
@@ -44,7 +47,7 @@ public class ElementsEdition extends EditionInventory {
     public Inventory getInventory() {
         Inventory inv = Bukkit.createInventory(this, 54, "Elements: " + template.getId());
 
-        final Optional<RandomElementListData> statData = getEventualStatData(ItemStats.ELEMENTS);
+        final Optional<RandomElementListData> statData =  null;//getEventualStatData(ItemStats.ELEMENTS);
 
         ItemStack prevPage = new ItemStack(Material.ARROW);
         ItemMeta prevPageMeta = prevPage.getItemMeta();
@@ -122,7 +125,7 @@ public class ElementsEdition extends EditionInventory {
         final String elementPath = edited.getValue().getConcatenatedConfigPath(edited.getKey());
 
         if (event.getAction() == InventoryAction.PICKUP_ALL)
-            new StatEdition(this, ItemStats.ELEMENTS, elementPath).enable("Write in the value you want.");
+            new StatEdition(this, ItemStats.AMPHIBIAN, elementPath).enable("Write in the value you want.");
 
         else if (event.getAction() == InventoryAction.PICKUP_HALF) {
             getEditedSection().set("element." + elementPath, null);

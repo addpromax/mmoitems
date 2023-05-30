@@ -6,6 +6,7 @@ import net.Indyuce.mmocore.api.player.attribute.PlayerAttribute;
 import net.Indyuce.mmoitems.api.player.RPGPlayer;
 import net.Indyuce.mmoitems.api.util.message.Message;
 import net.Indyuce.mmoitems.comp.mmocore.MMOCoreHook.MMOCoreRPGPlayer;
+import net.Indyuce.mmoitems.stat.StatsCategory;
 import net.Indyuce.mmoitems.stat.type.DoubleStat;
 import net.Indyuce.mmoitems.stat.type.GemStoneStat;
 import net.Indyuce.mmoitems.stat.type.ItemRestriction;
@@ -17,7 +18,7 @@ public class RequiredAttribute extends DoubleStat implements ItemRestriction, Ge
 
     // TODO merge with RequiredLevelStat
     public RequiredAttribute(PlayerAttribute attribute) {
-        super("REQUIRED_" + attribute.getId().toUpperCase().replace("-", "_"), VersionMaterial.GRAY_DYE.toMaterial(), attribute.getName() + " Requirement (MMOCore)", new String[]{"Amount of " + attribute.getName() + " points the", "player needs to use the item."}, new String[]{"!block", "all"});
+        super("REQUIRED_" + attribute.getId().toUpperCase().replace("-", "_"), StatsCategory.MMOCORE, VersionMaterial.GRAY_DYE.toMaterial(), attribute.getName() + " Requirement (MMOCore)", new String[]{"Amount of " + attribute.getName() + " points the", "player needs to use the item."}, new String[]{"!block", "all"});
 
         this.attribute = attribute;
     }

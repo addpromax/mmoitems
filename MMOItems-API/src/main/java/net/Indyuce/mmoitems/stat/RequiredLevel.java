@@ -51,8 +51,8 @@ public class RequiredLevel extends DoubleStat implements ItemRestriction {
     public void whenPreviewed(@NotNull ItemStackBuilder item, @NotNull DoubleData currentData, @NotNull NumericStatFormula templateData) throws IllegalArgumentException {
 
         // Get Value
-        double techMinimum = ((NumericStatFormula) templateData).calculate(0, -2.5);
-        double techMaximum = ((NumericStatFormula) templateData).calculate(0, 2.5);
+        double techMinimum = templateData.calculate(0, -2.5);
+        double techMaximum = templateData.calculate(0, 2.5);
 
         // Cancel if it its NEGATIVE and this doesn't support negative stats.
         if (techMaximum < 0 && !handleNegativeStats()) {
@@ -61,11 +61,11 @@ public class RequiredLevel extends DoubleStat implements ItemRestriction {
         if (techMinimum < 0 && !handleNegativeStats()) {
             techMinimum = 0;
         }
-        if (techMinimum < ((NumericStatFormula) templateData).getBase() - ((NumericStatFormula) templateData).getMaxSpread()) {
-            techMinimum = ((NumericStatFormula) templateData).getBase() - ((NumericStatFormula) templateData).getMaxSpread();
+        if (techMinimum < templateData.getBase() - templateData.getMaxSpread()) {
+            techMinimum = templateData.getBase() - templateData.getMaxSpread();
         }
-        if (techMaximum > ((NumericStatFormula) templateData).getBase() + ((NumericStatFormula) templateData).getMaxSpread()) {
-            techMaximum = ((NumericStatFormula) templateData).getBase() + ((NumericStatFormula) templateData).getMaxSpread();
+        if (techMaximum > templateData.getBase() + templateData.getMaxSpread()) {
+            techMaximum = templateData.getBase() + templateData.getMaxSpread();
         }
 
         // Add NBT Path
@@ -92,7 +92,7 @@ public class RequiredLevel extends DoubleStat implements ItemRestriction {
 
         // Make and bake
         ArrayList<ItemTag> ret = new ArrayList<>();
-        ret.add(new ItemTag(getNBTPath(), ((DoubleData) data).getValue()));
+        ret.add(new ItemTag(getNBTPath(), data.getValue()));
         return ret;
     }
 

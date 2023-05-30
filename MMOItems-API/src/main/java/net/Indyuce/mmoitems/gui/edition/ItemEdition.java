@@ -18,6 +18,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +32,7 @@ public class ItemEdition extends EditionInventory {
         super(player, template);
     }
 
+    @NotNull
     @Override
     public Inventory getInventory() {
         int min = (page - 1) * slots.length;
@@ -41,8 +43,12 @@ public class ItemEdition extends EditionInventory {
          * it has to determine what stats can be applied first because otherwise
          * the for loop will just let some slots empty
          */
-        List<ItemStat> appliable = new ArrayList<>(getEdited().getType().getAvailableStats()).stream()
-                .filter(stat -> stat.hasValidMaterial(getCachedItem()) && !(stat instanceof InternalStat)).toList();
+        List<ItemStat> appliable = new ArrayList<>(getEdited().getType().getAvailableStats())
+                .stream()
+                .filter(stat -> stat.hasValidMaterial(getCachedItem()) && !(stat instanceof InternalStat))
+                // Category check
+                .filter(stat -> !stat.hasDefinedCategory())
+                .collect(Collectors.toList());
 
         Inventory inv = Bukkit.createInventory(this, 54, "Item Edition: " + getEdited().getId());
         for (int j = min; j < Math.min(appliable.size(), max); j++) {

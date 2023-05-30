@@ -9,6 +9,7 @@ import net.Indyuce.mmoitems.api.edition.StatEdition;
 import net.Indyuce.mmoitems.api.item.build.ItemStackBuilder;
 import net.Indyuce.mmoitems.api.item.mmoitem.ReadMMOItem;
 import net.Indyuce.mmoitems.gui.edition.EditionInventory;
+import net.Indyuce.mmoitems.stat.StatsCategory;
 import net.Indyuce.mmoitems.stat.data.StringData;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -24,6 +25,10 @@ import java.util.Optional;
 public class StringStat extends ItemStat<StringData, StringData> {
     public StringStat(String id, Material mat, String name, String[] lore, String[] types, Material... materials) {
         super(id, mat, name, lore, types, materials);
+    }
+
+    public StringStat(String id, StatsCategory category, Material mat, String name, String[] lore, String[] types, Material... materials) {
+        super(id, category, mat, name, lore, types, materials);
     }
 
     @Override

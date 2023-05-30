@@ -26,6 +26,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,10 +34,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@ApiStatus.ScheduledForRemoval
+@Deprecated
 public class Elements extends ItemStat<RandomElementListData, ElementListData> implements Previewable<RandomElementListData, ElementListData> {
 
     public Elements() {
-        super("ELEMENT", StatsCategory.ELEMENTS, Material.SLIME_BALL, "Elements", new String[]{"The elements of your item."},
+        super("ELEMENT", StatsCategory.NONE, Material.SLIME_BALL, "Elements", new String[]{"The elements of your item."},
                 new String[]{"slashing", "piercing", "blunt", "catalyst", "range", "tool", "armor", "gem_stone"});
     }
 
@@ -106,7 +109,6 @@ public class Elements extends ItemStat<RandomElementListData, ElementListData> i
 
     @Override
     public void whenApplied(@NotNull ItemStackBuilder item, @NotNull ElementListData data) {
-
         List<String> lore = new ArrayList<>();
 
         // Write Lore

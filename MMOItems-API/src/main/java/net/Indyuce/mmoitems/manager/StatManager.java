@@ -6,6 +6,7 @@ import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ConfigFile;
 import net.Indyuce.mmoitems.api.Type;
+import net.Indyuce.mmoitems.stat.ElementStat;
 import net.Indyuce.mmoitems.stat.type.*;
 import net.Indyuce.mmoitems.util.ElementStatType;
 import org.apache.commons.lang.Validate;
@@ -86,9 +87,11 @@ public class StatManager {
      * Register all MythicLib elements as stats
      */
     public void loadElements() {
-        for (ElementStatType type : ElementStatType.values()) {
-            for (Element element : MythicLib.plugin.getElements().getAll()) {
-                numeric.add(new FictiveNumericStat(element, type));
+        for (Element element : MythicLib.plugin.getElements().getAll()) {
+            for (ElementStatType type : ElementStatType.values()) {
+                //numeric.add(new FictiveNumericStat(element, type));
+                ElementStat stat = new ElementStat(type, element);
+                register(stat);
             }
         }
     }

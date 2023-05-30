@@ -117,7 +117,7 @@ public class ItemStats {
             GRANTED_PERMISSIONS = new GrantedPermissions(),
 
     // Consumable Stats
-            RESTORE_CATEGORY = new ItemStatCategory(StatsCategory.RESTORE, VersionMaterial.RED_DYE.toMaterial()),
+    RESTORE_CATEGORY = new ItemStatCategory(StatsCategory.RESTORE, VersionMaterial.RED_DYE.toMaterial(), "These stats are applied when", "the item is consumed.", "", "These stats can restore health,", "food, saturation, mana and stamina."),
             RESTORE_HEALTH = new RestoreHealth(),
             RESTORE_FOOD = new RestoreFood(),
             RESTORE_SATURATION = new RestoreSaturation(),
@@ -150,7 +150,8 @@ public class ItemStats {
             BOUNCING_CRACK = new BooleanStat("BOUNCING_CRACK", VersionMaterial.COBBLESTONE_WALL.toMaterial(), "Bouncing Crack", new String[]{"If set to true, your tool will", "also break nearby blocks."}, new String[]{"tool"}),
             PICKAXE_POWER = new PickaxePower(),
             CUSTOM_SOUNDS = new CustomSounds(),
-            ELEMENTS = new Elements(),
+            ELEMENTS_CATEGORY = new ItemStatCategory(StatsCategory.ELEMENTS, Material.SLIME_BALL, "The elements of your item."),
+            //ELEMENTS = new Elements(),
             COMMANDS = new Commands(),
             STAFF_SPIRIT = new StaffSpiritStat(),
             LUTE_ATTACK_SOUND = new LuteAttackSoundStat(),
@@ -194,7 +195,11 @@ public class ItemStats {
             CUSTOM_DURABILITY = new CustomDurability(),
             STORED_TAGS = new StoredTags(),
             ITEM_LEVEL = new ItemLevel(),
-            BROWSER_DISPLAY_IDX = new BrowserDisplayIDX();
+            BROWSER_DISPLAY_IDX = new BrowserDisplayIDX(),
+
+
+    // MMOCore
+    MMOCORE_CATEGORY = new ItemStatCategory(StatsCategory.MMOCORE, Material.LIME_DYE, "These stats requires MMOCore", "in order to work.");
 
     /**
      * @deprecated Item damage is now {@link ItemDamage} and

@@ -50,7 +50,7 @@ public class CategoryEdition extends EditionInventory {
 
         this.stats.addAll(this.category.stats());
         this.pageSize = SLOTS.length;
-        this.maxPage = 1 + (this.stats.size() - 1) / this.pageSize;
+        this.maxPage = 1 + this.stats.size() / this.pageSize;
         this.page = 1;
     }
 
@@ -129,7 +129,7 @@ public class CategoryEdition extends EditionInventory {
 
         // Pagination
         if (container.has(PAGINATION_KEY, PersistentDataType.INTEGER)) {
-            this.page = container.get(PAGINATION_KEY, PersistentDataType.INTEGER);
+            this.page = container.getOrDefault(PAGINATION_KEY, PersistentDataType.INTEGER, 1);
             open();
             return;
         }
