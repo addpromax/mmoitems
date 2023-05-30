@@ -76,6 +76,12 @@ public enum Message {
     STATION_BIG_STACK("Amount Crafted: #size#"),
     RECIPE_PREVIEW("Recipe Preview"),
     UNABLE_TO_REPAIR("This item can't be repaired by this consumable!"),
+
+    // Commands
+    REPAIR_COMMAND_UNREPAIRABLE("The item you are holding can't be repaired.", "repair-command-unrepairable"),
+    REPAIR_COMMAND_SUCCESS("Successfully repaired the item you are holding.", "repair-command-success"),
+
+
     ;
 
     private final String defaultMessage, path, actionBarConfigPath;
